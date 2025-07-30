@@ -1,9 +1,13 @@
 import Layout from "@/components/Layout";
+import Button from "@/components/ui/Button";
 
 export default function Intercept() {
   return (
     <Layout>
-      <h1>Intercept</h1>
+      <div className="flex items-center justify-between">
+        <h1>Intercept</h1>
+        <Button>Configure</Button>
+      </div>
     </Layout>
   );
 }

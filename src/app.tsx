@@ -21,8 +21,6 @@ export default function App() {
 function Router() {
   const pathname = useRouter((s) => s.pathname);
 
-  console.log("RENDER");
-
   if (pathname == "/") return <Index />;
   if (pathname == "/shortcuts") return <Shortcuts />;
   if (pathname == "/intercept") return <Intercept />;

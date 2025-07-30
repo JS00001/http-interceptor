@@ -3,31 +3,30 @@ import {
   CommandIcon,
   HouseSimpleIcon,
 } from "@phosphor-icons/react";
-import useRouter from "@/store/router";
 import classNames from "classnames";
 
-interface SidebarProps {}
+import useRouter from "@/store/router";
 
-export default function Sidebar({}: SidebarProps) {
+const SidebarItems = [
+  {
+    icon: HouseSimpleIcon,
+    label: "Home",
+    route: "/" as const,
+  },
+  {
+    icon: CellTowerIcon,
+    label: "Intercept",
+    route: "/intercept" as const,
+  },
+  {
+    icon: CommandIcon,
+    label: "Shortcuts",
+    route: "/shortcuts" as const,
+  },
+];
+
+export default function Sidebar() {
   const router = useRouter();
-
-  const SidebarItems = [
-    {
-      icon: HouseSimpleIcon,
-      label: "Home",
-      route: "/" as const,
-    },
-    {
-      icon: CellTowerIcon,
-      label: "Intercept",
-      route: "/intercept" as const,
-    },
-    {
-      icon: CommandIcon,
-      label: "Shortcuts",
-      route: "/shortcuts" as const,
-    },
-  ];
 
   return (
     <div className="h-screen border-r border-gray-200 flex flex-col gap-1 p-2">
