@@ -1,9 +1,3 @@
-import Layout from "@/components/Layout";
-
 export default function Shortcuts() {
-  return (
-    <Layout>
-      <h1>Shortcuts</h1>
-    </Layout>
-  );
+  return <h1>Shortcuts</h1>;
 }

@@ -6,6 +6,7 @@ import "@/styles/main.css";
 import Routes from "@/routes";
 import Error404 from "@/pages/404";
 import useRouter from "@/store/router";
+import Layout from "@/components/Layout";
 import useGlobalHotkey from "@/hooks/useGlobalHotkey";
 
 function Main() {
@@ -15,7 +16,9 @@ function Main() {
 
   return (
     <React.StrictMode>
-      <Router />
+      <Layout>
+        <Router />
+      </Layout>
     </React.StrictMode>
   );
 }

@@ -36,9 +36,9 @@ const useRouter = create<RouterStore>()((set) => {
 
   const back = () => {
     set((state) => {
-      const stackCopy = [...state.stack];
-      const route = stackCopy.pop();
-      return { ...state, pathname: route, stack: stackCopy };
+      const stack = state.stack.slice(0, state.stack.length - 1);
+      const route = stack[stack.length - 1];
+      return { ...state, pathname: route, stack };
     });
   };
 
