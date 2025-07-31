@@ -1,6 +1,5 @@
 import { create } from "zustand";
-
-export type Route = "/" | "/shortcuts" | "/intercept";
+import type { Route } from "@/routes";
 
 interface RouterState {
   stack: Route[];

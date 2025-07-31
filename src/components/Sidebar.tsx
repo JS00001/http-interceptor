@@ -40,11 +40,11 @@ export default function Sidebar() {
         };
 
         const buttonClasses = classNames(
-          "transition-all",
+          "transition-all duration-150",
           "flex flex-col gap-1 items-center",
           "p-2 rounded-md",
           "hover:cursor-pointer hover:bg-indigo-50 hover:text-indigo-500",
-          isActive ? "bg-indigo-50 text-indigo-500" : "text-gray-400"
+          isActive ? "bg-indigo-50 text-indigo-500" : "text-gray-500"
         );
 
         return (
