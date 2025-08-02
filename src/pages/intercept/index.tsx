@@ -14,6 +14,11 @@ export default function Intercept() {
         </Button>
       </div>
 
+      <div className="border-b border-gray-200 py-2 flex items-center text-sm">
+        <div className="px-4 text-gray-500">Intercept</div>
+        <div className="px-4 text-gray-500">History</div>
+      </div>
+
       <div className="grid grid-cols-3">
         {new Array(50).fill(0).map((_, i) => (
           <div
