@@ -1,41 +1,52 @@
 import {
   CellTowerIcon,
+  CodeIcon,
   CommandIcon,
   HouseSimpleIcon,
 } from "@phosphor-icons/react";
+import { useMemo } from "react";
 import classNames from "classnames";
 
 import useRouter from "@/store/router";
 
-const SidebarItems = [
-  {
-    icon: HouseSimpleIcon,
-    label: "Home",
-    route: "/" as const,
-  },
-  {
-    icon: CellTowerIcon,
-    label: "Intercept",
-    route: "/intercept" as const,
-  },
-  {
-    icon: CommandIcon,
-    label: "Shortcuts",
-    route: "/shortcuts" as const,
-  },
-];
-
 export default function Sidebar() {
   const router = useRouter();
+
+  const SidebarItems = useMemo(() => {
+    return [
+      {
+        icon: HouseSimpleIcon,
+        label: "Home",
+        route: "/" as const,
+        isActive: router.pathname === "/",
+      },
+      {
+        icon: CellTowerIcon,
+        label: "Intercept",
+        route: "/intercept" as const,
+        isActive: router.pathname.startsWith("/intercept"),
+      },
+      {
+        icon: CodeIcon,
+        label: "XSS",
+        route: "/xss" as const,
+        isActive: router.pathname.startsWith("/xss"),
+      },
+      {
+        icon: CommandIcon,
+        label: "Shortcuts",
+        route: "/shortcuts" as const,
+        isActive: router.pathname.startsWith("/shortcuts"),
+      },
+    ];
+  }, [router.pathname]);
 
   return (
     <div className="h-screen border-r border-gray-200 flex flex-col gap-1 p-2">
       {SidebarItems.map((item) => {
-        const isActive = router.pathname == item.route;
-        const iconWeight = isActive ? "fill" : "regular";
+        const iconWeight = item.isActive ? "fill" : "regular";
 
         const onClick = () => {
-          console.log(item.route);
           router.push(item.route);
         };
 
@@ -44,7 +55,7 @@ export default function Sidebar() {
           "flex flex-col gap-1 items-center",
           "p-2 rounded-md",
           "hover:cursor-pointer hover:bg-primary-50 hover:text-primary-500",
-          isActive ? "bg-primary-50 text-primary-500" : "text-gray-400"
+          item.isActive ? "bg-primary-50 text-primary-500" : "text-gray-400"
         );
 
         return (
