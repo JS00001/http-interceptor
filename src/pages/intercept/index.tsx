@@ -54,7 +54,7 @@ export default function Intercept() {
         </div>
       </div>
 
-      <div className="overflow-auto">
+      <div className="overflow-auto pb-8">
         <div className="h-8 bg-gray-300 w-full sticky top-0"></div>
 
         {new Array(500).fill(0).map((_, i) => (
