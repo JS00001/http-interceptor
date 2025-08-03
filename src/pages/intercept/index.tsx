@@ -1,6 +1,7 @@
 import { useState } from "react";
 import classNames from "classnames";
 import { BracketsCurlyIcon, GearIcon } from "@phosphor-icons/react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import useRouter from "@/store/router";
 import Button from "@/components/ui/Button";
@@ -55,18 +56,49 @@ export default function Intercept() {
       </div>
 
       <div className="overflow-auto pb-8">
-        <div className="h-8 bg-gray-300 w-full sticky top-0"></div>
+        <PanelGroup autoSaveId="intercept" direction="horizontal">
+          <Panel className="border-r border-primary-100">
+            <div className="bg-primary-50/50 flex items-center gap-4 px-4 text-sm py-1 cursor-default">
+              <p>Name</p>
+            </div>
 
-        {new Array(500).fill(0).map((_, i) => (
-          <div
-            key={i}
-            className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
-          >
-            <BracketsCurlyIcon size={14} className="text-primary-500" />
-            <p>/api/v1/url</p>
-            <p>200</p>
-          </div>
-        ))}
+            {new Array(500).fill(0).map((_, i) => (
+              <div
+                key={i}
+                className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
+              >
+                <BracketsCurlyIcon size={14} className="text-primary-500" />
+                <p>/api/v1/url</p>
+              </div>
+            ))}
+          </Panel>
+          <PanelResizeHandle />
+          <Panel className="border-r border-primary-100">
+            <div className="bg-primary-50/50 flex items-center gap-4 px-4 text-sm py-1 cursor-default">
+              <p>Status</p>
+            </div>
+            {new Array(500).fill(0).map((_, i) => (
+              <div
+                key={i}
+                className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
+              >
+                <p>200</p>
+              </div>
+            ))}
+          </Panel>
+          <PanelResizeHandle />
+          <Panel>
+            <div className="h-7 bg-primary-50/50 w-full sticky top-0" />
+            {new Array(500).fill(0).map((_, i) => (
+              <div
+                key={i}
+                className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
+              >
+                <p>third</p>
+              </div>
+            ))}
+          </Panel>
+        </PanelGroup>
       </div>
     </div>
   );
