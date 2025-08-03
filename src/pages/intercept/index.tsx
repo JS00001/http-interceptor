@@ -16,7 +16,7 @@ export default function Intercept() {
 
   const Tabs = [
     {
-      label: "Intercept",
+      label: "Intercepted",
       tab: Tab.Intercept,
     },
     {
@@ -27,13 +27,14 @@ export default function Intercept() {
 
   return (
     <>
-      <div className="border-b border-gray-200 pb-1 flex items-center text-sm gap-1">
+      <h1>Proxy Intercept</h1>
+      <div className="pb-1 flex items-center text-sm gap-1">
         {Tabs.map((item) => {
           const isActive = item.tab === tab;
           const onClick = () => setTab(item.tab);
 
           const classes = classNames(
-            "px-4 rounded-md py-1 cursor-pointer",
+            "px-2 rounded-md py-1 cursor-pointer",
             "hover:bg-primary-50 hover:text-primary-500",
             "active:bg-primary-100 active:text-primary-600",
             isActive ? "bg-primary-50 text-primary-500" : "text-gray-500"

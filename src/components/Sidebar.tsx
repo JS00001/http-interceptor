@@ -55,6 +55,7 @@ export default function Sidebar() {
           "flex flex-col gap-1 items-center",
           "p-2 rounded-md",
           "hover:cursor-pointer hover:bg-primary-50 hover:text-primary-500",
+          "active:bg-primary-100 active:text-primary-600",
           item.isActive ? "bg-primary-50 text-primary-500" : "text-gray-400"
         );
 
