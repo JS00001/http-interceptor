@@ -57,7 +57,11 @@ export default function Intercept() {
 
       <div className="overflow-auto pb-8">
         <PanelGroup autoSaveId="intercept" direction="horizontal">
-          <Panel className="border-r border-primary-100">
+          <Panel
+            minSize={5}
+            defaultSize={20}
+            className="border-r border-primary-100"
+          >
             <div className="bg-primary-50/50 flex items-center gap-4 px-4 text-sm py-1 cursor-default">
               <p>Name</p>
             </div>
@@ -68,12 +72,16 @@ export default function Intercept() {
                 className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
               >
                 <BracketsCurlyIcon size={14} className="text-primary-500" />
-                <p>/api/v1/url</p>
+                <p title="/api/v1/url/aa">/api/v1/url</p>
               </div>
             ))}
           </Panel>
           <PanelResizeHandle />
-          <Panel className="border-r border-primary-100">
+          <Panel
+            minSize={5}
+            defaultSize={20}
+            className="border-r border-primary-100"
+          >
             <div className="bg-primary-50/50 flex items-center gap-4 px-4 text-sm py-1 cursor-default">
               <p>Status</p>
             </div>
@@ -87,17 +95,7 @@ export default function Intercept() {
             ))}
           </Panel>
           <PanelResizeHandle />
-          <Panel>
-            <div className="h-7 bg-primary-50/50 w-full sticky top-0" />
-            {new Array(500).fill(0).map((_, i) => (
-              <div
-                key={i}
-                className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
-              >
-                <p>third</p>
-              </div>
-            ))}
-          </Panel>
+          <Panel></Panel>
         </PanelGroup>
       </div>
     </div>
