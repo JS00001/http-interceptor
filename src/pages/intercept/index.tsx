@@ -5,6 +5,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import useRouter from "@/store/router";
 import Button from "@/components/ui/Button";
+import Toggle from "@/components/ui/Toggle";
 
 enum Tab {
   Intercept = "Intercept",
@@ -13,6 +14,7 @@ enum Tab {
 
 export default function Intercept() {
   const router = useRouter();
+  const [enabled, setEnabled] = useState(false);
   const [tab, setTab] = useState(Tab.Intercept);
 
   const Tabs = [
@@ -47,7 +49,11 @@ export default function Intercept() {
             </button>
           );
         })}
+      </div>
 
+      <div className="w-full bg-primary-50 p-2 rounded-xl gap-2 flex items-center">
+        <p className="text-sm pl-2">Intercept Enabled</p>
+        <Toggle value={enabled} onChange={setEnabled} />
         <div className="flex-1 flex justify-end">
           <Button onClick={() => router.push("/intercept/configure")}>
             <GearIcon size={16} /> Configure
