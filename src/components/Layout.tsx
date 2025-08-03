@@ -6,9 +6,7 @@ export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex border-t border-gray-200 h-screen">
       <Sidebar />
-      <div className="flex flex-col gap-4 p-8 w-full overflow-auto">
-        {children}
-      </div>
+      <div className="flex flex-col gap-4 p-8 w-full">{children}</div>
     </div>
   );
 }

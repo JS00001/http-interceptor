@@ -26,7 +26,7 @@ export default function Intercept() {
   ];
 
   return (
-    <>
+    <div className="flex flex-col gap-4 h-screen overflow-hidden">
       <h1>Proxy Intercept</h1>
       <div className="pb-1 flex items-center text-sm gap-1">
         {Tabs.map((item) => {
@@ -54,11 +54,13 @@ export default function Intercept() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3">
-        {new Array(50).fill(0).map((_, i) => (
+      <div className="overflow-auto">
+        <div className="h-8 bg-gray-300 w-full sticky top-0"></div>
+
+        {new Array(500).fill(0).map((_, i) => (
           <div
             key={i}
-            className="col-span-full odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
+            className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
           >
             <BracketsCurlyIcon size={14} className="text-primary-500" />
             <p>/api/v1/url</p>
@@ -66,6 +68,6 @@ export default function Intercept() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
