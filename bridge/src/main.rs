@@ -4,11 +4,15 @@
 use std::process::Command;
 
 fn main() {
-    vulnerability_toolkit_lib::run()
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![launch_browser])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
 
 #[tauri::command]
-async fn launchInterceptor() -> Result<(), String> {
+async fn launch_browser() -> Result<(), String> {
+    // Launch Chrome in a mode that we can control
     Command::new("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
         .args(&[
             "--remote-debugging-port=9222",
@@ -20,6 +24,13 @@ async fn launchInterceptor() -> Result<(), String> {
         ])
         .spawn()
         .map_err(|e| format!("Failed to launch Chrome: {}", e))?;
+
+
+    Command::new("node")
+        .arg("main.js")
+        .current_dir("../interceptor")
+        .spawn()
+        .map_err(|e| format!("Failed to launch node interceptor: {}", e))?;
 
     Ok(())
 }

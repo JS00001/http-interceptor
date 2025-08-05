@@ -1,6 +1,11 @@
+import {
+  ArrowSquareOutIcon,
+  BracketsCurlyIcon,
+  GearIcon,
+} from "@phosphor-icons/react";
 import { useState } from "react";
 import classNames from "classnames";
-import { BracketsCurlyIcon, GearIcon } from "@phosphor-icons/react";
+import { invoke } from "@tauri-apps/api/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import useRouter from "@/store/router";
@@ -28,9 +33,27 @@ export default function Intercept() {
     },
   ];
 
+  const onConfigureRules = () => {
+    router.push("/intercept/configure");
+  };
+
+  const onLaunchBrowser = () => {
+    invoke("launch_browser");
+  };
+
   return (
     <div className="flex flex-col gap-4 h-screen overflow-hidden">
-      <h1>Proxy Intercept</h1>
+      <div className="flex justify-between gap-2 items-cente">
+        <h1>Proxy Intercept</h1>
+        <div className="flex items-center gap-2">
+          <Button color="secondary" onClick={onConfigureRules}>
+            <GearIcon size={16} /> Configure Rules
+          </Button>
+          <Button onClick={onLaunchBrowser}>
+            <ArrowSquareOutIcon size={16} /> Launch Browser
+          </Button>
+        </div>
+      </div>
       <div className="pb-1 flex items-center text-sm gap-1">
         {Tabs.map((item) => {
           const isActive = item.tab === tab;
@@ -49,16 +72,6 @@ export default function Intercept() {
             </button>
           );
         })}
-      </div>
-
-      <div className="w-full bg-primary-50 p-2 rounded-xl gap-2 flex items-center">
-        <p className="text-sm pl-2">Intercept Enabled</p>
-        <Toggle value={enabled} onChange={setEnabled} />
-        <div className="flex-1 flex justify-end">
-          <Button onClick={() => router.push("/intercept/configure")}>
-            <GearIcon size={16} /> Configure
-          </Button>
-        </div>
       </div>
 
       <div className="overflow-auto pb-8">
