@@ -4,10 +4,12 @@ import { GREEN } from "./util";
 import { IRequest } from "../@types";
 
 class WSS {
+  private wss: WebSocketServer;
   private clients = new Set<WebSocket>();
-  private wss = new WebSocketServer({ host: "127.0.0.1", port: 8080 });
 
-  constructor() {
+  public start() {
+    this.wss = new WebSocketServer({ host: "127.0.0.1", port: 8080 });
+
     this.wss.on("listening", () => {
       console.log(`[WS] ${GREEN} Websocket server started`);
     });

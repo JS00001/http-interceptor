@@ -1,6 +1,5 @@
 import {
   CellTowerIcon,
-  CodeIcon,
   CommandIcon,
   HouseSimpleIcon,
 } from "@phosphor-icons/react";
@@ -25,12 +24,6 @@ export default function Sidebar() {
         label: "Intercept",
         route: "/intercept" as const,
         isActive: router.pathname.startsWith("/intercept"),
-      },
-      {
-        icon: CodeIcon,
-        label: "XSS",
-        route: "/xss" as const,
-        isActive: router.pathname.startsWith("/xss"),
       },
       {
         icon: CommandIcon,
