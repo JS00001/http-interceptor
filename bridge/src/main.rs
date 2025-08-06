@@ -17,17 +17,18 @@ async fn launch_browser() -> Result<(), String> {
         .args(&[
             "--remote-debugging-port=9222",
             "--user-data-dir=/tmp/chrome-tauri-profile",
-            "--disable-web-security",
             "--no-first-run",
             "--no-default-browser-check",
             "--new-window",
+            "--disable-logging",
+            "--log-level=3",
         ])
         .spawn()
         .map_err(|e| format!("Failed to launch Chrome: {}", e))?;
 
 
     Command::new("node")
-        .arg("main.js")
+        .arg("index.js")
         .current_dir("../interceptor")
         .spawn()
         .map_err(|e| format!("Failed to launch node interceptor: {}", e))?;
