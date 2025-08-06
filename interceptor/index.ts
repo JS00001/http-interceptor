@@ -6,7 +6,7 @@ const YELLOW = "🟡";
 
 const activeTabs = new Map();
 
-async function connectToTarget(targetID, targetURL = "unknown") {
+async function connectToTarget(targetID: string, targetURL = "unknown") {
   try {
     const client = await CDP({ target: targetID });
     const { Network, Page } = client;
@@ -29,7 +29,7 @@ async function connectToTarget(targetID, targetURL = "unknown") {
     });
 
     return client;
-  } catch (err) {
+  } catch (err: any) {
     // prettier-ignore
     console.log(`${RED} Failed to connect to target ${targetID}: ${err.message}`);
     return null;
@@ -70,15 +70,15 @@ async function connectToChrome() {
     });
 
     // Listen for tab changes
-    Target.targetInfoChanged(async ({ targetId, targetInfo, url }) => {
-      if (targetInfo.type === "page" && !activeTabs.has(targetId)) {
-        await connectToTarget(targetId, url);
+    Target.targetInfoChanged(async ({ targetInfo }) => {
+      if (targetInfo.type === "page" && !activeTabs.has(targetInfo.targetId)) {
+        await connectToTarget(targetInfo.targetId, targetInfo.url);
       }
     });
 
     console.log(`${GREEN} Chrome connected, listening to all network events`);
     return true;
-  } catch (err) {
+  } catch (err: any) {
     console.log(`${RED} Failed to connect to Chrome: ${err.message}`);
     return false;
   }
