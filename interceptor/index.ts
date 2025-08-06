@@ -1,8 +1,6 @@
 import CDP from "chrome-remote-interface";
 
-const RED = "🔴";
-const GREEN = "🟢";
-const YELLOW = "🟡";
+import { GREEN, YELLOW, RED } from "./lib/util";
 
 const activeTabs = new Map();
 
