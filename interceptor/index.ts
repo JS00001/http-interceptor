@@ -13,7 +13,7 @@ async function connectToTarget(targetID: string, targetURL = "unknown") {
     await Page.enable();
 
     Network.requestWillBeSent((params) => {
-      const { method, url } = params.request;
+      const { method, url, headers, postData } = params.request;
       console.log(`[${method}] ${url}`);
     });
 

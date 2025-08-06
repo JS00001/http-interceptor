@@ -8,6 +8,10 @@ class WSS {
   private wss = new WebSocketServer({ host: "127.0.0.1", port: 8080 });
 
   constructor() {
+    this.wss.on("listening", () => {
+      console.log(`[WS] ${GREEN} Websocket server started`);
+    });
+
     this.wss.on("connection", (ws) => {
       this.clients.add(ws);
       console.log(`[WS] ${GREEN} New client connected`);
