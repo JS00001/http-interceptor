@@ -1,6 +1,6 @@
-import { GREEN } from "@interceptor/lib/util";
-import { CDPResponse } from "@interceptor/@types";
-import SocketManager from "@interceptor/lib/socket-manager";
+import { CDP } from '@shared/types';
+import { GREEN } from '@interceptor/lib/util';
+import SocketManager from '@interceptor/lib/socket-manager';
 
 export default class Tab extends SocketManager {
   public id: string;
@@ -17,12 +17,23 @@ export default class Tab extends SocketManager {
   async onConnect() {
     console.log(`${GREEN} Connected to tab: ${this.url}`);
 
-    await this.send("Network.enable");
-    await this.send("Page.enable");
-    await this.send("Fetch.enable", {
-      patterns: [{ urlPattern: "*", requestStage: "Request" }],
+    await this.send('Network.enable');
+    await this.send('Page.enable');
+    await this.send('Fetch.enable', {
+      patterns: [{ urlPattern: '*', requestStage: 'Request' }],
     });
   }
 
-  async onEvent({ method, params }: CDPResponse) {}
+  async onEvent({ method, params }: CDP.Response) {
+    if (method == 'Fetch.requestPaused') {
+      await this.send('Fetch.continueRequest', { requestId: params.requestId });
+      return;
+    }
+
+    if (method == 'Network.requestWillBeSent') {
+      const { method, url, headers, postData } = params.request;
+      console.log('🔍 ' + url);
+      return;
+    }
+  }
 }

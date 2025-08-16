@@ -1,7 +1,7 @@
 import WebSocket from '@tauri-apps/plugin-websocket';
 
+import { CDP } from '@shared/types';
 import { YELLOW } from '@interceptor/lib/util';
-import { CDPRequests, CDPResponse } from '@interceptor/@types';
 
 abstract class SocketManager {
   public websocketUrl: string | null = null;
@@ -37,7 +37,7 @@ abstract class SocketManager {
 
     this.ws.addListener((event) => {
       if (typeof event.data !== 'string') return;
-      const message = JSON.parse(event.data) as CDPResponse;
+      const message = JSON.parse(event.data) as CDP.Response;
 
       if (message.method) {
         this.onEvent(message);
@@ -51,14 +51,14 @@ abstract class SocketManager {
   /**
    * Send a message to the websocket
    */
-  protected async send<T extends keyof CDPRequests>(method: T, params?: CDPRequests[T]) {
+  protected async send<T extends keyof CDP.Request>(method: T, params?: CDP.Request[T]) {
     if (!this.ws) return;
     const id = ++this.msgId;
     await this.ws.send(JSON.stringify({ id, method, params }));
   }
 
   protected abstract onConnect(): Promise<void>;
-  protected abstract onEvent(message: CDPResponse): Promise<void>;
+  protected abstract onEvent(message: CDP.Response): Promise<void>;
 }
 
 export default SocketManager;

@@ -1,8 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { Tauri } from '@shared/types';
+import { CDP, Tauri } from '@shared/types';
 import Tab from '@interceptor/chrome/tab';
-import { CDPResponse } from '@interceptor/@types';
 import { GREEN, RED, YELLOW } from '@interceptor/lib/util';
 import SocketManager from '@interceptor/lib/socket-manager';
 
@@ -33,12 +32,16 @@ class Browser extends SocketManager {
     console.log(`${RED} Failed to connect to browser after 10 attempts`);
   }
 
+  /**
+   * Enable discovering new tabs whenever we connect to the
+   * chrome socket for the first time
+   */
   async onConnect() {
     console.log(`${GREEN} Connected to browser`);
     await this.send('Target.setDiscoverTargets', { discover: true });
   }
 
-  async onEvent({ method, params }: CDPResponse) {
+  async onEvent({ method, params }: CDP.Response) {
     if (method == 'Target.targetCreated') {
       const tab = params.targetInfo;
       if (tab.type === 'page' && !this.findTab(tab.targetId)) {
