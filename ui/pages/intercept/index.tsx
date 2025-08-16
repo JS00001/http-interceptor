@@ -1,16 +1,14 @@
-import {
-  ArrowSquareOutIcon,
-  BracketsCurlyIcon,
-  GearIcon,
-} from "@phosphor-icons/react";
 import { useState } from "react";
 import classNames from "classnames";
 import { invoke } from "@tauri-apps/api/core";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { ArrowSquareOutIcon, GearIcon } from "@phosphor-icons/react";
 
 import browser from "@interceptor/index";
 import useRouter from "@ui/store/router";
 import Button from "@ui/components/ui/Button";
+import { useRequestStore } from "@shared/request-store";
+import HistoryTable from "@ui/components/tables/HistoryTable";
+import InterceptedTable from "@ui/components/tables/InterceptedTable";
 
 enum Tab {
   Intercept = "Intercept",
@@ -19,6 +17,7 @@ enum Tab {
 
 export default function Intercept() {
   const router = useRouter();
+  const urls = useRequestStore((s) => s.urls);
   const [tab, setTab] = useState(Tab.Intercept);
 
   const Tabs = [
@@ -42,8 +41,8 @@ export default function Intercept() {
   };
 
   return (
-    <div className="flex flex-col gap-4 h-screen overflow-hidden">
-      <div className="flex justify-between gap-2 items-cente">
+    <div className="flex flex-col gap-4 h-screen overflow-hidden ">
+      <div className="flex justify-between gap-2 items-center">
         <h1>Proxy Intercept</h1>
         <div className="flex items-center gap-2">
           <Button color="secondary" onClick={onConfigureRules}>
@@ -54,6 +53,7 @@ export default function Intercept() {
           </Button>
         </div>
       </div>
+
       <div className="pb-1 flex items-center text-sm gap-1">
         {Tabs.map((item) => {
           const isActive = item.tab === tab;
@@ -74,49 +74,8 @@ export default function Intercept() {
         })}
       </div>
 
-      <div className="overflow-auto pb-8">
-        <PanelGroup autoSaveId="intercept" direction="horizontal">
-          <Panel
-            minSize={5}
-            defaultSize={20}
-            className="border-r border-primary-100"
-          >
-            <div className="bg-primary-50/50 flex items-center gap-4 px-4 text-sm py-1 cursor-default">
-              <p>Name</p>
-            </div>
-
-            {new Array(500).fill(0).map((_, i) => (
-              <div
-                key={i}
-                className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
-              >
-                <BracketsCurlyIcon size={14} className="text-primary-500" />
-                <p title="/api/v1/url/aa">/api/v1/url</p>
-              </div>
-            ))}
-          </Panel>
-          <PanelResizeHandle />
-          <Panel
-            minSize={5}
-            defaultSize={20}
-            className="border-r border-primary-100"
-          >
-            <div className="bg-primary-50/50 flex items-center gap-4 px-4 text-sm py-1 cursor-default">
-              <p>Status</p>
-            </div>
-            {new Array(500).fill(0).map((_, i) => (
-              <div
-                key={i}
-                className="odd:bg-primary-50/50 even:bg-white flex items-center gap-4 px-4 hover:bg-primary-100 text-sm py-1 cursor-default"
-              >
-                <p>200</p>
-              </div>
-            ))}
-          </Panel>
-          <PanelResizeHandle />
-          <Panel></Panel>
-        </PanelGroup>
-      </div>
+      {tab === Tab.Intercept && <InterceptedTable />}
+      {tab === Tab.History && <HistoryTable />}
     </div>
   );
 }

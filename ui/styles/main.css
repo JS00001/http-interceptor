@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  overscroll-behavior: none;
+}
+
 @theme {
   --color-primary-50: var(--color-indigo-50);
   --color-primary-100: var(--color-indigo-100);

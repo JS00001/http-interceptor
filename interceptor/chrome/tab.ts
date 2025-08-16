@@ -1,6 +1,7 @@
 import { CDP } from '@shared/types';
 import { GREEN } from '@interceptor/lib/util';
 import SocketManager from '@interceptor/lib/socket-manager';
+import { requestStore } from '@shared/request-store';
 
 export default class Tab extends SocketManager {
   public id: string;
@@ -32,6 +33,7 @@ export default class Tab extends SocketManager {
 
     if (method == 'Network.requestWillBeSent') {
       const { method, url, headers, postData } = params.request;
+      requestStore.getState().add(url);
       console.log('🔍 ' + url);
       return;
     }
