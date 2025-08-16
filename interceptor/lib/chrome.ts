@@ -62,14 +62,13 @@ async function connectToChrome() {
 async function connectToTarget(targetID: string, targetURL = "unknown") {
   try {
     const client = await CDP({ target: targetID });
-    const { Network, Page } = client;
+    const { Network, Page, Fetch } = client;
 
     await Network.enable();
     await Page.enable();
 
     Network.requestWillBeSent((params) => {
       const { method, url, headers, postData } = params.request;
-      console.log(`[${method}] ${url}`);
     });
 
     activeTabs.set(targetID, client);

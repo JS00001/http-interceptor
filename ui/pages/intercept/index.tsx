@@ -10,6 +10,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import useRouter from "@/store/router";
 import Button from "@/components/ui/Button";
+import Toggle from "@/components/ui/Toggle";
 
 enum Tab {
   Intercept = "Intercept",

@@ -8,7 +8,7 @@ class WSS {
   private clients = new Set<WebSocket>();
 
   public start() {
-    this.wss = new WebSocketServer({ host: "127.0.0.1", port: 8080 });
+    this.wss = new WebSocketServer({ host: "127.0.0.1", port: 7117 });
 
     this.wss.on("listening", () => {
       console.log(`[WS] ${GREEN} Websocket server started`);
@@ -22,6 +22,8 @@ class WSS {
         this.clients.delete(ws);
         console.log(`[WS] ${GREEN} Client disconnected`);
       });
+
+      ws.on("message", (msg) => {});
     });
   }
 
