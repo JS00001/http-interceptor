@@ -1,7 +1,7 @@
 import { CDP } from '@shared/types';
 import { GREEN } from '@interceptor/lib/util';
-import SocketManager from '@interceptor/lib/socket-manager';
 import { requestStore } from '@shared/request-store';
+import SocketManager from '@interceptor/lib/socket-manager';
 
 export default class Tab extends SocketManager {
   public id: string;
@@ -32,9 +32,12 @@ export default class Tab extends SocketManager {
     }
 
     if (method == 'Network.requestWillBeSent') {
-      const { method, url, headers, postData } = params.request;
-      requestStore.getState().add(url);
-      console.log('🔍 ' + url);
+      requestStore.getState().addRequest(params.requestId, params.request);
+      return;
+    }
+
+    if (method == 'Network.responseReceived') {
+      requestStore.getState().addResponse(params.requestId, params.response);
       return;
     }
   }

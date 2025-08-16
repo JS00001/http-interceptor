@@ -1,3 +1,5 @@
+import type { Protocol } from 'devtools-protocol';
+
 /**
  * Response types for tauri commands
  */
@@ -27,21 +29,12 @@ export namespace Tauri {
  */
 export namespace CDP {
   export type Request = {
-    'Page.enable': {};
-    'Network.enable': {};
     'Fetch.disable': {};
-    'Target.setDiscoverTargets': {
-      discover: boolean;
-    };
-    'Fetch.continueRequest': {
-      requestId: string;
-    };
-    'Fetch.enable': {
-      patterns: Array<{
-        urlPattern: string;
-        requestStage: 'Request' | 'Response';
-      }>;
-    };
+    'Page.enable': Protocol.Page.EnableRequest;
+    'Network.enable': Protocol.Network.EnableRequest;
+    'Target.setDiscoverTargets': Protocol.Target.SetDiscoverTargetsRequest;
+    'Fetch.continueRequest': Protocol.Fetch.ContinueRequestRequest;
+    'Fetch.enable': Protocol.Fetch.EnableRequest;
   };
 
   export type Response = {
@@ -53,36 +46,11 @@ export namespace CDP {
   }[keyof ResponseEvents];
 
   export type ResponseEvents = {
-    'Target.targetCreated': {
-      targetInfo: {
-        targetId: string;
-        type: 'page' | 'other';
-        title: string;
-        url: string;
-      };
-    };
-    'Target.targetInfoChanged': {
-      targetInfo: {
-        targetId: string;
-        type: 'page' | 'other';
-        title: string;
-        url: string;
-      };
-    };
-    'Target.targetDestroyed': {
-      targetId: string;
-    };
-    'Fetch.requestPaused': {
-      requestId: string;
-    };
-    'Network.requestWillBeSent': {
-      requestId: string;
-      request: {
-        url: string;
-        method: string;
-        headers: Record<string, string>;
-        postData: string;
-      };
-    };
+    'Target.targetCreated': Protocol.Target.TargetCreatedEvent;
+    'Target.targetInfoChanged': Protocol.Target.TargetInfoChangedEvent;
+    'Target.targetDestroyed': Protocol.Target.TargetDestroyedEvent;
+    'Fetch.requestPaused': Protocol.Fetch.RequestPausedEvent;
+    'Network.responseReceived': Protocol.Network.ResponseReceivedEvent;
+    'Network.requestWillBeSent': Protocol.Network.RequestWillBeSentEvent;
   };
 }

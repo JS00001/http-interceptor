@@ -1,31 +1,54 @@
 import { create } from 'zustand';
+import Protocol from 'devtools-protocol';
 
 interface IRequestState {
-  urls: string[];
+  data: {
+    [requestId: string]: {
+      request: Protocol.Network.Request;
+      response?: Protocol.Network.Response;
+    };
+  };
 }
 
 interface IRequestStore extends IRequestState {
-  add: (url: string) => void;
+  addRequest: (requestId: string, request: Protocol.Network.Request) => void;
+  addResponse: (requestId: string, response: Protocol.Network.Response) => void;
 }
+
+const REQUEST_LIMIT = 500;
 
 export const useRequestStore = create<IRequestStore>()((set, get) => {
   const initialState = {
-    urls: [],
+    data: {},
   };
 
-  const add = (url: string) => {
-    // Only allow up to 500 requests, use a FIFO queue
-    if (get().urls.length < 500) {
-      set((state) => ({ urls: [...state.urls, url] }));
+  // Only allow up to 500 requests using a FIFO queue
+  const addRequest = (requestId: string, request: Protocol.Network.Request) => {
+    if (Object.keys(get().data).length < REQUEST_LIMIT) {
+      set((state) => ({ data: { ...state.data, [requestId]: { request } } }));
+      return;
     }
 
-    if (get().urls.length > 500) {
-      get().urls.shift();
-      set((state) => ({ urls: [...state.urls, url] }));
-    }
+    set((state) => {
+      const stateData = { ...state.data };
+      const keys = Object.keys(stateData);
+      delete stateData[keys[0]];
+      return { data: { ...stateData, [requestId]: { request } } };
+    });
   };
 
-  return { ...initialState, add };
+  /**
+   * Add a correlated response to an initial request
+   */
+  const addResponse = (requestId: string, response: Protocol.Network.Response) => {
+    if (!get().data[requestId]) return;
+
+    set((state) => ({
+      data: { ...state.data, [requestId]: { ...state.data[requestId], response } },
+    }));
+  };
+
+  return { ...initialState, addRequest, addResponse };
 });
 
 // For static initializations, so it looks cleaner
