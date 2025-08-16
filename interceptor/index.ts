@@ -1,9 +1,5 @@
-import chrome from "./lib/chrome";
-import websocket from "./lib/websocket";
+import websocket from "./websocket";
+import browser from "./chrome/browser";
 
-function main() {
-  websocket.start();
-  chrome.listenToNetwork();
-}
-
-main();
+websocket.start();
+browser.start();
