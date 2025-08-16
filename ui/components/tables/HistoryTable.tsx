@@ -13,18 +13,20 @@ const columnHelper = createColumnHelper<NetworkEvent>();
 const columns = [
   columnHelper.display({
     id: "url",
-    header: () => "URL",
+    header: "Url",
     cell: UrlCell,
     meta: { width: "auto" },
   }),
   columnHelper.accessor("response.status", {
+    id: "status",
     cell: TextCell,
-    header: () => "Status",
+    header: "Status",
     meta: { width: 140 },
   }),
   columnHelper.accessor("request.method", {
+    id: "method",
     cell: TextCell,
-    header: () => "Method",
+    header: "Method",
     meta: { width: 140 },
   }),
 ];

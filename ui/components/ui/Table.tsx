@@ -32,15 +32,22 @@ export default function Table<T>({ comfortable, ...props }: TableProps<T>) {
       <tbody>
         {table.getRowModel().rows.map((row) => (
           <tr key={row.id} className="ui-table-row">
-            {row.getVisibleCells().map((cell) => (
-              <td
-                key={cell.id}
-                className="ui-table-cell"
-                style={{ width: cell.column.columnDef.meta?.width }}
-              >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
+            {row.getVisibleCells().map((cell) => {
+              const rowClasses = classNames(
+                "ui-table-cell",
+                cell.row.getIsSelected() && "selected"
+              );
+
+              return (
+                <td
+                  key={cell.id}
+                  className={rowClasses}
+                  style={{ width: cell.column.columnDef.meta?.width }}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              );
+            })}
           </tr>
         ))}
       </tbody>
