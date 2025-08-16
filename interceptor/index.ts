@@ -1,3 +1,3 @@
-import browser from "./chromev2/browser";
+import browser from './chrome/browser';
 
 export default browser;

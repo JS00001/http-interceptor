@@ -1,0 +1,12 @@
+{
+  "tabWidth": 2,
+  "printWidth": 96,
+  "overrides": [
+    {
+      "files": ["*.ts", "*.js", "*.test.ts", "*.test.js"],
+      "options": {
+        "singleQuote": true
+      }
+    }
+  ]
+}

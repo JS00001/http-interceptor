@@ -1,91 +1,65 @@
-import CDP from "chrome-remote-interface";
+import { invoke } from '@tauri-apps/api/core';
 
-import Tab from "@interceptor/chrome/tab";
-import { GREEN, RED, YELLOW } from "@interceptor/lib/util";
+import { Tauri } from '@shared/types';
+import Tab from '@interceptor/chrome/tab';
+import { CDPResponse } from '@interceptor/@types';
+import { GREEN, RED, YELLOW } from '@interceptor/lib/util';
+import SocketManager from '@interceptor/lib/socket-manager';
 
-class Browser {
+class Browser extends SocketManager {
   private tabs: Tab[] = [];
-  private browser: CDP.Client | null = null;
+
+  constructor() {
+    super(null);
+  }
 
   /**
    * Chrome takes time to start the browser and the remote interface, so
    * attempt to connect to the dev tools 10 times, backing off slowly
    */
   public async start() {
-    let attempts = 0;
-
-    while (attempts < 10) {
-      const success = await this.connectToBrowser();
-      if (success) break;
-
-      // Back off slowly, until we've tried 10 times
-      await new Promise((resolve) => setTimeout(resolve, 1000 * attempts));
-      console.log(`${YELLOW} Attempt ${attempts} failed. Retrying...`);
-      attempts++;
-    }
-
-    if (attempts === 10) {
-      console.log(`${RED} Failed to connect to browser after 10 attempts`);
-    }
-  }
-
-  //   TODO: HATE THIS NAMER
-  public async updatePausePattern(urlPattern: string) {}
-
-  /**
-   * When the browser first loads, initialize all tabs that are currently open,
-   * and start listening for new tabs
-   */
-  private async connectToBrowser() {
-    try {
-      this.browser = await CDP({ port: 9222 });
-
-      await this.browser.Target.setDiscoverTargets({ discover: true });
-
-      const currentTabs = await this.browser.Target.getTargets();
-      const currentTabsInfo = currentTabs.targetInfos;
-
-      for (const tab of currentTabsInfo) {
-        if (tab.type === "page" && !this.findTab(tab.targetId)) {
-          this.createTab(tab.targetId, tab.url);
-        }
+    for (let attempt = 0; attempt < 10; attempt++) {
+      try {
+        const data = await invoke<Tauri.GetChromeVersion>('fetch_chrome_version');
+        this.websocketUrl = data.webSocketDebuggerUrl;
+        await this.connect();
+        return;
+      } catch (err) {
+        console.log(`${YELLOW} Attempt ${attempt} failed. Retrying: ${err}`);
+        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
       }
-
-      console.log(`${GREEN} Connected to browser`);
-
-      this.setupListeners();
-      return true;
-    } catch (err: any) {
-      console.log(`${RED} Failed to connect to browser: ${err.message}`);
-      return false;
     }
+
+    console.log(`${RED} Failed to connect to browser after 10 attempts`);
   }
 
-  /**
-   * Listen for new tabs being created, and tabs closing
-   */
-  private setupListeners() {
-    // When a new tab is opened, create a new tab
-    this.browser?.Target.targetCreated(async ({ targetInfo: tab }) => {
-      if (tab.type === "page" && !this.findTab(tab.targetId)) {
+  async onConnect() {
+    console.log(`${GREEN} Connected to browser`);
+    await this.send('Target.setDiscoverTargets', { discover: true });
+  }
+
+  async onEvent({ method, params }: CDPResponse) {
+    if (method == 'Target.targetCreated') {
+      const tab = params.targetInfo;
+      if (tab.type === 'page' && !this.findTab(tab.targetId)) {
         this.createTab(tab.targetId, tab.url);
       }
-    });
+      return;
+    }
 
-    // When the page changes for a tab we're already tracking, update its URL
-    this.browser?.Target.targetInfoChanged(async ({ targetInfo: tab }) => {
+    if (method == 'Target.targetInfoChanged') {
+      const tab = params.targetInfo;
       const existingTab = this.findTab(tab.targetId);
-      if (tab.type === "page" && existingTab) {
+      if (tab.type === 'page' && existingTab) {
         existingTab.url = tab.url;
       }
-    });
+      return;
+    }
 
-    // When a tab is closed, remove it and cleanup its listeners
-    this.browser?.Target.targetDestroyed(async ({ targetId }) => {
-      if (this.findTab(targetId)) {
-        this.closeTab(targetId);
-      }
-    });
+    if (method == 'Target.targetDestroyed') {
+      this.closeTab(params.targetId);
+      return;
+    }
   }
 
   /**
@@ -99,9 +73,13 @@ class Browser {
    * Establish a new connection to a tab, wait 500ms to ensure
    * the tab has fully loaded
    */
-  private createTab(targetId: string, url: string) {
+  private async createTab(targetId: string, url: string) {
+    const tabs = await invoke<Tauri.GetChromeTabs>('fetch_chrome_tabs');
+    const tabInfo = tabs.find((tab) => tab.id === targetId);
+    if (!tabInfo) return;
+
     setTimeout(() => {
-      const tab = new Tab(targetId, url);
+      const tab = new Tab(targetId, url, tabInfo.webSocketDebuggerUrl);
       this.tabs.push(tab);
     }, 500);
   }
