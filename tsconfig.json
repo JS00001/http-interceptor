@@ -16,16 +16,16 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["ui/*"]
+      "@ui/*": ["ui/*"],
+      "@shared/*": ["shared/*"],
+      "@interceptor/*": ["interceptor/*"]
     }
   },
-  "include": ["ui"],
+  "include": ["ui", "shared", "interceptor"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -2,12 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { writeText } from "tauri-plugin-clipboard-api";
 
-import "@/styles/main.css";
-import Routes from "@/routes";
-import Error404 from "@/pages/404";
-import useRouter from "@/store/router";
-import Layout from "@/components/Layout";
-import useGlobalHotkey from "@/hooks/useGlobalHotkey";
+import "@ui/styles/main.css";
+import Routes from "@ui/routes";
+import Error404 from "@ui/pages/404";
+import useRouter from "@ui/store/router";
+import Layout from "@ui/components/Layout";
+import useGlobalHotkey from "@ui/hooks/useGlobalHotkey";
 
 function Main() {
   useGlobalHotkey("CommandOrControl+Shift+U", () => {

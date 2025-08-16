@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import Button from "@ui/components/ui/Button";
 
 export default function Shortcuts() {
   return (

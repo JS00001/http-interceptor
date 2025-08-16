@@ -1,8 +1,8 @@
 import { XIcon } from "@phosphor-icons/react";
 
-import useRouter from "@/store/router";
-import Button from "@/components/ui/Button";
-import useKeyListener from "@/hooks/useKeyListener";
+import useRouter from "@ui/store/router";
+import Button from "@ui/components/ui/Button";
+import useKeyListener from "@ui/hooks/useKeyListener";
 import { useState } from "react";
 
 interface IRule {

@@ -1,11 +1,11 @@
 import CDP from "chrome-remote-interface";
 
-import Tab from "./tab";
-import { GREEN, RED, YELLOW } from "../lib/util";
+import Tab from "@interceptor/chrome/tab";
+import { GREEN, RED, YELLOW } from "@interceptor/lib/util";
 
 class Browser {
   private tabs: Tab[] = [];
-  private browser: CDP.Client;
+  private browser: CDP.Client | null = null;
 
   /**
    * Chrome takes time to start the browser and the remote interface, so
@@ -66,14 +66,14 @@ class Browser {
    */
   private setupListeners() {
     // When a new tab is opened, create a new tab
-    this.browser.Target.targetCreated(async ({ targetInfo: tab }) => {
+    this.browser?.Target.targetCreated(async ({ targetInfo: tab }) => {
       if (tab.type === "page" && !this.findTab(tab.targetId)) {
         this.createTab(tab.targetId, tab.url);
       }
     });
 
     // When the page changes for a tab we're already tracking, update its URL
-    this.browser.Target.targetInfoChanged(async ({ targetInfo: tab }) => {
+    this.browser?.Target.targetInfoChanged(async ({ targetInfo: tab }) => {
       const existingTab = this.findTab(tab.targetId);
       if (tab.type === "page" && existingTab) {
         existingTab.url = tab.url;
@@ -81,7 +81,7 @@ class Browser {
     });
 
     // When a tab is closed, remove it and cleanup its listeners
-    this.browser.Target.targetDestroyed(async ({ targetId }) => {
+    this.browser?.Target.targetDestroyed(async ({ targetId }) => {
       if (this.findTab(targetId)) {
         this.closeTab(targetId);
       }

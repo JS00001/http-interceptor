@@ -6,7 +6,7 @@ export default class Tab {
   public id: string;
   public url: string;
 
-  private client: CDP.Client;
+  private client: CDP.Client | null = null;
 
   constructor(id: string, url: string) {
     this.id = id;
@@ -16,13 +16,13 @@ export default class Tab {
 
   public async updatePausePattern(urlPattern: string) {
     // Parse complex filters for each request
-    this.client.Fetch.requestPaused(async ({ requestId, request }) => {
+    this.client?.Fetch.requestPaused(async ({ requestId, request }) => {
       // JACK TOOD
       // TOUCHED (Matches some filter)
-      await this.client.Fetch.continueRequest({ requestId });
+      await this.client?.Fetch.continueRequest({ requestId });
 
       // UNTOUCHED (Doesnt match pattern)
-      await this.client.Fetch.continueRequest({ requestId });
+      await this.client?.Fetch.continueRequest({ requestId });
     });
   }
 
@@ -52,12 +52,12 @@ export default class Tab {
    * Listen for requests and other events
    */
   private async setupListeners() {
-    this.client.Network.requestWillBeSent((params) => {
+    this.client?.Network.requestWillBeSent((params) => {
       const { method, url, headers, postData } = params.request;
       console.log("🔍 " + url);
     });
 
-    this.client.on("disconnect", () => {
+    this.client?.on("disconnect", () => {
       console.log(`${YELLOW} Disconnected from tab: ${this.url}`);
       // TODO: Potential mem leak due to not cleaning up when this event listener is hit
     });
@@ -65,7 +65,7 @@ export default class Tab {
 
   public async close() {
     try {
-      await this.client.close();
+      await this.client?.close();
     } catch (err: any) {
       console.log(`${YELLOW} Failed to close tab: ${err.message}`);
     }

@@ -6,7 +6,7 @@ import {
 import { useMemo } from "react";
 import classNames from "classnames";
 
-import useRouter from "@/store/router";
+import useRouter from "@ui/store/router";
 
 export default function Sidebar() {
   const router = useRouter();

@@ -8,9 +8,9 @@ import classNames from "classnames";
 import { invoke } from "@tauri-apps/api/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
-import useRouter from "@/store/router";
-import Button from "@/components/ui/Button";
-import Toggle from "@/components/ui/Toggle";
+import browser from "@interceptor/index";
+import useRouter from "@ui/store/router";
+import Button from "@ui/components/ui/Button";
 
 enum Tab {
   Intercept = "Intercept",
@@ -36,8 +36,9 @@ export default function Intercept() {
     router.push("/intercept/configure");
   };
 
-  const onLaunchBrowser = () => {
-    invoke("launch_browser");
+  const onLaunchBrowser = async () => {
+    await invoke("launch_browser");
+    browser.start();
   };
 
   return (

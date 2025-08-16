@@ -1,5 +1,3 @@
-import websocket from "./websocket";
-import browser from "./chrome/browser";
+import browser from "./chromev2/browser";
 
-websocket.start();
-browser.start();
+export default browser;

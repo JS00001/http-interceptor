@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Route } from "@/routes";
+import type { Route } from "@ui/routes";
 
 interface RouterState {
   stack: Route[];
