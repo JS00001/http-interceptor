@@ -1,7 +1,7 @@
 import { useState } from "react";
 import classNames from "classnames";
 import { invoke } from "@tauri-apps/api/core";
-import { ArrowSquareOutIcon, GearIcon } from "@phosphor-icons/react";
+import { ArrowSquareOutIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import browser from "@interceptor/index";
 import useRouter from "@ui/store/router";
@@ -16,9 +16,10 @@ enum Tab {
 }
 
 export default function Intercept() {
-  const router = useRouter();
-  const urls = useRequestStore((s) => s.urls);
   const [tab, setTab] = useState(Tab.Intercept);
+
+  const router = useRouter();
+  const clearRequests = useRequestStore((s) => s.clear);
 
   const Tabs = [
     {
@@ -72,6 +73,12 @@ export default function Intercept() {
             </button>
           );
         })}
+
+        <div className="flex flex-grow items-center justify-end gap-1">
+          <Button color="secondary" onClick={clearRequests}>
+            <ProhibitIcon size={16} /> Clear History
+          </Button>
+        </div>
       </div>
 
       {tab === Tab.Intercept && <InterceptedTable />}

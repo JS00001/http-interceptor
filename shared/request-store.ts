@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 import Protocol from 'devtools-protocol';
 
+import { NetworkEvent } from '@shared/types';
+
 interface IRequestState {
   data: {
-    [requestId: string]: {
-      request: Protocol.Network.Request;
-      response?: Protocol.Network.Response;
-    };
+    [requestId: string]: NetworkEvent;
   };
 }
 
 interface IRequestStore extends IRequestState {
+  clear: () => void;
   addRequest: (requestId: string, request: Protocol.Network.Request) => void;
   addResponse: (requestId: string, response: Protocol.Network.Response) => void;
 }
@@ -48,7 +48,11 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
     }));
   };
 
-  return { ...initialState, addRequest, addResponse };
+  const clear = () => {
+    set({ data: {} });
+  };
+
+  return { ...initialState, addRequest, addResponse, clear };
 });
 
 // For static initializations, so it looks cleaner

@@ -6,35 +6,26 @@ import {
 } from "@tanstack/react-table";
 import { useMemo } from "react";
 
-import { useRequestStore } from "@shared/request-store";
-import { BracketsCurlyIcon } from "@phosphor-icons/react";
+import UrlCell from "./cells/UrlCell";
 
-interface NetworkEvent {
-  requestId: string;
-  url: string;
-  status: string;
-  method: string;
-}
+import { NetworkEvent } from "@shared/types";
+import { useRequestStore } from "@shared/request-store";
 
 const columnHelper = createColumnHelper<NetworkEvent>();
 
 const columns = [
-  columnHelper.accessor("url", {
-    cell: (info) => (
-      <div className="flex items-center gap-1 truncate">
-        <BracketsCurlyIcon size={14} className="text-primary-500 shrink-0" />
-        <p className="truncate">{info.getValue()}</p>
-      </div>
-    ),
+  columnHelper.display({
+    id: "url",
     header: () => "URL",
+    cell: UrlCell,
     meta: { width: "auto" },
   }),
-  columnHelper.accessor("status", {
-    cell: (info) => info.getValue(),
+  columnHelper.accessor("response.status", {
+    cell: (info) => info.getValue() ?? "(pending)",
     header: () => "Status",
     meta: { width: 140 },
   }),
-  columnHelper.accessor("method", {
+  columnHelper.accessor("request.method", {
     cell: (info) => info.getValue(),
     header: () => "Method",
     meta: { width: 140 },
@@ -43,15 +34,7 @@ const columns = [
 
 export default function HistoryTable() {
   const data = useRequestStore((s) => s.data);
-
-  const rowData = useMemo(() => {
-    return Object.entries(data).map(([requestId, event]) => ({
-      requestId,
-      url: event.request.url,
-      method: event.request.method,
-      status: event.response?.status.toString() ?? "(Pending)",
-    }));
-  }, [data]);
+  const rowData = useMemo(() => Object.values(data), [data]);
 
   const table = useReactTable({
     data: rowData,

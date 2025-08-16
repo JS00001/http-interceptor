@@ -1,5 +1,10 @@
 import type { Protocol } from 'devtools-protocol';
 
+export interface NetworkEvent {
+  request: Protocol.Network.Request;
+  response?: Protocol.Network.Response;
+}
+
 /**
  * Response types for tauri commands
  */
