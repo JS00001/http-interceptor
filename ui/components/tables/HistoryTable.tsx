@@ -7,6 +7,7 @@ import {
 import { useMemo } from "react";
 
 import UrlCell from "./cells/UrlCell";
+import TextCell from "./cells/TextCell";
 
 import { NetworkEvent } from "@shared/types";
 import { useRequestStore } from "@shared/request-store";
@@ -21,12 +22,12 @@ const columns = [
     meta: { width: "auto" },
   }),
   columnHelper.accessor("response.status", {
-    cell: (info) => info.getValue() ?? "(pending)",
+    cell: TextCell,
     header: () => "Status",
     meta: { width: 140 },
   }),
   columnHelper.accessor("request.method", {
-    cell: (info) => info.getValue(),
+    cell: TextCell,
     header: () => "Method",
     meta: { width: 140 },
   }),

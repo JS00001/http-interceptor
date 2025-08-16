@@ -11,8 +11,12 @@ interface IRequestState {
 
 interface IRequestStore extends IRequestState {
   clear: () => void;
-  addRequest: (requestId: string, request: Protocol.Network.Request) => void;
   addResponse: (requestId: string, response: Protocol.Network.Response) => void;
+  addRequest: (
+    requestId: string,
+    request: Protocol.Network.Request,
+    type?: Protocol.Network.ResourceType
+  ) => void;
 }
 
 const REQUEST_LIMIT = 500;
@@ -23,9 +27,13 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
   };
 
   // Only allow up to 500 requests using a FIFO queue
-  const addRequest = (requestId: string, request: Protocol.Network.Request) => {
+  const addRequest = (
+    requestId: string,
+    request: Protocol.Network.Request,
+    type?: Protocol.Network.ResourceType
+  ) => {
     if (Object.keys(get().data).length < REQUEST_LIMIT) {
-      set((state) => ({ data: { ...state.data, [requestId]: { request } } }));
+      set((state) => ({ data: { ...state.data, [requestId]: { request, type } } }));
       return;
     }
 
@@ -33,7 +41,7 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
       const stateData = { ...state.data };
       const keys = Object.keys(stateData);
       delete stateData[keys[0]];
-      return { data: { ...stateData, [requestId]: { request } } };
+      return { data: { ...stateData, [requestId]: { request, type } } };
     });
   };
 

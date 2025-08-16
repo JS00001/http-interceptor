@@ -32,7 +32,7 @@ export default class Tab extends SocketManager {
     }
 
     if (method == 'Network.requestWillBeSent') {
-      requestStore.getState().addRequest(params.requestId, params.request);
+      requestStore.getState().addRequest(params.requestId, params.request, params.type);
       return;
     }
 

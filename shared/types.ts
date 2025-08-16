@@ -1,6 +1,7 @@
 import type { Protocol } from 'devtools-protocol';
 
 export interface NetworkEvent {
+  type?: Protocol.Network.ResourceType;
   request: Protocol.Network.Request;
   response?: Protocol.Network.Response;
 }
