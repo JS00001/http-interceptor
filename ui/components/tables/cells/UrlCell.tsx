@@ -60,7 +60,7 @@ export default function UrlCell(ctx: CellContext<NetworkEvent, unknown>) {
     return <FileIcon size={14} className="shrink-0 text-gray-500" />;
   }, [type, status]);
 
-  const textClasses = classNames("truncate", status >= 400 ? "text-red-500" : "text-gray-500");
+  const textClasses = classNames("truncate", status >= 400 ? "text-red-500" : "text-gray-800");
 
   return (
     <div className="flex items-center gap-2 truncate" title={stringifiedUrl}>

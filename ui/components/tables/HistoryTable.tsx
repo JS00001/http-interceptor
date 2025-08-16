@@ -45,14 +45,14 @@ export default function HistoryTable() {
 
   return (
     <div className="overflow-y-auto">
-      <table className="select-none cursor-default w-full table-fixed">
+      <table className="ui-table">
         <thead>
-          <tr className="sticky top-0 bg-white z-10 border-b border-gray-200 h-6">
+          <tr className="ui-table-header-row">
             {table.getFlatHeaders().map((header) => (
               <th
                 key={header.id}
                 style={{ width: header.column.columnDef.meta?.width }}
-                className="border-r border-gray-200 px-2 text-start text-xs font-medium"
+                className="ui-table-header-cell"
               >
                 {flexRender(header.column.columnDef.header, header.getContext())}
               </th>
@@ -62,12 +62,12 @@ export default function HistoryTable() {
 
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="odd:bg-primary-50 hover:bg-primary-100 h-6">
+            <tr key={row.id} className="ui-table-row">
               {row.getVisibleCells().map((cell) => {
                 return (
                   <td
                     key={cell.id}
-                    className="px-2 text-xs truncate relative last:border-r-0 border-r border-gray-200"
+                    className="ui-table-cell"
                     style={{ width: cell.column.columnDef.meta?.width }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
