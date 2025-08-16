@@ -1,12 +1,13 @@
-import { useMemo } from "react";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useMemo } from "react";
 
 import { useRequestStore } from "@shared/request-store";
+import { BracketsCurlyIcon } from "@phosphor-icons/react";
 
 interface NetworkEvent {
   requestId: string;
@@ -20,20 +21,23 @@ const columnHelper = createColumnHelper<NetworkEvent>();
 const columns = [
   columnHelper.accessor("url", {
     cell: (info) => (
-      <span className="whitespace-nowrap overflow-hidden text-ellipsis">{info.getValue()}</span>
+      <div className="flex items-center gap-1 truncate">
+        <BracketsCurlyIcon size={14} className="text-primary-500 shrink-0" />
+        <p className="truncate">{info.getValue()}</p>
+      </div>
     ),
     header: () => "URL",
-    minSize: 64,
+    meta: { width: "auto" },
   }),
   columnHelper.accessor("status", {
     cell: (info) => info.getValue(),
     header: () => "Status",
-    minSize: 64,
+    meta: { width: 140 },
   }),
   columnHelper.accessor("method", {
     cell: (info) => info.getValue(),
     header: () => "Method",
-    minSize: 64,
+    meta: { width: 140 },
   }),
 ];
 
@@ -52,44 +56,40 @@ export default function HistoryTable() {
   const table = useReactTable({
     data: rowData,
     columns,
-    columnResizeMode: "onChange",
-    enableColumnResizing: true,
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
     <div className="overflow-y-auto">
-      <table className="w-full table-fixed select-none cursor-default">
+      <table className="select-none cursor-default w-full table-fixed">
         <thead>
-          <tr>
+          <tr className="sticky top-0 bg-white z-10 border-b border-gray-200 h-6">
             {table.getFlatHeaders().map((header) => (
               <th
                 key={header.id}
-                style={{ width: header.getSize() }}
-                className="relative border-r border-gray-200 px-2 text-start text-sm font-medium h-8 shrink-0"
+                style={{ width: header.column.columnDef.meta?.width }}
+                className="border-r border-gray-200 px-2 text-start text-xs font-medium"
               >
                 {flexRender(header.column.columnDef.header, header.getContext())}
-                <div
-                  onMouseDown={header.getResizeHandler()}
-                  onTouchStart={header.getResizeHandler()}
-                  className="absolute right-0 top-0 h-full w-1 cursor-col-resize select-none bg-transparent hover:bg-blue-400/50"
-                />
               </th>
             ))}
           </tr>
         </thead>
+
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="odd:bg-primary-50 hover:bg-primary-100 h-8">
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="px-2 text-sm truncate relative border-r border-gray-200 shrink-0"
-                  style={{ width: cell.column.getSize() }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+            <tr key={row.id} className="odd:bg-primary-50 hover:bg-primary-100 h-6">
+              {row.getVisibleCells().map((cell) => {
+                return (
+                  <td
+                    key={cell.id}
+                    className="px-2 text-xs truncate relative last:border-r-0 border-r border-gray-200"
+                    style={{ width: cell.column.columnDef.meta?.width }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
