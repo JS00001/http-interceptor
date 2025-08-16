@@ -1,6 +1,10 @@
 .ui-table {
-  --row-height: 24px;
+  --row-height: 36px;
   --row-border-color: var(--color-primary-200);
+
+  &.compact {
+    --row-height: 24px;
+  }
 
   -webkit-user-select: none;
   user-select: none;

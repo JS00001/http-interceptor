@@ -4,14 +4,18 @@ import {
   TableOptions,
   useReactTable,
 } from "@tanstack/react-table";
+import classNames from "classnames";
 
-type TableProps<T> = Omit<TableOptions<T>, "getCoreRowModel">;
+type TableProps<T> = Omit<TableOptions<T>, "getCoreRowModel"> & {
+  comfortable?: boolean;
+};
 
-export default function Table<T>(props: TableProps<T>) {
+export default function Table<T>({ comfortable, ...props }: TableProps<T>) {
   const table = useReactTable({ ...props, getCoreRowModel: getCoreRowModel() });
+  const tableClasses = classNames("ui-table", !comfortable && "compact");
 
   return (
-    <table className="ui-table">
+    <table className={tableClasses}>
       <thead>
         <tr className="ui-table-header-row">
           {table.getFlatHeaders().map((header) => (
