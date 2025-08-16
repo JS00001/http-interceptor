@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -13,7 +13,6 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
-
 #[tauri::command]
 async fn launch_browser() -> Result<(), String> {
     // Launch Chrome in a mode that we can control
@@ -27,9 +26,10 @@ async fn launch_browser() -> Result<(), String> {
             "--disable-logging",
             "--log-level=3",
         ])
+        .stdout(Stdio::null()) // suppress STDOUT since chrome wont stop its stupid verbose logging
+        .stderr(Stdio::null()) // suppress STDERR since chrome wont stop its stupid verbose logging
         .spawn()
         .map_err(|e| format!("Failed to launch Chrome: {}", e))?;
-
 
     Command::new("npm")
         .args(["run", "start-interceptor"])

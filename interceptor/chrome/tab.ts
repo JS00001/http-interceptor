@@ -14,12 +14,31 @@ export default class Tab {
     this.start();
   }
 
+  public async updatePausePattern(urlPattern: string) {
+    // Parse complex filters for each request
+    this.client.Fetch.requestPaused(async ({ requestId, request }) => {
+      // JACK TOOD
+      // TOUCHED (Matches some filter)
+      await this.client.Fetch.continueRequest({ requestId });
+
+      // UNTOUCHED (Doesnt match pattern)
+      await this.client.Fetch.continueRequest({ requestId });
+    });
+  }
+
+  /**
+   * Enable all features needed for the app, and start listening
+   * for events
+   */
   private async start() {
     try {
       this.client = await CDP({ target: this.id });
 
       await this.client.Network.enable();
       await this.client.Page.enable();
+      await this.client.Fetch.enable({
+        patterns: [{ urlPattern: "*", requestStage: "Request" }],
+      });
 
       this.setupListeners();
 
@@ -29,6 +48,9 @@ export default class Tab {
     }
   }
 
+  /**
+   * Listen for requests and other events
+   */
   private async setupListeners() {
     this.client.Network.requestWillBeSent((params) => {
       const { method, url, headers, postData } = params.request;

@@ -29,6 +29,9 @@ class Browser {
     }
   }
 
+  //   TODO: HATE THIS NAMER
+  public async updatePausePattern(urlPattern: string) {}
+
   /**
    * When the browser first loads, initialize all tabs that are currently open,
    * and start listening for new tabs
