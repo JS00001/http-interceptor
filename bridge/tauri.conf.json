@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Vulnerability Toolkit",
+  "productName": "HTTP Interceptor",
   "version": "0.1.0",
-  "identifier": "com.vulnerability-toolkit.app",
+  "identifier": "com.http-interceptor.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -13,9 +13,9 @@
     "windows": [
       {
         "hiddenTitle": true,
-        "title": "Vulnerability Toolkit",
-        "width": 1200,
-        "height": 900
+        "title": "HTTP Interceptor",
+        "width": 1400,
+        "height": 1100
       }
     ],
     "security": {

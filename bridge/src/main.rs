@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    vulnerability_toolkit_lib::run()
+    http_interceptor_lib::run()
 }

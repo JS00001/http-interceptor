@@ -14,8 +14,8 @@ interface RouterStore extends RouterState {
 
 const useRouter = create<RouterStore>()((set) => {
   const initialState: RouterState = {
-    pathname: "/",
-    stack: ["/"],
+    pathname: "/intercept",
+    stack: ["/intercept"],
   };
 
   const push = (route: Route) => {

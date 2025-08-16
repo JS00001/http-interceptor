@@ -14,6 +14,17 @@ abstract class SocketManager {
   }
 
   /**
+   * Disconnect from the websocket
+   */
+  public async close() {
+    try {
+      await this.ws?.disconnect();
+    } catch (err: any) {
+      console.log(`${YELLOW} Failed to disconnect from socket: ${err.message}`);
+    }
+  }
+
+  /**
    * Connect to a websocket, which is actually communicating with the rust WS via
    * tauri
    */
@@ -44,17 +55,6 @@ abstract class SocketManager {
     if (!this.ws) return;
     const id = ++this.msgId;
     await this.ws.send(JSON.stringify({ id, method, params }));
-  }
-
-  /**
-   * Disconnect from the websocket
-   */
-  protected async close() {
-    try {
-      await this.ws?.disconnect();
-    } catch (err: any) {
-      console.log(`${YELLOW} Failed to disconnect from socket: ${err.message}`);
-    }
   }
 
   protected abstract onConnect(): Promise<void>;

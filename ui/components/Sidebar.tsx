@@ -1,10 +1,6 @@
-import {
-  CellTowerIcon,
-  CommandIcon,
-  HouseSimpleIcon,
-} from "@phosphor-icons/react";
 import { useMemo } from "react";
 import classNames from "classnames";
+import { CellTowerIcon, CommandIcon } from "@phosphor-icons/react";
 
 import useRouter from "@ui/store/router";
 
@@ -13,12 +9,6 @@ export default function Sidebar() {
 
   const SidebarItems = useMemo(() => {
     return [
-      {
-        icon: HouseSimpleIcon,
-        label: "Home",
-        route: "/" as const,
-        isActive: router.pathname === "/",
-      },
       {
         icon: CellTowerIcon,
         label: "Intercept",
