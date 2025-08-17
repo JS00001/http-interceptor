@@ -74,12 +74,12 @@ export default function Intercept() {
           )}
           {tab === Tab.Intercept && (
             <Button color="secondary" onClick={clearRequests}>
-              <ProhibitIcon size={16} /> Drop Request
+              <ProhibitIcon size={16} /> Drop All
             </Button>
           )}
           {tab === Tab.Intercept && (
             <Button onClick={clearRequests}>
-              <FastForwardIcon size={16} /> Forward Request
+              <FastForwardIcon size={16} /> Forward All
             </Button>
           )}
         </div>

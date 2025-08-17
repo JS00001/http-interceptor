@@ -40,7 +40,7 @@ const columns = [
 ];
 
 export default function InterceptedTable() {
-  const data = useRequestStore((s) => s.data);
+  const data = useRequestStore((s) => s.interceptedEvents);
   const rowData = useMemo(() => Object.values(data), [data]);
 
   return (

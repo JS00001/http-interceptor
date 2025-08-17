@@ -1,3 +1,5 @@
+import Protocol from 'devtools-protocol';
+
 import { CDP } from '@shared/types';
 import { GREEN } from '@interceptor/lib/util';
 import { requestStore } from '@shared/request-store';
@@ -27,7 +29,7 @@ export default class TabListener extends SocketManager {
 
   async onEvent({ method, params }: CDP.Response) {
     if (method == 'Fetch.requestPaused') {
-      await this.send('Fetch.continueRequest', { requestId: params.requestId });
+      await this.onRequestPaused(params);
       return;
     }
 
@@ -40,5 +42,26 @@ export default class TabListener extends SocketManager {
       requestStore.getState().addResponse(params.requestId, params.response);
       return;
     }
+  }
+
+  private async onRequestPaused(params: Protocol.Fetch.RequestPausedEvent) {
+    const requestParams = (() => {
+      const reqParams = {};
+
+      // Get URL params and store them
+      const queryParams = new URLSearchParams(params.request.url);
+      Object.assign(reqParams, Object.fromEntries(queryParams.entries()));
+
+      if (params.request.hasPostData && params.request.postData) {
+        Object.assign(reqParams, JSON.parse(params.request.postData));
+      }
+
+      return reqParams;
+    })();
+
+    // JACK_TODO: This is matching the request right now
+    const isMatchingRequest = Object.values(requestParams).join(' ').includes('INTERCEPT');
+
+    await this.send('Fetch.continueRequest', { requestId: params.requestId });
   }
 }

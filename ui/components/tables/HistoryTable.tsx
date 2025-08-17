@@ -32,7 +32,7 @@ const columns = [
 ];
 
 export default function HistoryTable() {
-  const data = useRequestStore((s) => s.data);
+  const data = useRequestStore((s) => s.events);
   const rowData = useMemo(() => Object.values(data), [data]);
 
   return (
