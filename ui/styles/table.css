@@ -1,67 +1,70 @@
-.ui-table {
-  --row-height: 36px;
+:root {
+  --row-height: 24px;
   --row-border-color: var(--color-primary-100);
+}
 
-  &.compact {
-    --row-height: 24px;
-  }
-
+.ui-table {
   width: 100%;
   cursor: default;
   table-layout: fixed;
   user-select: none;
   -webkit-user-select: none;
 
-  .ui-table-header-row {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  &.comfortable {
+    --row-height: 36px;
+  }
+}
+
+.ui-table-header-row {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+  background-color: var(--color-primary-50);
+  border-bottom: 1px solid var(--row-border-color);
+  height: calc(var(--row-height) + 4px);
+}
+
+.ui-table-header-cell {
+  text-align: left;
+  padding: 0px 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-gray-800);
+  border-right: 1px solid var(--row-border-color);
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.ui-table-row {
+  height: var(--row-height);
+
+  &:nth-child(even) {
     background-color: var(--color-primary-50);
-    border-bottom: 1px solid var(--row-border-color);
-    height: calc(var(--row-height) + 4px);
   }
 
-  .ui-table-header-cell {
-    text-align: left;
-    padding: 0px 8px;
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--color-gray-800);
-    border-right: 1px solid var(--row-border-color);
-
-    &:last-child {
-      border-right: none;
-    }
+  &:hover {
+    background-color: var(--color-primary-100);
   }
 
-  .ui-table-row {
-    height: var(--row-height);
-
-    &:nth-child(even) {
-      background-color: var(--color-primary-50);
-    }
-
-    &:hover {
-      background-color: var(--color-primary-100);
-    }
-
-    .selected {
-      background-color: var(--color-primary-200);
-    }
+  .selected {
+    background-color: var(--color-primary-200);
   }
+}
 
-  .ui-table-cell {
-    padding: 0px 8px;
-    font-size: 12px;
-    position: relative;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--color-gray-800);
-    border-right: 1px solid var(--row-border-color);
+.ui-table-cell {
+  padding: 0px 8px;
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-gray-800);
+  border-right: 1px solid var(--row-border-color);
 
-    &:last-child {
-      border-right: none;
-    }
+  &:last-child {
+    border-right: none;
   }
 }

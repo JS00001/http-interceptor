@@ -12,7 +12,7 @@ type TableProps<T> = Omit<TableOptions<T>, "getCoreRowModel"> & {
 
 export default function Table<T>({ comfortable, ...props }: TableProps<T>) {
   const table = useReactTable({ ...props, getCoreRowModel: getCoreRowModel() });
-  const tableClasses = classNames("ui-table", !comfortable && "compact");
+  const tableClasses = classNames("ui-table", comfortable && "comfortable");
 
   return (
     <table className={tableClasses}>
