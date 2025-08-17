@@ -21,7 +21,7 @@ const columns = [
     id: "status",
     cell: TextCell,
     header: "Status",
-    meta: { width: 140 },
+    meta: { width: 140, fallbackValue: "(pending)" },
   }),
   columnHelper.accessor("request.method", {
     id: "method",
