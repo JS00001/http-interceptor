@@ -1,7 +1,6 @@
 import WebSocket from '@tauri-apps/plugin-websocket';
 
 import { CDP } from '@shared/types';
-import { YELLOW } from '@interceptor/lib/util';
 
 abstract class SocketManager {
   public websocketUrl: string | null = null;
@@ -17,10 +16,19 @@ abstract class SocketManager {
    * Disconnect from the websocket
    */
   public async close() {
+    await this.ws?.disconnect().catch(() => {});
+  }
+
+  /**
+   * Errors if the websocket is not connected
+   */
+  public async ping() {
     try {
-      await this.ws?.disconnect();
-    } catch (err: any) {
-      console.log(`${YELLOW} Failed to disconnect from socket: ${err.message}`);
+      if (!this.ws) return false;
+      await this.ws?.send('Ping');
+      return true;
+    } catch {
+      return false;
     }
   }
 
@@ -34,6 +42,10 @@ abstract class SocketManager {
     }
 
     this.ws = await WebSocket.connect(this.websocketUrl);
+
+    if (!this.ws) {
+      throw new Error('Could not connect to websocket');
+    }
 
     this.ws.addListener((event) => {
       if (typeof event.data !== 'string') return;

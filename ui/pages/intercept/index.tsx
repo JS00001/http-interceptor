@@ -1,19 +1,13 @@
-import {
-  ArrowSquareOutIcon,
-  FastForwardIcon,
-  GearIcon,
-  ProhibitIcon,
-} from "@phosphor-icons/react";
 import { useState } from "react";
 import classNames from "classnames";
-import { invoke } from "@tauri-apps/api/core";
+import { FastForwardIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
-import browser from "@interceptor/index";
 import useRouter from "@ui/store/router";
 import Button from "@ui/components/ui/Button";
 import { useRequestStore } from "@shared/request-store";
 import HistoryTable from "@ui/components/tables/HistoryTable";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
+import BrowserControlButton from "@ui/components/BrowserControlButton";
 
 enum Tab {
   Intercept = "Intercept",
@@ -41,11 +35,6 @@ export default function Intercept() {
     router.push("/intercept/configure");
   };
 
-  const onLaunchBrowser = async () => {
-    await invoke("launch_browser");
-    browser.start();
-  };
-
   return (
     <div className="flex flex-col gap-4 h-screen overflow-hidden ">
       <div className="flex justify-between gap-2 items-center">
@@ -54,9 +43,7 @@ export default function Intercept() {
           <Button color="secondary" onClick={onConfigureRules}>
             <GearIcon size={16} /> Configure Rules
           </Button>
-          <Button onClick={onLaunchBrowser}>
-            <ArrowSquareOutIcon size={16} /> Launch Browser
-          </Button>
+          <BrowserControlButton />
         </div>
       </div>
 

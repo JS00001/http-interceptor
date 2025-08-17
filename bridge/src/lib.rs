@@ -1,12 +1,6 @@
 mod chrome_api;
 
-use once_cell::sync::OnceCell;
-use std::process::{Child, Command, Stdio};
-use std::sync::Mutex;
-use tauri::async_runtime::spawn;
-use tauri::Emitter;
-
-static CHROME_PROCESS: OnceCell<Mutex<Child>> = OnceCell::new();
+use std::process::{Command, Stdio};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -19,8 +13,6 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             launch_browser,
-            close_chrome,
-            is_chrome_running,
             fetch_chrome_version,
             fetch_chrome_tabs
         ])
@@ -32,9 +24,8 @@ pub fn run() {
  * Launches a chrome browser instance with remote debugging enabled
  */
 #[tauri::command]
-async fn launch_browser(app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Launch Chrome
-    let child = Command::new("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+async fn launch_browser() -> Result<(), String> {
+    Command::new("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
         .args(&[
             "--remote-debugging-port=9222",
             // TODO: Make this not a tmp profile
@@ -50,59 +41,7 @@ async fn launch_browser(app_handle: tauri::AppHandle) -> Result<(), String> {
         .spawn()
         .map_err(|e| format!("Failed to launch Chrome: {}", e))?;
 
-    // Wrap in Mutex and store
-    CHROME_PROCESS
-        .set(Mutex::new(child))
-        .map_err(|_| "Chrome is already running.".to_string())?;
-
-    // Spawn background task to detect exit
-    if let Some(mutex) = CHROME_PROCESS.get() {
-        let app_handle_clone = app_handle.clone();
-        spawn(async move {
-            let mut child = mutex.lock().unwrap();
-            if let Ok(status) = child.wait() {
-                println!("Chrome exited with status: {:?}", status);
-                let _ = app_handle_clone.emit("chrome-exited", ());
-            }
-        });
-    }
-
     Ok(())
-}
-
-/**
- * Closes the running chrome instance
- */
-#[tauri::command]
-async fn close_chrome() -> Result<(), String> {
-    if let Some(mutex) = CHROME_PROCESS.get() {
-        let mut child = mutex.lock().unwrap();
-        child
-            .kill()
-            .map_err(|e| format!("Failed to kill Chrome: {}", e))?;
-        let _ = child.wait();
-        Ok(())
-    } else {
-        Err("Chrome is not running.".to_string())
-    }
-}
-
-/**
- * Checks if we currently have a chrome process running that was spawned
- * by this app
- */
-#[tauri::command]
-fn is_chrome_running() -> bool {
-    if let Some(mutex) = CHROME_PROCESS.get() {
-        let mut child = mutex.lock().unwrap();
-        match child.try_wait() {
-            Ok(Some(_)) => false, // process has exited
-            Ok(None) => true,     // still running
-            Err(_) => false,      // error reading process
-        }
-    } else {
-        false
-    }
 }
 
 /**

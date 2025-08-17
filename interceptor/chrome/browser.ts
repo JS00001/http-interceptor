@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/core';
 
 import { CDP, Tauri } from '@shared/types';
 import Tab from '@interceptor/chrome/tab';
-import { GREEN, RED, YELLOW } from '@interceptor/lib/util';
+import { RED, YELLOW } from '@interceptor/lib/util';
 import SocketManager from '@interceptor/lib/socket-manager';
 
 class Browser extends SocketManager {
@@ -37,7 +37,6 @@ class Browser extends SocketManager {
    * chrome socket for the first time
    */
   async onConnect() {
-    console.log(`${GREEN} Connected to browser`);
     await this.send('Target.setDiscoverTargets', { discover: true });
   }
 

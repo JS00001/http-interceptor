@@ -7,6 +7,7 @@ import Routes from "@ui/routes";
 import Error404 from "@ui/pages/404";
 import useRouter from "@ui/store/router";
 import Layout from "@ui/components/Layout";
+import { BrowserProvider } from "./providers/browser";
 
 function Main() {
   // useGlobalHotkey("CommandOrControl+Shift+U", () => {
@@ -15,9 +16,11 @@ function Main() {
 
   return (
     <React.StrictMode>
-      <Layout>
-        <Router />
-      </Layout>
+      <BrowserProvider>
+        <Layout>
+          <Router />
+        </Layout>
+      </BrowserProvider>
     </React.StrictMode>
   );
 }
