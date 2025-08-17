@@ -2,7 +2,7 @@ import Protocol from 'devtools-protocol';
 
 import { CDP } from '@shared/types';
 import { GREEN } from '@interceptor/lib/util';
-import { requestStore } from '@shared/request-store';
+import { requestStore } from '@shared/stores/request';
 import SocketManager from '@interceptor/lib/socket-manager';
 
 export default class TabListener extends SocketManager {
@@ -59,8 +59,12 @@ export default class TabListener extends SocketManager {
       return reqParams;
     })();
 
-    // JACK_TODO: This is matching the request right now
-    const isMatchingRequest = Object.values(requestParams).join(' ').includes('INTERCEPT');
+    const matchesMethod = params.request.method === 'TESTING';
+    const matchesUrl = params.request.url.includes('INTERCEPT');
+    const matchesRequestParams = Object.values(requestParams).join(' ').includes('INTERCEPT');
+
+    const shouldInterceptRequest = matchesMethod || matchesUrl || matchesRequestParams;
+    if (shouldInterceptRequest) return;
 
     await this.send('Fetch.continueRequest', { requestId: params.requestId });
   }

@@ -4,7 +4,7 @@ import { FastForwardIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import useRouter from "@ui/store/router";
 import Button from "@ui/components/ui/Button";
-import { useRequestStore } from "@shared/request-store";
+import { useRequestStore } from "@shared/stores/request";
 import HistoryTable from "@ui/components/tables/HistoryTable";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
 import BrowserControlButton from "@ui/components/BrowserControlButton";

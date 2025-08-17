@@ -8,7 +8,7 @@ import HeaderCheckboxCell from "./cells/HeaderCheckboxCell";
 
 import Table from "@ui/components/ui/Table";
 import { NetworkEvent } from "@shared/types";
-import { useRequestStore } from "@shared/request-store";
+import { useRequestStore } from "@shared/stores/request";
 
 const columnHelper = createColumnHelper<NetworkEvent>();
 
