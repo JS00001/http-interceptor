@@ -1,50 +1,43 @@
 import { useMemo } from "react";
 import { ArrowSquareOutIcon, CellTowerIcon, ProhibitIcon } from "@phosphor-icons/react";
 
-import browser from "@interceptor/index";
-import { invoke } from "@tauri-apps/api/core";
 import Button from "@ui/components/ui/Button";
 import { useBrowser } from "@ui/providers/browser";
 
 export default function BrowserControlButton() {
-  const { isConnected, canConnect } = useBrowser();
-
-  const onLaunchBrowser = async () => {
-    await invoke("launch_browser");
-    browser.start();
-  };
+  const browser = useBrowser();
 
   const browserControlButton = useMemo(() => {
-    if (!canConnect) {
+    if (!browser.canConnect) {
       return {
         icon: ArrowSquareOutIcon,
         label: "Launch Browser",
-        action: onLaunchBrowser,
+        action: browser.launchBrowser,
       };
     }
 
-    if (!isConnected) {
+    if (!browser.isConnected) {
       return {
         icon: CellTowerIcon,
         label: "Connect to Browser",
-        action: browser.start,
+        action: browser.listenToBrowserEvents,
       };
     }
 
     return {
       icon: ProhibitIcon,
       label: "Disconnect from Browser",
-      action: browser.close,
+      action: browser.disconnectFromBrowser,
     };
-  }, [isConnected, canConnect]);
+  }, [browser]);
 
   const Icon = browserControlButton.icon;
-  const Label = browserControlButton.label;
-  const Action = browserControlButton.action;
+  const label = browserControlButton.label;
+  const action = browserControlButton.action;
 
   return (
-    <Button onClick={Action}>
-      <Icon size={16} /> {Label}
+    <Button onClick={action}>
+      <Icon size={16} /> {label}
     </Button>
   );
 }

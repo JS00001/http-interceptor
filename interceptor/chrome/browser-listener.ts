@@ -1,15 +1,21 @@
 import { invoke } from '@tauri-apps/api/core';
 
 import { CDP, Tauri } from '@shared/types';
-import Tab from '@interceptor/chrome/tab';
 import { RED, YELLOW } from '@interceptor/lib/util';
+import TabListener from '@interceptor/chrome/tab-listener';
 import SocketManager from '@interceptor/lib/socket-manager';
 
-class Browser extends SocketManager {
-  private tabs: Tab[] = [];
+class BrowserListener extends SocketManager {
+  private tabs: TabListener[] = [];
 
   constructor() {
     super(null);
+  }
+
+  public async close() {
+    super.close();
+    this.tabs.forEach((tab) => tab.close());
+    this.tabs = [];
   }
 
   /**
@@ -81,7 +87,7 @@ class Browser extends SocketManager {
     if (!tabInfo) return;
 
     setTimeout(() => {
-      const tab = new Tab(targetId, url, tabInfo.webSocketDebuggerUrl);
+      const tab = new TabListener(targetId, url, tabInfo.webSocketDebuggerUrl);
       this.tabs.push(tab);
     }, 500);
   }
@@ -96,5 +102,5 @@ class Browser extends SocketManager {
   }
 }
 
-const browser = new Browser();
-export default browser;
+const browserListener = new BrowserListener();
+export default browserListener;

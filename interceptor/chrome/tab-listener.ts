@@ -3,7 +3,7 @@ import { GREEN } from '@interceptor/lib/util';
 import { requestStore } from '@shared/request-store';
 import SocketManager from '@interceptor/lib/socket-manager';
 
-export default class Tab extends SocketManager {
+export default class TabListener extends SocketManager {
   public id: string;
   public url: string;
 

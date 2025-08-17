@@ -1,3 +1,3 @@
-import browser from './chrome/browser';
+import browserListener from './chrome/browser-listener';
 
-export default browser;
+export default browserListener;
