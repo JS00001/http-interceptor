@@ -1,7 +1,12 @@
+import {
+  ArrowSquareOutIcon,
+  FastForwardIcon,
+  GearIcon,
+  ProhibitIcon,
+} from "@phosphor-icons/react";
 import { useState } from "react";
 import classNames from "classnames";
 import { invoke } from "@tauri-apps/api/core";
-import { ArrowSquareOutIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import browser from "@interceptor/index";
 import useRouter from "@ui/store/router";
@@ -75,9 +80,21 @@ export default function Intercept() {
         })}
 
         <div className="flex flex-grow items-center justify-end gap-1">
-          <Button color="secondary" onClick={clearRequests}>
-            <ProhibitIcon size={16} /> Clear History
-          </Button>
+          {tab === Tab.History && (
+            <Button color="secondary" onClick={clearRequests}>
+              <ProhibitIcon size={16} /> Clear History
+            </Button>
+          )}
+          {tab === Tab.Intercept && (
+            <Button color="secondary" onClick={clearRequests}>
+              <ProhibitIcon size={16} /> Drop Request
+            </Button>
+          )}
+          {tab === Tab.Intercept && (
+            <Button onClick={clearRequests}>
+              <FastForwardIcon size={16} /> Forward Request
+            </Button>
+          )}
         </div>
       </div>
 
