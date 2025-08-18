@@ -47,7 +47,7 @@ export default function HeadersView({ event }: HeadersViewProps) {
 
   return sections.map((section) => (
     <div key={section.title}>
-      <div className="ui-table-header-row flex items-center px-2 select-none">
+      <div className="ui-table-sub-header-row flex items-center px-2 select-none">
         <p className="text-xs text-gray-800">{section.title}</p>
       </div>
       <div className="p-2 flex flex-col gap-1.5">

@@ -2,6 +2,7 @@ import Protocol from 'devtools-protocol';
 
 import { CDP } from '@shared/types';
 import { GREEN } from '@interceptor/lib/util';
+import { getRequestParams } from '@shared/lib';
 import { requestStore } from '@shared/stores/request';
 import SocketManager from '@interceptor/lib/socket-manager';
 
@@ -45,19 +46,7 @@ export default class TabListener extends SocketManager {
   }
 
   private async onRequestPaused(params: Protocol.Fetch.RequestPausedEvent) {
-    const requestParams = (() => {
-      const reqParams = {};
-
-      // Get URL params and store them
-      const queryParams = new URLSearchParams(params.request.url);
-      Object.assign(reqParams, Object.fromEntries(queryParams.entries()));
-
-      if (params.request.hasPostData && params.request.postData) {
-        Object.assign(reqParams, JSON.parse(params.request.postData));
-      }
-
-      return reqParams;
-    })();
+    const requestParams = getRequestParams(params.request);
 
     const matchesMethod = params.request.method === 'TESTING';
     const matchesUrl = params.request.url.includes('INTERCEPT');
