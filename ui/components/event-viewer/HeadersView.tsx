@@ -47,14 +47,14 @@ export default function HeadersView({ event }: HeadersViewProps) {
 
   return sections.map((section) => (
     <div key={section.title}>
-      <div className="ui-table-header-row flex items-center px-2">
+      <div className="ui-table-header-row flex items-center px-2 select-none">
         <p className="text-xs text-gray-800">{section.title}</p>
       </div>
       <div className="p-2 flex flex-col gap-1.5">
         {section.entries.map((entry) => (
           <div key={entry.key} className="grid grid-cols-3">
-            <p className="text-xs text-gray-800">{entry.key}</p>
-            <p className="text-xs text-gray-800 col-span-2">{entry.value}</p>
+            <p className="text-xs text-gray-800 select-none">{entry.key}</p>
+            <p className="text-xs text-gray-800 col-span-2 wrap-anywhere">{entry.value}</p>
           </div>
         ))}
       </div>
