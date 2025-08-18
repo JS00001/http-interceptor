@@ -3,7 +3,7 @@ interface HeadersViewProps {}
 export default function HeadersView({}: HeadersViewProps) {
   return (
     <>
-      <div className="w-full h-7 border-b border-primary-100 bg-primary-50 flex items-center px-2">
+      <div className="ui-table-header-row flex items-center px-2">
         <p className="text-xs text-gray-800">General</p>
       </div>
 
@@ -30,7 +30,7 @@ export default function HeadersView({}: HeadersViewProps) {
         </div>
       </div>
 
-      <div className="w-full h-7 border-b border-primary-100 bg-primary-50 flex items-center px-2">
+      <div className="ui-table-header-row flex items-center px-2">
         <p className="text-xs text-gray-800">Response Headers</p>
       </div>
 
@@ -57,7 +57,7 @@ export default function HeadersView({}: HeadersViewProps) {
         </div>
       </div>
 
-      <div className="w-full h-7 border-b border-primary-100 bg-primary-50 flex items-center px-2">
+      <div className="ui-table-header-row flex items-center px-2">
         <p className="text-xs text-gray-800">Request Headers</p>
       </div>
 
