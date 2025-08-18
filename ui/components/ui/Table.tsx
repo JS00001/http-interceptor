@@ -8,9 +8,10 @@ import classNames from "classnames";
 
 type TableProps<T> = Omit<TableOptions<T>, "getCoreRowModel"> & {
   comfortable?: boolean;
+  onRowClick?: (row: T) => void;
 };
 
-export default function Table<T>({ comfortable, ...props }: TableProps<T>) {
+export default function Table<T>({ comfortable, onRowClick, ...props }: TableProps<T>) {
   const table = useReactTable({ ...props, getCoreRowModel: getCoreRowModel() });
   const tableClasses = classNames("ui-table", comfortable && "comfortable");
 
@@ -31,7 +32,7 @@ export default function Table<T>({ comfortable, ...props }: TableProps<T>) {
       </thead>
       <tbody>
         {table.getRowModel().rows.map((row) => (
-          <tr key={row.id} className="ui-table-row">
+          <tr key={row.id} className="ui-table-row" onClick={() => onRowClick?.(row.original)}>
             {row.getVisibleCells().map((cell) => {
               const rowClasses = classNames(
                 "ui-table-cell",

@@ -28,9 +28,9 @@ export default function EventViewer({ event, onClose }: EventViewerProps) {
   );
 
   const CurrentView = {
-    [Tabs.Headers]: <HeadersView />,
-    [Tabs.Payload]: <PayloadView />,
-    [Tabs.Response]: <ResponseView />,
+    [Tabs.Headers]: <HeadersView event={event} />,
+    [Tabs.Payload]: <PayloadView event={event} />,
+    [Tabs.Response]: <ResponseView event={event} />,
   }[tab];
 
   return (

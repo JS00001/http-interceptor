@@ -1,8 +1,11 @@
-import JsonViewer from "../json-viewer";
+import { NetworkEvent } from "@shared/types";
+import JsonViewer from "@ui/components/json-viewer";
 
-interface PayloadViewProps {}
+interface PayloadViewProps {
+  event: NetworkEvent;
+}
 
-export default function PayloadView({}: PayloadViewProps) {
+export default function PayloadView({ event }: PayloadViewProps) {
   const value = [
     {
       _id: "5973782bdb9a930533b05cb2",

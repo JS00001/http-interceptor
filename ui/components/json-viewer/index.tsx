@@ -10,6 +10,7 @@ interface JsonViewerProps {
   level?: number;
 }
 
+// TODO: Separate files for sparate componetns
 export default function JsonViewer({ editable, data, path = "", level = 1 }: JsonViewerProps) {
   const [expanded, setExpanded] = useState(level === 1);
 

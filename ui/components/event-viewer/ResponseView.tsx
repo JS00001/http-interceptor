@@ -1,8 +1,11 @@
-import JsonViewer from "../json-viewer";
+import { NetworkEvent } from "@shared/types";
+import JsonViewer from "@ui/components/json-viewer";
 
-interface ResponseViewProps {}
+interface ResponseViewProps {
+  event: NetworkEvent;
+}
 
-export default function ResponseView({}: ResponseViewProps) {
+export default function ResponseView({ event }: ResponseViewProps) {
   const value = [
     {
       _id: "5973782bdb9a930533b05cb2",

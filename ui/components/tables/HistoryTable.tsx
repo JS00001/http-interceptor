@@ -1,15 +1,14 @@
-import { useMemo } from "react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import React, { useMemo, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import UrlCell from "./cells/UrlCell";
 import TextCell from "./cells/TextCell";
 
 import Table from "@ui/components/ui/Table";
 import { NetworkEvent } from "@shared/types";
+import EventViewer from "@ui/components/event-viewer";
 import { useRequestStore } from "@shared/stores/request";
-import { XIcon } from "@phosphor-icons/react";
-import EventViewer from "../event-viewer";
 
 const columnHelper = createColumnHelper<NetworkEvent>();
 
@@ -38,16 +37,30 @@ export default function HistoryTable() {
   const data = useRequestStore((s) => s.events);
   const rowData = useMemo(() => Object.values(data), [data]);
 
+  const [selectedEvent, setSelectedEvent] = useState<NetworkEvent | null>(null);
+
+  const onRowClick = (event: NetworkEvent) => {
+    setSelectedEvent(event);
+  };
+
+  const closeEventViewer = () => {
+    setSelectedEvent(null);
+  };
+
   return (
-    <PanelGroup direction="horizontal">
+    <PanelGroup direction="horizontal" autoSaveId="history-table">
       <Panel minSize={30} className="overflow-y-auto!">
-        <Table columns={columns} data={rowData} />
+        <Table columns={columns} data={rowData} onRowClick={onRowClick} />
       </Panel>
-      <PanelResizeHandle />
-      <Panel minSize={30} className="overflow-y-auto! border-l-2 border-primary-100">
-        {/* TODO: Real event */}
-        <EventViewer event={{} as NetworkEvent} onClose={() => {}} />
-      </Panel>
+
+      {selectedEvent && (
+        <React.Fragment>
+          <PanelResizeHandle />
+          <Panel minSize={30} className="overflow-y-auto! border-l-2 border-primary-100">
+            <EventViewer event={selectedEvent} onClose={closeEventViewer} />
+          </Panel>
+        </React.Fragment>
+      )}
     </PanelGroup>
   );
 }
