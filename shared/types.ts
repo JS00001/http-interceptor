@@ -13,6 +13,7 @@ export interface InterceptorRule {
 }
 
 export interface NetworkEvent {
+  tabId: string;
   type?: Protocol.Network.ResourceType;
   request: Protocol.Network.Request;
   response?: Protocol.Network.Response;

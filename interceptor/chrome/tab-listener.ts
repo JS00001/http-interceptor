@@ -36,12 +36,14 @@ export default class TabListener extends SocketManager {
     }
 
     if (method == 'Network.requestWillBeSent') {
-      requestStore.getState().addRequest(params.requestId, params.request, params.type);
+      requestStore
+        .getState()
+        .addRequest(params.requestId, this.id, params.request, params.type);
       return;
     }
 
     if (method == 'Network.responseReceived') {
-      requestStore.getState().addResponse(params.requestId, params.response);
+      requestStore.getState().addResponse(params.requestId, params.response, params.type);
       return;
     }
   }
@@ -78,6 +80,7 @@ export default class TabListener extends SocketManager {
 
     if (shouldIntercept) {
       console.log(`INTERCEPTING REQUEST FOR 1 SECOND: ${urlString}`);
+      requestStore.getState().addInterceptedRequest(params.requestId, this.id, params.request);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 

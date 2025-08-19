@@ -10,11 +10,25 @@ interface IRequestState {
 
 interface IRequestStore extends IRequestState {
   clear: () => void;
-  addResponse: (requestId: string, response: Protocol.Network.Response) => void;
+
+  // Typical Network Events
   addRequest: (
     requestId: string,
+    tabId: string,
     request: Protocol.Network.Request,
     type?: Protocol.Network.ResourceType
+  ) => void;
+  addResponse: (
+    requestId: string,
+    response: Protocol.Network.Response,
+    type?: Protocol.Network.ResourceType
+  ) => void;
+
+  // Intercepted Network Events
+  addInterceptedRequest: (
+    requestId: string,
+    tabId: string,
+    request: Protocol.Network.Request
   ) => void;
 }
 
@@ -29,11 +43,12 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
   // Only allow up to 500 requests using a FIFO queue
   const addRequest = (
     requestId: string,
+    tabId: string,
     request: Protocol.Network.Request,
     type?: Protocol.Network.ResourceType
   ) => {
     if (Object.keys(get().events).length < REQUEST_LIMIT) {
-      set((state) => ({ events: { ...state.events, [requestId]: { request, type } } }));
+      set((state) => ({ events: { ...state.events, [requestId]: { request, type, tabId } } }));
       return;
     }
 
@@ -41,18 +56,35 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
       const stateData = { ...state.events };
       const keys = Object.keys(stateData);
       delete stateData[keys[0]];
-      return { events: { ...stateData, [requestId]: { request, type } } };
+      return { events: { ...stateData, [requestId]: { request, type, tabId } } };
     });
   };
 
   /**
    * Add a correlated response to an initial request
    */
-  const addResponse = (requestId: string, response: Protocol.Network.Response) => {
+  const addResponse = (
+    requestId: string,
+    response: Protocol.Network.Response,
+    type?: Protocol.Network.ResourceType
+  ) => {
     if (!get().events[requestId]) return;
 
     set((state) => ({
-      events: { ...state.events, [requestId]: { ...state.events[requestId], response } },
+      events: { ...state.events, [requestId]: { ...state.events[requestId], response, type } },
+    }));
+  };
+
+  /**
+   * Add an intercepted request to the store
+   */
+  const addInterceptedRequest = (
+    requestId: string,
+    tabId: string,
+    request: Protocol.Network.Request
+  ) => {
+    set((state) => ({
+      interceptedEvents: { ...state.interceptedEvents, [requestId]: { request, tabId } },
     }));
   };
 
@@ -60,7 +92,7 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
     set({ events: {} });
   };
 
-  return { ...initialState, addRequest, addResponse, clear };
+  return { ...initialState, addRequest, addResponse, addInterceptedRequest, clear };
 });
 
 // For static initializations, so it looks cleaner
