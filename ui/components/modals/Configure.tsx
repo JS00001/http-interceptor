@@ -1,9 +1,10 @@
+import { XIcon } from "@phosphor-icons/react";
+
 import useModalStore from "@ui/store/modal";
 import Modal from "@ui/components/ui/Modal";
 import Button from "@ui/components/ui/Button";
 import useRulesStore from "@shared/stores/rules";
 import ConfigurationTable from "@ui/components/tables/ConfigurationTable";
-import { XIcon } from "@phosphor-icons/react";
 
 export default function ConfigureModal() {
   const close = useModalStore((s) => s.close);

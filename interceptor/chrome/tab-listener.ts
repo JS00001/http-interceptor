@@ -2,10 +2,10 @@ import Protocol from 'devtools-protocol';
 
 import { CDP } from '@shared/types';
 import { GREEN } from '@interceptor/lib/util';
-import { getRequestParams, matchesInterceptorField } from '@shared/lib';
+import { rulesStore } from '@shared/stores/rules';
 import { requestStore } from '@shared/stores/request';
 import SocketManager from '@interceptor/lib/socket-manager';
-import { rulesStore } from '@shared/stores/rules';
+import { getRequestParams, matchesInterceptorField } from '@shared/lib';
 
 export default class TabListener extends SocketManager {
   public id: string;
@@ -50,16 +50,16 @@ export default class TabListener extends SocketManager {
     const rules = rulesStore.getState().rules;
     const requestParams = getRequestParams(params.request);
 
-    let shouldIntercept = true;
+    const urlString = params.request.url;
+    const methodString = params.request.method;
+    const paramNames = Object.keys(requestParams);
+    const requestParamsString = JSON.stringify(requestParams);
+    const enabledRules = rules.filter((rule) => rule.enabled && rule.value);
+
+    let shouldIntercept = enabledRules.length > 0;
 
     for (const rule of rules) {
-      const { enabled, field, operator: type, value } = rule;
-      if (!enabled) continue;
-
-      const paramNames = Object.keys(requestParams);
-      const urlString = params.request.url.toLowerCase();
-      const methodString = params.request.method.toLowerCase();
-      const requestParamsString = JSON.stringify(requestParams);
+      const { field, operator: type, value } = rule;
 
       if (field == 'method') {
         const matches = matchesInterceptorField(type, value, methodString);
@@ -76,7 +76,10 @@ export default class TabListener extends SocketManager {
       }
     }
 
-    console.log(shouldIntercept + ' ' + params.request.url.substring(0, 20));
+    if (shouldIntercept) {
+      console.log(`INTERCEPTING REQUEST FOR 10 SECONDS: ${urlString}`);
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+    }
 
     await this.send('Fetch.continueRequest', { requestId: params.requestId });
   }
