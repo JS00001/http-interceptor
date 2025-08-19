@@ -1,17 +1,42 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export interface IRulesState {}
+import { InterceptorRule } from '@shared/types';
 
-export interface IRulesStore extends IRulesState {}
+export interface IRulesState {
+  rules: InterceptorRule[];
+}
 
-const rulesStore = create<IRulesStore>()(
+export interface IRulesStore extends IRulesState {
+  addRule: (rule: InterceptorRule) => void;
+  removeRule: (rule: InterceptorRule) => void;
+}
+
+const useRulesStore = create<IRulesStore>()(
   persist(
     (set, get) => {
-      return {};
+      const initialState: IRulesState = {
+        rules: [],
+      };
+
+      const addRule = (rule: InterceptorRule) => {
+        set((state) => ({ rules: [...state.rules, rule] }));
+      };
+
+      const removeRule = (rule: InterceptorRule) => {
+        set((state) => ({ rules: state.rules.filter((r) => r.id !== rule.id) }));
+      };
+
+      return {
+        ...initialState,
+        addRule,
+        removeRule,
+      };
     },
-    {
-      name: 'rules-store',
-    }
+    { name: 'rules-store' }
   )
 );
+
+export default useRulesStore;
+
+export const rulesStore = useRulesStore;

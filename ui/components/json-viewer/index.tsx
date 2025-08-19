@@ -97,8 +97,6 @@ function Node({ path, data, level }: NodeProps) {
     function: "text-purple-700",
   }[dataType];
 
-  const valueClasses = classNames("truncate", textColor);
-
   return (
     <div
       style={{ paddingLeft: level * 16 }}
@@ -107,7 +105,8 @@ function Node({ path, data, level }: NodeProps) {
       <p className="text-fuchsia-800">{path}</p>
       <p className="text-gray-800 mr-2">:</p>
       {dataType === "string" && <StringQuotation />}
-      <p className={valueClasses} title={value}>
+      {/* TODO: Make this scroll horizontal */}
+      <p className={textColor} title={value}>
         {value}
       </p>
       {dataType === "string" && <StringQuotation />}

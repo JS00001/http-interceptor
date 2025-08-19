@@ -1,5 +1,12 @@
 import type { Protocol } from 'devtools-protocol';
 
+export interface InterceptorRule {
+  id: string;
+  field: 'url' | 'method' | 'params' | 'paramName';
+  type: 'equals' | 'contains' | 'notEquals' | 'notContains';
+  value: string;
+}
+
 export interface NetworkEvent {
   type?: Protocol.Network.ResourceType;
   request: Protocol.Network.Request;
