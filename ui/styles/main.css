@@ -45,3 +45,14 @@ input[type="checkbox"] {
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding-right: 2rem;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='gray' stroke-width='2' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>")
+    no-repeat right 0.5rem center;
+  background-size: 1rem;
+}

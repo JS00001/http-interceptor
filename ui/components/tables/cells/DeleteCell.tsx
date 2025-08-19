@@ -1,5 +1,15 @@
-interface DeleteProps {}
+import { TrashIcon } from "@phosphor-icons/react";
 
-export default function Delete({}: DeleteProps) {
-  return <></>;
+interface DeleteCellProps {
+  onClick: () => void;
+}
+
+export default function DeleteCell({ onClick }: DeleteCellProps) {
+  return (
+    <div className="flex justify-center">
+      <div className="p-1 rounded-sm cursor-pointer hover:bg-primary-200">
+        <TrashIcon size={16} weight="duotone" className="text-red-500" onClick={onClick} />
+      </div>
+    </div>
+  );
 }

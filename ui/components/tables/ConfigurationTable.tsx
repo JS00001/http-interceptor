@@ -1,12 +1,29 @@
 import { createColumnHelper } from "@tanstack/react-table";
 
+import SelectCell from "./cells/SelectCell";
+import ToggleCell from "./cells/ToggleCell";
+import DeleteCell from "./cells/DeleteCell";
+import TextInputCell from "./cells/TextInputCell";
+
 import Table from "@ui/components/ui/Table";
-import Toggle from "@ui/components/ui/Toggle";
 import { InterceptorRule } from "@shared/types";
 import useRulesStore from "@shared/stores/rules";
-import { TrashIcon } from "@phosphor-icons/react";
 
 const columnHelper = createColumnHelper<InterceptorRule>();
+
+const fieldOptions = [
+  { label: "URL", value: "url" },
+  { label: "Method", value: "method" },
+  { label: "Params", value: "params" },
+  { label: "Param Name", value: "paramName" },
+];
+
+const typeOptions = [
+  { label: "Equals", value: "equals" },
+  { label: "Contains", value: "contains" },
+  { label: "Doesn't Equal", value: "notEquals" },
+  { label: "Doesn't Contain", value: "notContains" },
+];
 
 const columns = [
   columnHelper.accessor("enabled", {
@@ -17,17 +34,10 @@ const columns = [
       const setRule = useRulesStore((s) => s.updateRule);
 
       return (
-        <div className="flex justify-center">
-          <Toggle
-            value={ctx.cell.getValue()}
-            onChange={() => {
-              setRule({
-                ...ctx.row.original,
-                enabled: !ctx.row.original.enabled,
-              });
-            }}
-          />
-        </div>
+        <ToggleCell
+          value={ctx.cell.getValue()}
+          onChange={(enabled) => setRule({ ...ctx.row.original, enabled })}
+        />
       );
     },
   }),
@@ -39,21 +49,16 @@ const columns = [
       const updateRule = useRulesStore((s) => s.updateRule);
 
       return (
-        <select
-          className="appearance-none"
+        <SelectCell
           value={ctx.cell.getValue()}
+          options={fieldOptions}
           onChange={(value) => {
             updateRule({
               ...ctx.row.original,
-              field: value.target.value as InterceptorRule["field"],
+              field: value as InterceptorRule["field"],
             });
           }}
-        >
-          <option>url</option>
-          <option>method</option>
-          <option>params</option>
-          <option>paramName</option>
-        </select>
+        />
       );
     },
   }),
@@ -65,21 +70,16 @@ const columns = [
       const updateRule = useRulesStore((s) => s.updateRule);
 
       return (
-        <select
-          className="appearance-none"
+        <SelectCell
           value={ctx.cell.getValue()}
+          options={typeOptions}
           onChange={(value) => {
             updateRule({
               ...ctx.row.original,
-              type: value.target.value as InterceptorRule["type"],
+              type: value as InterceptorRule["type"],
             });
           }}
-        >
-          <option>equals</option>
-          <option>contains</option>
-          <option>doesnt equal</option>
-          <option>doesnt contain</option>
-        </select>
+        />
       );
     },
   }),
@@ -91,17 +91,10 @@ const columns = [
       const updateRule = useRulesStore((s) => s.updateRule);
 
       return (
-        <input
-          type="text"
-          placeholder="Value"
-          style={{ width: "100%" }}
+        <TextInputCell
           value={ctx.cell.getValue()}
-          onChange={(value) => {
-            updateRule({
-              ...ctx.row.original,
-              value: value.target.value,
-            });
-          }}
+          placeholder="Value"
+          onChange={(value) => updateRule({ ...ctx.row.original, value })}
         />
       );
     },
@@ -112,19 +105,7 @@ const columns = [
     meta: { width: 54 },
     cell: (ctx) => {
       const removeRule = useRulesStore((s) => s.removeRule);
-
-      return (
-        <div className="flex justify-center">
-          <div className="p-1 rounded-sm cursor-pointer hover:bg-primary-200">
-            <TrashIcon
-              size={16}
-              weight="duotone"
-              className="text-red-500"
-              onClick={() => removeRule(ctx.cell.getValue())}
-            />
-          </div>
-        </div>
-      );
+      return <DeleteCell onClick={() => removeRule(ctx.cell.getValue())} />;
     },
   }),
 ];

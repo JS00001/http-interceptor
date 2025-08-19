@@ -9,7 +9,6 @@
   table-layout: fixed;
   user-select: none;
   -webkit-user-select: none;
-  border-bottom: 1px solid var(--row-border-color);
 
   &.comfortable {
     --row-height: 36px;
@@ -72,10 +71,17 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  height: var(--row-height);
   color: var(--color-gray-800);
   border-right: 1px solid var(--row-border-color);
 
   &:last-child {
     border-right: none;
   }
+}
+
+/* For input and select we want to 'focus' the entire cell, so remove the padding */
+.ui-table-cell:has(input),
+.ui-table-cell:has(select) {
+  padding: 0px !important;
 }
