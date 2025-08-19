@@ -9,6 +9,8 @@ export default function CheckboxCell(ctx: CellContext<NetworkEvent, unknown>) {
         type="checkbox"
         checked={ctx.row.getIsSelected()}
         onChange={ctx.row.getToggleSelectedHandler()}
+        // Prevent clicking a checkbox from opening the side panel, or calling 'onRowClick'
+        onClick={(e) => e.stopPropagation()}
       />
     </div>
   );
