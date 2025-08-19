@@ -2,9 +2,10 @@ import Protocol from 'devtools-protocol';
 
 import { CDP } from '@shared/types';
 import { GREEN } from '@interceptor/lib/util';
-import { getRequestParams } from '@shared/lib';
+import { getRequestParams, matchesInterceptorField } from '@shared/lib';
 import { requestStore } from '@shared/stores/request';
 import SocketManager from '@interceptor/lib/socket-manager';
+import { rulesStore } from '@shared/stores/rules';
 
 export default class TabListener extends SocketManager {
   public id: string;
@@ -46,14 +47,36 @@ export default class TabListener extends SocketManager {
   }
 
   private async onRequestPaused(params: Protocol.Fetch.RequestPausedEvent) {
+    const rules = rulesStore.getState().rules;
     const requestParams = getRequestParams(params.request);
 
-    const matchesMethod = params.request.method === 'TESTING';
-    const matchesUrl = params.request.url.includes('INTERCEPT');
-    const matchesRequestParams = Object.values(requestParams).join(' ').includes('INTERCEPT');
+    let shouldIntercept = true;
 
-    const shouldInterceptRequest = matchesMethod || matchesUrl || matchesRequestParams;
-    if (shouldInterceptRequest) return;
+    for (const rule of rules) {
+      const { enabled, field, operator: type, value } = rule;
+      if (!enabled) continue;
+
+      const paramNames = Object.keys(requestParams);
+      const urlString = params.request.url.toLowerCase();
+      const methodString = params.request.method.toLowerCase();
+      const requestParamsString = JSON.stringify(requestParams);
+
+      if (field == 'method') {
+        const matches = matchesInterceptorField(type, value, methodString);
+        shouldIntercept &&= matches;
+      } else if (field == 'url') {
+        const matches = matchesInterceptorField(type, value, urlString);
+        shouldIntercept &&= matches;
+      } else if (field == 'paramName') {
+        const matches = matchesInterceptorField(type, value, paramNames);
+        shouldIntercept &&= matches;
+      } else if (field == 'params') {
+        const matches = matchesInterceptorField(type, value, requestParamsString);
+        shouldIntercept &&= matches;
+      }
+    }
+
+    console.log(shouldIntercept + ' ' + params.request.url.substring(0, 20));
 
     await this.send('Fetch.continueRequest', { requestId: params.requestId });
   }

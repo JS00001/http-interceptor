@@ -62,9 +62,9 @@ const columns = [
       );
     },
   }),
-  columnHelper.accessor("type", {
-    id: "type",
-    header: "Type",
+  columnHelper.accessor("operator", {
+    id: "operator",
+    header: "Operator",
     meta: { width: 152 },
     cell: (ctx) => {
       const updateRule = useRulesStore((s) => s.updateRule);
@@ -76,7 +76,7 @@ const columns = [
           onChange={(value) => {
             updateRule({
               ...ctx.row.original,
-              type: value as InterceptorRule["type"],
+              operator: value as InterceptorRule["operator"],
             });
           }}
         />

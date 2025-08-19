@@ -1,9 +1,13 @@
 import type { Protocol } from 'devtools-protocol';
 
+export type InterceptorRuleField = 'url' | 'method' | 'params' | 'paramName';
+
+export type InterceptorRuleOperator = 'equals' | 'contains' | 'notEquals' | 'notContains';
+
 export interface InterceptorRule {
   id: string;
-  field: 'url' | 'method' | 'params' | 'paramName';
-  type: 'equals' | 'contains' | 'notEquals' | 'notContains';
+  field: InterceptorRuleField;
+  operator: InterceptorRuleOperator;
   value: string;
   enabled: boolean;
 }

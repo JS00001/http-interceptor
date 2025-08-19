@@ -3,6 +3,7 @@ import Modal from "@ui/components/ui/Modal";
 import Button from "@ui/components/ui/Button";
 import useRulesStore from "@shared/stores/rules";
 import ConfigurationTable from "@ui/components/tables/ConfigurationTable";
+import { XIcon } from "@phosphor-icons/react";
 
 export default function ConfigureModal() {
   const close = useModalStore((s) => s.close);
@@ -18,11 +19,14 @@ export default function ConfigureModal() {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <div className="flex items-center justify-between p-4">
-        <h1>Configure</h1>
+        <h2>Configure Interception Rules</h2>
 
-        <Button className="self-end" onClick={addRule}>
-          Add Rule
-        </Button>
+        <div className="self-end flex items-center gap-2">
+          <Button onClick={addRule}>Add Rule</Button>
+          <Button color="secondary" onClick={onClose}>
+            Close <XIcon size={14} />
+          </Button>
+        </div>
       </div>
 
       <ConfigurationTable />

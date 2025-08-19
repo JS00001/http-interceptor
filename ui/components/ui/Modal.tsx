@@ -20,7 +20,7 @@ export default function Modal({
   });
 
   const backdropStyles = classNames(
-    "bg-black/30 w-full h-full absolute z-40",
+    "bg-black/30 backdrop-blur-xs w-full h-full absolute z-40",
     "flex items-center justify-center px-12"
   );
 

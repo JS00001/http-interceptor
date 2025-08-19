@@ -24,7 +24,7 @@ const useRulesStore = create<IRulesStore>()(
         const defaultRule: InterceptorRule = {
           id: crypto.randomUUID(),
           field: 'url',
-          type: 'equals',
+          operator: 'equals',
           value: '',
           enabled: true,
         };
