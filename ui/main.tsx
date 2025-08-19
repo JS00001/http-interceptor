@@ -7,13 +7,9 @@ import Routes from "@ui/routes";
 import Error404 from "@ui/pages/404";
 import useRouter from "@ui/store/router";
 import Layout from "@ui/components/Layout";
-import { BrowserProvider } from "./providers/browser";
+import { BrowserProvider } from "@ui/providers/browser";
 
 function Main() {
-  // useGlobalHotkey("CommandOrControl+Shift+U", () => {
-  //   writeText("Hello, world!");
-  // });
-
   return (
     <React.StrictMode>
       <BrowserProvider>

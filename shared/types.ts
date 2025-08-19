@@ -5,6 +5,7 @@ export interface InterceptorRule {
   field: 'url' | 'method' | 'params' | 'paramName';
   type: 'equals' | 'contains' | 'notEquals' | 'notContains';
   value: string;
+  enabled: boolean;
 }
 
 export interface NetworkEvent {

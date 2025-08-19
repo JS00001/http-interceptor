@@ -4,9 +4,11 @@ import useRouter from "@ui/store/router";
 import Button from "@ui/components/ui/Button";
 import useKeyListener from "@ui/hooks/useKeyListener";
 import ConfigurationTable from "@ui/components/tables/ConfigurationTable";
+import useRulesStore from "@shared/stores/rules";
 
 export default function Configure() {
   const router = useRouter();
+  const addRule = useRulesStore((s) => s.addRule);
 
   useKeyListener("Escape", router.back);
 
@@ -23,7 +25,9 @@ export default function Configure() {
         </button>
       </div>
 
-      <Button className="self-end">Add Rule</Button>
+      <Button className="self-end" onClick={addRule}>
+        Add Rule
+      </Button>
 
       <ConfigurationTable />
     </>

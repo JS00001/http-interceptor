@@ -2,7 +2,6 @@ import { useState } from "react";
 import classNames from "classnames";
 import { FastForwardIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
-import useRouter from "@ui/store/router";
 import Button from "@ui/components/ui/Button";
 import { useRequestStore } from "@shared/stores/request";
 import HistoryTable from "@ui/components/tables/HistoryTable";
@@ -17,7 +16,6 @@ enum Tab {
 export default function Intercept() {
   const [tab, setTab] = useState(Tab.Intercept);
 
-  const router = useRouter();
   const clearRequests = useRequestStore((s) => s.clear);
 
   const Tabs = [
@@ -31,9 +29,7 @@ export default function Intercept() {
     },
   ];
 
-  const onConfigureRules = () => {
-    router.push("/intercept/configure");
-  };
+  const onConfigureRules = () => {};
 
   return (
     <div className="flex flex-col gap-4 h-screen overflow-hidden ">

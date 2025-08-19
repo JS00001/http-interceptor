@@ -8,19 +8,27 @@ export interface IRulesState {
 }
 
 export interface IRulesStore extends IRulesState {
-  addRule: (rule: InterceptorRule) => void;
+  addRule: () => void;
   removeRule: (rule: InterceptorRule) => void;
 }
 
 const useRulesStore = create<IRulesStore>()(
   persist(
-    (set, get) => {
+    (set) => {
       const initialState: IRulesState = {
         rules: [],
       };
 
-      const addRule = (rule: InterceptorRule) => {
-        set((state) => ({ rules: [...state.rules, rule] }));
+      const addRule = () => {
+        const defaultRule: InterceptorRule = {
+          id: crypto.randomUUID(),
+          field: 'url',
+          type: 'equals',
+          value: '',
+          enabled: true,
+        };
+
+        set((state) => ({ rules: [...state.rules, defaultRule] }));
       };
 
       const removeRule = (rule: InterceptorRule) => {
