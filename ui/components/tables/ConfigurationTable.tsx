@@ -111,7 +111,7 @@ const columns = [
 ];
 
 export default function ConfigurationTable() {
-  const data = useRulesStore((s) => s.rules);
+  const data = useRulesStore((s) => s.rules ?? []);
 
   return (
     <div className="overflow-y-auto!">

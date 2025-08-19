@@ -48,7 +48,9 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
     type?: Protocol.Network.ResourceType
   ) => {
     if (Object.keys(get().events).length < REQUEST_LIMIT) {
-      set((state) => ({ events: { ...state.events, [requestId]: { request, type, tabId } } }));
+      set((state) => ({
+        events: { ...state.events, [requestId]: { request, type, tabId, requestId } },
+      }));
       return;
     }
 
@@ -56,7 +58,7 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
       const stateData = { ...state.events };
       const keys = Object.keys(stateData);
       delete stateData[keys[0]];
-      return { events: { ...stateData, [requestId]: { request, type, tabId } } };
+      return { events: { ...stateData, [requestId]: { request, type, tabId, requestId } } };
     });
   };
 
@@ -84,7 +86,10 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
     request: Protocol.Network.Request
   ) => {
     set((state) => ({
-      interceptedEvents: { ...state.interceptedEvents, [requestId]: { request, tabId } },
+      interceptedEvents: {
+        ...state.interceptedEvents,
+        [requestId]: { request, tabId, requestId },
+      },
     }));
   };
 

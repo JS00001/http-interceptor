@@ -4,9 +4,9 @@ import { createColumnHelper } from "@tanstack/react-table";
 import UrlCell from "./cells/UrlCell";
 import TextCell from "./cells/TextCell";
 import CheckboxCell from "./cells/CheckboxCell";
+import NetworkEventTable from "./NetworkEventTable";
 import HeaderCheckboxCell from "./cells/HeaderCheckboxCell";
 
-import Table from "@ui/components/ui/Table";
 import { NetworkEvent } from "@shared/types";
 import { useRequestStore } from "@shared/stores/request";
 
@@ -43,9 +43,5 @@ export default function InterceptedTable() {
   const data = useRequestStore((s) => s.interceptedEvents);
   const rowData = useMemo(() => Object.values(data), [data]);
 
-  return (
-    <div className="overflow-y-auto">
-      <Table columns={columns} data={rowData} />
-    </div>
-  );
+  return <NetworkEventTable data={rowData} columns={columns} />;
 }

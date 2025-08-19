@@ -1,12 +1,14 @@
 import {
   flexRender,
   getCoreRowModel,
+  Header,
+  Row,
   TableOptions,
   useReactTable,
 } from "@tanstack/react-table";
 import classNames from "classnames";
 
-type TableProps<T> = Omit<TableOptions<T>, "getCoreRowModel"> & {
+export type TableProps<T> = Omit<TableOptions<T>, "getCoreRowModel"> & {
   comfortable?: boolean;
   onRowClick?: (row: T) => void;
 };
@@ -15,43 +17,61 @@ export default function Table<T>({ comfortable, onRowClick, ...props }: TablePro
   const table = useReactTable({ ...props, getCoreRowModel: getCoreRowModel() });
   const tableClasses = classNames("ui-table", comfortable && "comfortable");
 
+  /**
+   * When clicking a row, we need to allow either a callback, or, if row selection
+   * is enabled, toggle its selection status
+   */
+  const onRowClickHandler = (row: Row<T>) => {
+    onRowClick?.(row.original);
+  };
+
   return (
     <table className={tableClasses}>
       <thead>
         <tr className="ui-table-header-row">
           {table.getFlatHeaders().map((header) => (
-            <th
-              key={header.id}
-              className="ui-table-header-cell"
-              style={{ width: header.column.columnDef.meta?.width }}
-            >
-              {flexRender(header.column.columnDef.header, header.getContext())}
-            </th>
+            <TableHeaderCell key={header.id} header={header} />
           ))}
         </tr>
       </thead>
       <tbody>
         {table.getRowModel().rows.map((row) => (
-          <tr key={row.id} className="ui-table-row" onClick={() => onRowClick?.(row.original)}>
-            {row.getVisibleCells().map((cell) => {
-              const rowClasses = classNames(
-                "ui-table-cell",
-                cell.row.getIsSelected() && "selected"
-              );
-
-              return (
-                <td
-                  key={cell.id}
-                  className={rowClasses}
-                  style={{ width: cell.column.columnDef.meta?.width }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              );
-            })}
-          </tr>
+          <TableRow key={row.id} row={row} onRowClick={onRowClickHandler} />
         ))}
       </tbody>
     </table>
+  );
+}
+
+function TableHeaderCell<T>({ header }: { header: Header<T, unknown> }) {
+  return (
+    <th className="ui-table-header-cell" style={{ width: header.column.columnDef.meta?.width }}>
+      {flexRender(header.column.columnDef.header, header.getContext())}
+    </th>
+  );
+}
+
+interface TableRowProps<T> {
+  row: Row<T>;
+  onRowClick: (row: Row<T>) => void;
+}
+
+function TableRow<T>({ row, onRowClick }: TableRowProps<T>) {
+  return (
+    <tr key={row.id} className="ui-table-row" onClick={() => onRowClick(row)}>
+      {row.getVisibleCells().map((cell) => {
+        const rowClasses = classNames("ui-table-cell", cell.row.getIsSelected() && "selected");
+
+        return (
+          <td
+            key={cell.id}
+            className={rowClasses}
+            style={{ width: cell.column.columnDef.meta?.width }}
+          >
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </td>
+        );
+      })}
+    </tr>
   );
 }
