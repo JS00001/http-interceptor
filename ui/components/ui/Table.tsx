@@ -6,23 +6,51 @@ import {
   TableOptions,
   useReactTable,
 } from "@tanstack/react-table";
+import { useEffect } from "react";
 import classNames from "classnames";
 
-export type TableProps<T> = Omit<TableOptions<T>, "getCoreRowModel"> & {
+export type TableProps<T> = Omit<
+  TableOptions<T>,
+  "getCoreRowModel" | "onRowSelectionChange"
+> & {
+  activeRowId?: string;
   comfortable?: boolean;
-  onRowClick?: (row: T) => void;
+  onRowClick?: (row: Row<T>) => void;
+  onRowSelectionChange?: (rows: Row<T>[]) => void;
 };
 
-export default function Table<T>({ comfortable, onRowClick, ...props }: TableProps<T>) {
+export default function Table<T>({
+  comfortable,
+  activeRowId,
+  onRowClick,
+  onRowSelectionChange,
+  ...props
+}: TableProps<T>) {
   const table = useReactTable({ ...props, getCoreRowModel: getCoreRowModel() });
   const tableClasses = classNames("ui-table", comfortable && "comfortable");
+  const selectedRowData = table.getSelectedRowModel().flatRows;
 
   /**
-   * When clicking a row, we need to allow either a callback, or, if row selection
-   * is enabled, toggle its selection status
+   * We need to listen for changes to selected rows and emit the changes when
+   * they happen
    */
-  const onRowClickHandler = (row: Row<T>) => {
-    onRowClick?.(row.original);
+  useEffect(() => {
+    onRowSelectionChange?.(selectedRowData);
+  }, [selectedRowData]);
+
+  /**
+   * When a row is selected, toggle its selection if row selection is enabled, otherwise, check if theres
+   * a custom onRowClick handler, and call it
+   */
+  const onRowClickHandler = (
+    e: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
+    row: Row<T>
+  ) => {
+    if (props.enableRowSelection) {
+      row.getToggleSelectedHandler()(e);
+    }
+
+    onRowClick?.(row);
   };
 
   return (
@@ -36,7 +64,12 @@ export default function Table<T>({ comfortable, onRowClick, ...props }: TablePro
       </thead>
       <tbody>
         {table.getRowModel().rows.map((row) => (
-          <TableRow key={row.id} row={row} onRowClick={onRowClickHandler} />
+          <TableRow
+            key={row.id}
+            row={row}
+            activeRowId={activeRowId}
+            onRowClick={onRowClickHandler}
+          />
         ))}
       </tbody>
     </table>
@@ -53,14 +86,16 @@ function TableHeaderCell<T>({ header }: { header: Header<T, unknown> }) {
 
 interface TableRowProps<T> {
   row: Row<T>;
-  onRowClick: (row: Row<T>) => void;
+  activeRowId?: string;
+  onRowClick: (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<T>) => void;
 }
 
-function TableRow<T>({ row, onRowClick }: TableRowProps<T>) {
+function TableRow<T>({ row, activeRowId, onRowClick }: TableRowProps<T>) {
   return (
-    <tr key={row.id} className="ui-table-row" onClick={() => onRowClick(row)}>
+    <tr key={row.id} className="ui-table-row" onClick={(e) => onRowClick(e, row)}>
       {row.getVisibleCells().map((cell) => {
-        const rowClasses = classNames("ui-table-cell", cell.row.getIsSelected() && "selected");
+        const isSelected = cell.row.getIsSelected() || cell.row.id === activeRowId;
+        const rowClasses = classNames("ui-table-cell", isSelected && "selected");
 
         return (
           <td
