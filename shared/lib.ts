@@ -11,7 +11,9 @@ export const getRequestParams = (request: Protocol.Network.Request) => {
   Object.assign(reqParams, Object.fromEntries(queryParams.entries()));
 
   if (request.hasPostData && request.postData) {
-    Object.assign(reqParams, JSON.parse(request.postData));
+    const data = parseJSON(request.postData);
+    if (!data) return reqParams;
+    Object.assign(reqParams, data);
   }
 
   return reqParams;
@@ -39,4 +41,12 @@ export const matchesInterceptorField = (
   }
 
   return true;
+};
+
+export const parseJSON = (str: string) => {
+  try {
+    return JSON.parse(str);
+  } catch {
+    return null;
+  }
 };

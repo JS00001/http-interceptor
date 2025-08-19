@@ -1,6 +1,7 @@
 import WebSocket from '@tauri-apps/plugin-websocket';
 
 import { CDP } from '@shared/types';
+import { parseJSON } from '@shared/lib';
 
 abstract class SocketManager {
   public websocketUrl: string | null = null;
@@ -49,9 +50,9 @@ abstract class SocketManager {
 
     this.ws.addListener((event) => {
       if (typeof event.data !== 'string') return;
-      const message = JSON.parse(event.data) as CDP.Response;
+      const message = parseJSON(event.data) as CDP.Response | null;
 
-      if (message.method) {
+      if (message?.method) {
         this.onEvent(message);
         return;
       }

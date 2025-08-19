@@ -77,8 +77,8 @@ export default class TabListener extends SocketManager {
     }
 
     if (shouldIntercept) {
-      console.log(`INTERCEPTING REQUEST FOR 10 SECONDS: ${urlString}`);
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      console.log(`INTERCEPTING REQUEST FOR 1 SECOND: ${urlString}`);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     await this.send('Fetch.continueRequest', { requestId: params.requestId });
