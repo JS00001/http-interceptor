@@ -1,13 +1,12 @@
 import { PropsWithChildren } from "react";
 
 import Sidebar from "@ui/components/Sidebar";
+import ConfigureModal from "@ui/components/modals/Configure";
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
     <>
-      <div className="bg-black/30 w-full h-full absolute z-50 flex items-center justify-center px-12">
-        <div className="bg-white w-7xl max-w-full h-5/6 rounded-lg"></div>
-      </div>
+      <ConfigureModal />
 
       <div className="flex border-t border-gray-200 h-screen overflow-hidden">
         <Sidebar />

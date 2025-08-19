@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { FastForwardIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import Button from "@ui/components/ui/Button";
+import useModalStore from "@ui/hooks/useModalStore";
 import { useRequestStore } from "@shared/stores/request";
 import HistoryTable from "@ui/components/tables/HistoryTable";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
@@ -16,6 +17,7 @@ enum Tab {
 export default function Intercept() {
   const [tab, setTab] = useState(Tab.Intercept);
 
+  const openModal = useModalStore((s) => s.open);
   const clearRequests = useRequestStore((s) => s.clear);
 
   const Tabs = [
@@ -29,7 +31,9 @@ export default function Intercept() {
     },
   ];
 
-  const onConfigureRules = () => {};
+  const onConfigureRules = () => {
+    openModal("configure");
+  };
 
   return (
     <div className="flex flex-col gap-4 h-screen overflow-hidden ">
