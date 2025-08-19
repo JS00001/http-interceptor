@@ -9,6 +9,7 @@
   table-layout: fixed;
   user-select: none;
   -webkit-user-select: none;
+  border-bottom: 1px solid var(--row-border-color);
 
   &.comfortable {
     --row-height: 36px;

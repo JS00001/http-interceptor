@@ -1,5 +1,3 @@
-import classNames from "classnames";
-
 import useModalStore from "@ui/store/modal";
 import Modal from "@ui/components/ui/Modal";
 import Button from "@ui/components/ui/Button";

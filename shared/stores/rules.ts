@@ -9,7 +9,8 @@ export interface IRulesState {
 
 export interface IRulesStore extends IRulesState {
   addRule: () => void;
-  removeRule: (rule: InterceptorRule) => void;
+  removeRule: (id: string) => void;
+  updateRule: (rule: InterceptorRule) => void;
 }
 
 const useRulesStore = create<IRulesStore>()(
@@ -31,13 +32,20 @@ const useRulesStore = create<IRulesStore>()(
         set((state) => ({ rules: [...state.rules, defaultRule] }));
       };
 
-      const removeRule = (rule: InterceptorRule) => {
-        set((state) => ({ rules: state.rules.filter((r) => r.id !== rule.id) }));
+      const updateRule = (rule: InterceptorRule) => {
+        set((state) => ({
+          rules: state.rules.map((r) => (r.id === rule.id ? rule : r)),
+        }));
+      };
+
+      const removeRule = (id: string) => {
+        set((state) => ({ rules: state.rules.filter((r) => r.id !== id) }));
       };
 
       return {
         ...initialState,
         addRule,
+        updateRule,
         removeRule,
       };
     },
