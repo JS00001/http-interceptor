@@ -25,7 +25,7 @@ export default function Modal({
   );
 
   const modalStyles = classNames(
-    "bg-white w-7xl max-w-full h-5/6 rounded-lg flex flex-col",
+    "bg-white w-7xl max-w-full h-5/6 rounded-md shadow-2xl flex flex-col",
     className
   );
 
