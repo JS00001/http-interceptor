@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { FastForwardIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import Button from "@ui/components/ui/Button";
-import useModalStore from "@ui/hooks/useModalStore";
+import useModalStore from "@ui/store/modal";
 import { useRequestStore } from "@shared/stores/request";
 import HistoryTable from "@ui/components/tables/HistoryTable";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
