@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { RED, YELLOW } from '@shared/lib';
+import { GREEN, RED, YELLOW } from '@shared/lib';
 import { CDP, NetworkEvent, Tauri } from '@shared/types';
 import TabListener from '@interceptor/chrome/tab-listener';
 import SocketManager from '@interceptor/lib/socket-manager';
@@ -83,7 +83,8 @@ class BrowserListener extends SocketManager {
    * Listen for specific websocket events. When tabs are created or updated, update the tab connection. When
    * tabs are closed, delete their connection
    */
-  protected async onEvent({ method, params }: CDP.Response) {
+  async onEvent({ method, params }: CDP.Response) {
+    console.log(method);
     if (method == 'Target.targetCreated') {
       const tab = params.targetInfo;
       if (tab.type === 'page' && !this.findTab(tab.targetId)) {

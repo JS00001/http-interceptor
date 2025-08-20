@@ -56,6 +56,7 @@ export namespace CDP {
     'Fetch.disable': {};
     'Page.enable': Protocol.Page.EnableRequest;
     'Network.enable': Protocol.Network.EnableRequest;
+    'Network.getResponseBody': Protocol.Network.GetResponseBodyRequest;
     'Target.setDiscoverTargets': Protocol.Target.SetDiscoverTargetsRequest;
     'Fetch.failRequest': Protocol.Fetch.FailRequestRequest;
     'Fetch.continueRequest': Protocol.Fetch.ContinueRequestRequest;

@@ -5,6 +5,7 @@ interface ResponseViewProps {
   event: NetworkEvent;
 }
 
+// TODO: Implement
 export default function ResponseView({ event }: ResponseViewProps) {
   const value = [
     {

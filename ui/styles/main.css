@@ -46,6 +46,7 @@ input[type="checkbox"] {
   background: transparent;
 }
 
+/* Add a custom arrow to the select (chevron) */
 select {
   appearance: none;
   -webkit-appearance: none;

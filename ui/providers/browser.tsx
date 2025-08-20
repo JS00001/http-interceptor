@@ -52,6 +52,8 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
       setIsConnected(true);
     } catch (err) {
       console.log(err);
+      setCanConnect(false);
+      setIsConnected(false);
     }
   };
 
@@ -65,6 +67,8 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
       setIsConnected(true);
     } catch (err) {
       console.log(err);
+      setCanConnect(false);
+      setIsConnected(false);
     }
   };
 

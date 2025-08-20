@@ -6,6 +6,7 @@ import { parseJSON } from '@shared/lib';
 abstract class SocketManager {
   public websocketUrl: string | null = null;
 
+  private msgId = 0;
   private ws: WebSocket | null = null;
 
   constructor(websocketUrl: string | null) {
@@ -65,7 +66,7 @@ abstract class SocketManager {
    */
   protected async send<T extends keyof CDP.Request>(method: T, params?: CDP.Request[T]) {
     if (!this.ws) return;
-    const id = crypto.randomUUID();
+    const id = ++this.msgId;
     await this.ws.send(JSON.stringify({ id, method, params }));
   }
 

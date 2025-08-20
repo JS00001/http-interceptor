@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { XIcon } from "@phosphor-icons/react";
 
@@ -27,6 +27,16 @@ export default function EventViewer({ event, onClose }: EventViewerProps) {
     "hover:bg-primary-100 active:bg-primary-200"
   );
 
+  const tabList = useMemo(() => {
+    const tabs = [Tabs.Headers, Tabs.Payload];
+
+    if (event.response) {
+      tabs.push(Tabs.Response);
+    }
+
+    return tabs;
+  }, [event.response]);
+
   const CurrentView = {
     [Tabs.Headers]: <HeadersView event={event} />,
     [Tabs.Payload]: <PayloadView event={event} />,
@@ -41,7 +51,7 @@ export default function EventViewer({ event, onClose }: EventViewerProps) {
         </button>
 
         <div className="flex items-center h-full">
-          {Object.values(Tabs).map((label, i) => {
+          {tabList.map((label) => {
             const isActive = tab === label;
 
             const tabClasses = classNames(

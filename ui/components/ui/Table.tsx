@@ -9,10 +9,12 @@ import {
 import { useEffect } from "react";
 import classNames from "classnames";
 
-export type TableProps<T> = Omit<
+export type DefaultTableProps<T> = Omit<
   TableOptions<T>,
   "getCoreRowModel" | "onRowSelectionChange"
-> & {
+>;
+
+export type TableProps<T> = DefaultTableProps<T> & {
   activeRowId?: string;
   comfortable?: boolean;
   onRowClick?: (row: Row<T>) => void;
