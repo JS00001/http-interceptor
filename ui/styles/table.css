@@ -81,7 +81,7 @@
 }
 
 /* For input and select we want to 'focus' the entire cell, so remove the padding */
-.ui-table-cell:has(input[type="text"]),
+.ui-table-cell:has(input),
 .ui-table-cell:has(select) {
   padding: 0px !important;
 }

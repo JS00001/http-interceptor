@@ -6,7 +6,11 @@ import { NetworkEvent } from "@shared/types";
 import EventViewer from "@ui/components/event-viewer";
 import Table, { TableProps } from "@ui/components/ui/Table";
 
-export default function NetworkEventTable({ data, columns }: TableProps<NetworkEvent>) {
+export default function NetworkEventTable({
+  data,
+  columns,
+  ...props
+}: TableProps<NetworkEvent>) {
   const [selectedRow, setSelectedRow] = useState<Row<NetworkEvent> | null>(null);
 
   const selectedRowExists = data.find((row) => {
@@ -41,6 +45,7 @@ export default function NetworkEventTable({ data, columns }: TableProps<NetworkE
           columns={columns}
           activeRowId={selectedRow?.id}
           onRowClick={onRowSelectionChange}
+          {...props}
         />
       </Panel>
 

@@ -35,6 +35,10 @@ export default function Intercept() {
     openModal("configure");
   };
 
+  const [requestIDs, setRequestIDs] = useState<string[]>([]);
+
+  const allWord = requestIDs.length > 1 ? "All" : "Request";
+
   return (
     <div className="flex flex-col gap-4 h-screen overflow-hidden ">
       <div className="flex justify-between gap-2 items-center">
@@ -72,21 +76,27 @@ export default function Intercept() {
               <ProhibitIcon size={16} /> Clear History
             </Button>
           )}
-          {tab === Tab.Intercept && (
+          {tab === Tab.Intercept && requestIDs.length > 0 && (
             <Button color="secondary" onClick={clearRequests}>
-              <ProhibitIcon size={16} /> Drop All
+              <ProhibitIcon size={16} /> Drop {allWord}
             </Button>
           )}
-          {tab === Tab.Intercept && (
+          {tab === Tab.Intercept && requestIDs.length > 0 && (
             <Button onClick={clearRequests}>
-              <FastForwardIcon size={16} /> Forward All
+              <FastForwardIcon size={16} /> Forward {allWord}
             </Button>
           )}
         </div>
       </div>
 
-      {tab === Tab.Intercept && <InterceptedTable />}
       {tab === Tab.History && <HistoryTable />}
+      {tab === Tab.Intercept && (
+        <InterceptedTable
+          onRowSelectionChange={(rows) => {
+            setRequestIDs(rows);
+          }}
+        />
+      )}
     </div>
   );
 }

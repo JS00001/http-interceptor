@@ -39,9 +39,21 @@ const columns = [
   }),
 ];
 
-export default function InterceptedTable() {
+interface InterceptedTableProps {
+  onRowSelectionChange: (requestIds: string[]) => void;
+}
+
+export default function InterceptedTable({ onRowSelectionChange }: InterceptedTableProps) {
   const data = useRequestStore((s) => s.interceptedEvents);
   const rowData = useMemo(() => Object.values(data), [data]);
 
-  return <NetworkEventTable data={rowData} columns={columns} />;
+  return (
+    <NetworkEventTable
+      data={rowData}
+      columns={columns}
+      onRowSelectionChange={(rows) => {
+        onRowSelectionChange(rows.map((r) => r.original.requestId));
+      }}
+    />
+  );
 }

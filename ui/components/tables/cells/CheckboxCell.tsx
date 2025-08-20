@@ -3,15 +3,14 @@ import { CellContext } from "@tanstack/react-table";
 import { NetworkEvent } from "@shared/types";
 
 export default function CheckboxCell(ctx: CellContext<NetworkEvent, unknown>) {
+  const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    ctx.row.getToggleSelectedHandler()(e);
+  };
+
   return (
-    <div>
-      <input
-        type="checkbox"
-        checked={ctx.row.getIsSelected()}
-        onChange={ctx.row.getToggleSelectedHandler()}
-        // Prevent clicking a checkbox from opening the side panel, or calling 'onRowClick'
-        onClick={(e) => e.stopPropagation()}
-      />
+    <div className="w-full h-full flex items-center justify-center" onClick={onClick}>
+      <input type="checkbox" checked={ctx.row.getIsSelected()} />
     </div>
   );
 }

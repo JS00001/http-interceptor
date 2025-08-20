@@ -1,5 +1,6 @@
 import { NetworkEvent } from "@shared/types";
 import HTTP_STATUS from "@ui/lib/status-codes";
+import { useMemo } from "react";
 
 interface HeadersViewProps {
   event: NetworkEvent;
@@ -26,24 +27,31 @@ export default function HeadersView({ event }: HeadersViewProps) {
     return a[0].localeCompare(b[0]);
   });
 
-  const sections: Section[] = [
-    {
-      title: "General",
-      entries: [
-        { key: "Request Url", value: event.request.url },
-        { key: "Request Method", value: event.request.method },
-        { key: "Status Code", value: statusCode },
-      ],
-    },
-    {
-      title: "Request Headers",
-      entries: requestHeaders.map(([key, value]) => ({ key, value })),
-    },
-    {
-      title: "Response Headers",
-      entries: responseHeaders.map(([key, value]) => ({ key, value })),
-    },
-  ];
+  const sections = useMemo(() => {
+    const sectionList: Section[] = [
+      {
+        title: "General",
+        entries: [
+          { key: "Request Url", value: event.request.url },
+          { key: "Request Method", value: event.request.method },
+          { key: "Status Code", value: statusCode },
+        ],
+      },
+      {
+        title: "Request Headers",
+        entries: requestHeaders.map(([key, value]) => ({ key, value })),
+      },
+    ];
+
+    if (responseHeaders.length > 0) {
+      sectionList.push({
+        title: "Response Headers",
+        entries: responseHeaders.map(([key, value]) => ({ key, value })),
+      });
+    }
+
+    return sectionList;
+  }, [event, statusCode, requestHeaders, responseHeaders]);
 
   return sections.map((section) => (
     <div key={section.title}>
