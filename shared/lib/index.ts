@@ -1,6 +1,10 @@
 import Protocol from 'devtools-protocol';
 import { InterceptorRuleOperator } from '../types';
 
+export const RED = '🔴';
+export const GREEN = '🟢';
+export const YELLOW = '🟡';
+
 /**
  * Take a CDP request, and convert both its query params and post data
  * into a combined object

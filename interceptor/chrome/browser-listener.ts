@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
+import { RED, YELLOW } from '@shared/lib';
 import { CDP, NetworkEvent, Tauri } from '@shared/types';
-import { RED, YELLOW } from '@interceptor/lib/util';
 import TabListener from '@interceptor/chrome/tab-listener';
 import SocketManager from '@interceptor/lib/socket-manager';
 import { requestStore } from '@shared/stores/network-event';

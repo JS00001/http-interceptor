@@ -1,10 +1,10 @@
 import Protocol from 'devtools-protocol';
 
 import { CDP } from '@shared/types';
-import { GREEN } from '@interceptor/lib/util';
-import { rulesStore } from '@shared/stores/interceptor-rules';
+import { GREEN } from '@shared/lib';
 import { requestStore } from '@shared/stores/network-event';
 import SocketManager from '@interceptor/lib/socket-manager';
+import { rulesStore } from '@shared/stores/interceptor-rules';
 import { getRequestParams, matchesInterceptorField } from '@shared/lib';
 
 export default class TabListener extends SocketManager {

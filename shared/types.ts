@@ -1,5 +1,17 @@
 import type { Protocol } from 'devtools-protocol';
 
+/**
+ * Most common type. A network event is a request, and its response, if
+ * it exists
+ */
+export interface NetworkEvent {
+  tabId: string;
+  requestId: string;
+  type?: Protocol.Network.ResourceType;
+  request: Protocol.Network.Request;
+  response?: Protocol.Network.Response;
+}
+
 export type InterceptorRuleField = 'url' | 'method' | 'params' | 'paramName';
 
 export type InterceptorRuleOperator = 'equals' | 'contains' | 'notEquals' | 'notContains';
@@ -10,14 +22,6 @@ export interface InterceptorRule {
   operator: InterceptorRuleOperator;
   value: string;
   enabled: boolean;
-}
-
-export interface NetworkEvent {
-  tabId: string;
-  requestId: string;
-  type?: Protocol.Network.ResourceType;
-  request: Protocol.Network.Request;
-  response?: Protocol.Network.Response;
 }
 
 /**
