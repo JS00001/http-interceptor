@@ -7,7 +7,7 @@ import TextInputCell from "./cells/TextInputCell";
 
 import Table from "@ui/components/ui/Table";
 import { InterceptorRule } from "@shared/types";
-import useRulesStore from "@shared/stores/rules";
+import useRulesStore from "@shared/stores/interceptor-rules";
 
 const columnHelper = createColumnHelper<InterceptorRule>();
 

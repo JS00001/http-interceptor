@@ -3,7 +3,7 @@ import { XIcon } from "@phosphor-icons/react";
 import useModalStore from "@ui/store/modal";
 import Modal from "@ui/components/ui/Modal";
 import Button from "@ui/components/ui/Button";
-import useRulesStore from "@shared/stores/rules";
+import useRulesStore from "@shared/stores/interceptor-rules";
 import ConfigurationTable from "@ui/components/tables/ConfigurationTable";
 
 export default function ConfigureModal() {

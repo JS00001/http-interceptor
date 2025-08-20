@@ -1,6 +1,10 @@
 import Protocol from 'devtools-protocol';
-import { InterceptorRuleOperator } from './types';
+import { InterceptorRuleOperator } from '../types';
 
+/**
+ * Take a CDP request, and convert both its query params and post data
+ * into a combined object
+ */
 export const getRequestParams = (request: Protocol.Network.Request) => {
   const reqParams = {};
 
@@ -19,6 +23,10 @@ export const getRequestParams = (request: Protocol.Network.Request) => {
   return reqParams;
 };
 
+/**
+ * Check if a value matches the provided value, based on its
+ * operator
+ */
 export const matchesInterceptorField = (
   operator: InterceptorRuleOperator,
   expectedValue: string,
@@ -43,6 +51,10 @@ export const matchesInterceptorField = (
   return true;
 };
 
+/**
+ * Try to parse a string into a JSON object, returns null
+ * if it fails
+ */
 export const parseJSON = (str: string) => {
   try {
     return JSON.parse(str);

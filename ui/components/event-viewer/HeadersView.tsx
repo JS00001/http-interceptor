@@ -1,6 +1,7 @@
-import { NetworkEvent } from "@shared/types";
-import HTTP_STATUS from "@ui/lib/status-codes";
 import { useMemo } from "react";
+
+import { NetworkEvent } from "@shared/types";
+import HTTP_STATUS from "@shared/lib/status-codes";
 
 interface HeadersViewProps {
   event: NetworkEvent;
