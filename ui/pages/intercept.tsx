@@ -2,14 +2,15 @@ import { useState } from "react";
 import classNames from "classnames";
 import { GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
-import Button from "@ui/components/ui/Button";
 import useModalStore from "@ui/store/modal";
+import Button from "@ui/components/ui/Button";
 import { useRequestStore } from "@shared/stores/request";
 import HistoryTable from "@ui/components/tables/HistoryTable";
 import DropRequestButton from "@ui/components/DropRequestButton";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
 import BrowserControlButton from "@ui/components/BrowserControlButton";
 import ForwardRequestButton from "@ui/components/ForwardRequestButton";
+import { NetworkEvent } from "@shared/types";
 
 enum Tab {
   Intercept = "Intercept",
@@ -18,9 +19,7 @@ enum Tab {
 
 export default function Intercept() {
   const [tab, setTab] = useState(Tab.Intercept);
-
-  const openModal = useModalStore((s) => s.open);
-  const clearRequests = useRequestStore((s) => s.clear);
+  const [selectedEvents, setSelectedEvents] = useState<NetworkEvent[]>([]);
 
   const Tabs = [
     {
@@ -33,13 +32,12 @@ export default function Intercept() {
     },
   ];
 
+  const openModal = useModalStore((s) => s.open);
+  const clearRequests = useRequestStore((s) => s.clear);
+
   const onConfigureRules = () => {
     openModal("configure");
   };
-
-  const [requestIDs, setRequestIDs] = useState<string[]>([]);
-
-  const allWord = requestIDs.length > 1 ? "All" : "Request";
 
   return (
     <div className="flex flex-col gap-4 h-screen overflow-hidden ">
@@ -78,8 +76,8 @@ export default function Intercept() {
               <ProhibitIcon size={16} /> Clear History
             </Button>
           )}
-          {tab === Tab.Intercept && <DropRequestButton requestIDs={requestIDs} />}
-          {tab === Tab.Intercept && <ForwardRequestButton requestIDs={requestIDs} />}
+          {tab === Tab.Intercept && <DropRequestButton events={selectedEvents} />}
+          {tab === Tab.Intercept && <ForwardRequestButton events={selectedEvents} />}
         </div>
       </div>
 
@@ -87,7 +85,7 @@ export default function Intercept() {
       {tab === Tab.Intercept && (
         <InterceptedTable
           onRowSelectionChange={(rows) => {
-            setRequestIDs(rows);
+            setSelectedEvents(rows);
           }}
         />
       )}

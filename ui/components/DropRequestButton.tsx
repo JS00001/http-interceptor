@@ -1,14 +1,16 @@
 import { ProhibitIcon } from "@phosphor-icons/react";
+
+import { NetworkEvent } from "@shared/types";
 import Button from "@ui/components/ui/Button";
 
 interface DropRequestButtonProps {
-  requestIDs: string[];
+  events: NetworkEvent[];
 }
 
-export default function DropRequestButton({ requestIDs }: DropRequestButtonProps) {
-  const dropType = requestIDs.length > 1 ? "All" : "Request";
+export default function DropRequestButton({ events }: DropRequestButtonProps) {
+  const dropType = events.length > 1 ? "All" : "Request";
 
-  if (!requestIDs.length) return null;
+  if (!events.length) return null;
 
   return (
     <Button color="secondary">

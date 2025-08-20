@@ -40,7 +40,7 @@ const columns = [
 ];
 
 interface InterceptedTableProps {
-  onRowSelectionChange: (requestIds: string[]) => void;
+  onRowSelectionChange: (events: NetworkEvent[]) => void;
 }
 
 export default function InterceptedTable({ onRowSelectionChange }: InterceptedTableProps) {
@@ -52,7 +52,7 @@ export default function InterceptedTable({ onRowSelectionChange }: InterceptedTa
       data={rowData}
       columns={columns}
       onRowSelectionChange={(rows) => {
-        onRowSelectionChange(rows.map((r) => r.original.requestId));
+        onRowSelectionChange(rows.map((r) => r.original));
       }}
     />
   );

@@ -1,12 +1,12 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { CDP, Tauri } from '@shared/types';
+import { CDP, NetworkEvent, Tauri } from '@shared/types';
 import { RED, YELLOW } from '@interceptor/lib/util';
 import TabListener from '@interceptor/chrome/tab-listener';
 import SocketManager from '@interceptor/lib/socket-manager';
 
 class BrowserListener extends SocketManager {
-  private tabs: TabListener[] = [];
+  private tabs: { [key: string]: TabListener } = {};
 
   constructor() {
     super(null);
@@ -14,8 +14,8 @@ class BrowserListener extends SocketManager {
 
   public async close() {
     super.close();
-    this.tabs.forEach((tab) => tab.close());
-    this.tabs = [];
+    Object.values(this.tabs).forEach((tab) => tab.close());
+    this.tabs = {};
   }
 
   /**
@@ -37,6 +37,10 @@ class BrowserListener extends SocketManager {
 
     console.log(`${RED} Failed to connect to browser after 10 attempts`);
   }
+
+  public dropEvents(events: NetworkEvent[]) {}
+
+  public forwardEvents(events: NetworkEvent[]) {}
 
   /**
    * Enable discovering new tabs whenever we connect to the
@@ -74,7 +78,7 @@ class BrowserListener extends SocketManager {
    * Check whether a tab already is being tracked
    */
   private findTab(id: string) {
-    return this.tabs.find((tab) => tab.id === id);
+    return this.tabs[id];
   }
 
   /**
@@ -88,16 +92,16 @@ class BrowserListener extends SocketManager {
 
     setTimeout(() => {
       const tab = new TabListener(targetId, url, tabInfo.webSocketDebuggerUrl);
-      this.tabs.push(tab);
+      this.tabs[targetId] = tab;
     }, 500);
   }
 
   private closeTab(targetId: string) {
-    const tab = this.tabs.find((tab) => tab.id === targetId);
+    const tab = this.findTab(targetId);
 
     if (tab) {
       tab.close();
-      this.tabs = this.tabs.filter((tab) => tab.id !== targetId);
+      delete this.tabs[targetId];
     }
   }
 }
