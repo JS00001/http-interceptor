@@ -6,11 +6,16 @@ import { NetworkEvent } from "@shared/types";
 import EventViewer from "@ui/components/event-viewer";
 import Table, { TableProps } from "@ui/components/ui/Table";
 
+interface NetworkEventTableProps<T extends NetworkEvent> extends TableProps<T> {
+  editable?: boolean;
+}
+
 export default function NetworkEventTable({
   data,
   columns,
+  editable,
   ...props
-}: TableProps<NetworkEvent>) {
+}: NetworkEventTableProps<NetworkEvent>) {
   const [selectedRow, setSelectedRow] = useState<Row<NetworkEvent> | null>(null);
 
   const selectedRowExists = data.find((row) => {
@@ -53,7 +58,11 @@ export default function NetworkEventTable({
         <React.Fragment>
           <PanelResizeHandle />
           <Panel minSize={30} className="overflow-y-auto! border-l-2 border-primary-100">
-            <EventViewer event={selectedRow.original} onClose={closeEventViewer} />
+            <EventViewer
+              editable={editable}
+              event={selectedRow.original}
+              onClose={closeEventViewer}
+            />
           </Panel>
         </React.Fragment>
       )}

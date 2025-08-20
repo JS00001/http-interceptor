@@ -10,6 +10,7 @@ import { NetworkEvent } from "@shared/types";
 
 interface EventViewerProps {
   event: NetworkEvent;
+  editable?: boolean;
   onClose: () => void;
 }
 
@@ -20,7 +21,7 @@ enum Tabs {
 }
 
 // TODO: Somewhere in here, add a button to forward the request or drop it from this pane
-export default function EventViewer({ event, onClose }: EventViewerProps) {
+export default function EventViewer({ event, editable = false, onClose }: EventViewerProps) {
   const [tab, setTab] = useState(Tabs.Headers);
 
   const closeIconClasses = classNames(
@@ -39,8 +40,8 @@ export default function EventViewer({ event, onClose }: EventViewerProps) {
   }, [event.response]);
 
   const CurrentView = {
-    [Tabs.Headers]: <HeadersView event={event} />,
-    [Tabs.Payload]: <PayloadView event={event} />,
+    [Tabs.Headers]: <HeadersView event={event} editable={editable} />,
+    [Tabs.Payload]: <PayloadView event={event} editable={editable} />,
     [Tabs.Response]: <ResponseView event={event} />,
   }[tab];
 

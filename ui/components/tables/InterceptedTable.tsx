@@ -49,6 +49,7 @@ export default function InterceptedTable({ onRowSelectionChange }: InterceptedTa
 
   return (
     <NetworkEventTable
+      editable
       data={rowData}
       columns={columns}
       onRowSelectionChange={(rows) => {

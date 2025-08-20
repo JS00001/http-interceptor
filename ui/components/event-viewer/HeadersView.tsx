@@ -1,10 +1,12 @@
 import { useMemo } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 import { NetworkEvent } from "@shared/types";
 import HTTP_STATUS from "@shared/lib/status-codes";
 
 interface HeadersViewProps {
   event: NetworkEvent;
+  editable?: boolean;
 }
 
 interface Section {
@@ -12,7 +14,7 @@ interface Section {
   entries: { key: string; value: string }[];
 }
 
-export default function HeadersView({ event }: HeadersViewProps) {
+export default function HeadersView({ event, editable = false }: HeadersViewProps) {
   const status = event.response?.status ?? 0;
   const statusCode = status
     ? `${status} ${HTTP_STATUS[status as keyof typeof HTTP_STATUS] ?? ""}`
@@ -63,7 +65,11 @@ export default function HeadersView({ event }: HeadersViewProps) {
         {section.entries.map((entry) => (
           <div key={entry.key} className="grid grid-cols-3">
             <p className="text-xs text-gray-800">{entry.key}</p>
-            <p className="text-xs text-gray-800 col-span-2 wrap-anywhere">{entry.value}</p>
+            <TextareaAutosize
+              value={entry.value}
+              disabled={!editable}
+              className="col-span-2 text-xs text-gray-800 resize-none focus:ring-2 focus:ring-primary-200 shrink-0"
+            />
           </div>
         ))}
       </div>

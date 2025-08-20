@@ -4,9 +4,10 @@ import JsonViewer from "@ui/components/json-viewer";
 
 interface PayloadViewProps {
   event: NetworkEvent;
+  editable?: boolean;
 }
 
-export default function PayloadView({ event }: PayloadViewProps) {
+export default function PayloadView({ event, editable = false }: PayloadViewProps) {
   const requestParams = getRequestParams(event.request);
 
   return (
@@ -16,7 +17,7 @@ export default function PayloadView({ event }: PayloadViewProps) {
       </div>
       <div className="p-2">
         {/* TODO: Make non editable */}
-        <JsonViewer editable data={requestParams} />
+        <JsonViewer editable={editable} data={requestParams} />
       </div>
     </>
   );
