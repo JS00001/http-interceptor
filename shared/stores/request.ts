@@ -30,6 +30,8 @@ interface IRequestStore extends IRequestState {
     tabId: string,
     request: Protocol.Network.Request
   ) => void;
+  dropRequest: (requestId: string) => void;
+  forwardRequest: (requestId: string) => void;
 }
 
 const REQUEST_LIMIT = 500;
@@ -93,11 +95,46 @@ export const useRequestStore = create<IRequestStore>()((set, get) => {
     }));
   };
 
+  /**
+   * Reset the store back to the initial state
+   */
   const clear = () => {
-    set({ events: {} });
+    set(() => ({ ...initialState }));
   };
 
-  return { ...initialState, addRequest, addResponse, addInterceptedRequest, clear };
+  /**
+   * Clear a request from the intercepted store, since we
+   * dropped it, it is no longer held
+   */
+  const dropRequest = (requestId: string) => {
+    set((state) => {
+      const stateData = { ...state.interceptedEvents };
+      delete stateData[requestId];
+      return { interceptedEvents: { ...stateData } };
+    });
+  };
+
+  /**
+   * Clear a request from the intercepted store, since we
+   * forwarded it, it is no longer held
+   */
+  const forwardRequest = (requestId: string) => {
+    set((state) => {
+      const stateData = { ...state.interceptedEvents };
+      delete stateData[requestId];
+      return { interceptedEvents: { ...stateData } };
+    });
+  };
+
+  return {
+    ...initialState,
+    addRequest,
+    addResponse,
+    addInterceptedRequest,
+    clear,
+    dropRequest,
+    forwardRequest,
+  };
 });
 
 // For static initializations, so it looks cleaner

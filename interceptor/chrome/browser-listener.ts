@@ -4,6 +4,7 @@ import { CDP, NetworkEvent, Tauri } from '@shared/types';
 import { RED, YELLOW } from '@interceptor/lib/util';
 import TabListener from '@interceptor/chrome/tab-listener';
 import SocketManager from '@interceptor/lib/socket-manager';
+import { requestStore } from '@shared/stores/request';
 
 class BrowserListener extends SocketManager {
   private tabs: { [key: string]: TabListener } = {};
@@ -38,9 +39,25 @@ class BrowserListener extends SocketManager {
     console.log(`${RED} Failed to connect to browser after 10 attempts`);
   }
 
-  public dropEvents(events: NetworkEvent[]) {}
+  public async dropEvents(events: NetworkEvent[]) {
+    for (const event of events) {
+      const tab = this.findTab(event.tabId);
+      if (tab) {
+        tab.dropRequest(event.requestId);
+        requestStore.getState().dropRequest(event.requestId);
+      }
+    }
+  }
 
-  public forwardEvents(events: NetworkEvent[]) {}
+  public forwardEvents(events: NetworkEvent[]) {
+    for (const event of events) {
+      const tab = this.findTab(event.tabId);
+      if (tab) {
+        tab.forwardRequest(event.requestId);
+        requestStore.getState().forwardRequest(event.requestId);
+      }
+    }
+  }
 
   /**
    * Enable discovering new tabs whenever we connect to the

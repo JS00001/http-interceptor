@@ -19,6 +19,14 @@ export default class TabListener extends SocketManager {
     this.connect();
   }
 
+  public forwardRequest(requestId: string) {
+    this.send('Fetch.continueRequest', { requestId });
+  }
+
+  public dropRequest(requestId: string) {
+    this.send('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
+  }
+
   async onConnect() {
     console.log(`${GREEN} Connected to tab: ${this.url}`);
 
@@ -79,9 +87,8 @@ export default class TabListener extends SocketManager {
     }
 
     if (shouldIntercept) {
-      console.log(`INTERCEPTING REQUEST FOR 1 SECOND: ${urlString}`);
       requestStore.getState().addInterceptedRequest(params.requestId, this.id, params.request);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return;
     }
 
     await this.send('Fetch.continueRequest', { requestId: params.requestId });
