@@ -6,7 +6,7 @@ import useModalStore from "@ui/store/modal";
 import { NetworkEvent } from "@shared/types";
 import Button from "@ui/components/ui/Button";
 import HistoryTable from "@ui/components/tables/HistoryTable";
-import { useRequestStore } from "@shared/stores/network-event";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 import DropRequestButton from "@ui/components/DropRequestButton";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
 import BrowserControlButton from "@ui/components/BrowserControlButton";
@@ -33,7 +33,7 @@ export default function Intercept() {
   const [selectedEvents, setSelectedEvents] = useState<NetworkEvent[]>([]);
 
   const openModal = useModalStore((s) => s.open);
-  const clearRequests = useRequestStore((s) => s.clear);
+  const clearRequests = useNetworkEventStore((s) => s.clear);
 
   const onConfigureRules = () => {
     openModal("configure");

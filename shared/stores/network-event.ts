@@ -31,13 +31,14 @@ interface INetworkEventStore extends INetworkEventState {
     tabId: string,
     request: Protocol.Network.Request
   ) => void;
+  updateInterceptedRequest: (requestId: string, request: Protocol.Network.Request) => void;
   dropRequest: (requestId: string) => void;
   forwardRequest: (requestId: string) => void;
 }
 
 const EVENT_LIMIT = 500;
 
-export const useRequestStore = create<INetworkEventStore>()((set, get) => {
+export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   const initialState = {
     events: {},
     interceptedEvents: {},
@@ -102,6 +103,18 @@ export const useRequestStore = create<INetworkEventStore>()((set, get) => {
   };
 
   /**
+   * Update an intercepted request to have different
+   * data
+   */
+  const updateInterceptedRequest = (requestId: string, request: Protocol.Network.Request) => {
+    set((state) =>
+      produce(state, (draft) => {
+        draft.interceptedEvents[requestId].request = request;
+      })
+    );
+  };
+
+  /**
    * Clear a request from the intercepted store, since we
    * dropped it, it is no longer held
    */
@@ -137,6 +150,7 @@ export const useRequestStore = create<INetworkEventStore>()((set, get) => {
     addRequest,
     addResponse,
     addInterceptedRequest,
+    updateInterceptedRequest,
     clear,
     dropRequest,
     forwardRequest,
@@ -144,4 +158,4 @@ export const useRequestStore = create<INetworkEventStore>()((set, get) => {
 });
 
 // For static initializations, so the var name looks cleaner
-export const requestStore = useRequestStore;
+export const requestStore = useNetworkEventStore;

@@ -8,7 +8,7 @@ import NetworkEventTable from "./NetworkEventTable";
 import HeaderCheckboxCell from "./cells/HeaderCheckboxCell";
 
 import { NetworkEvent } from "@shared/types";
-import { useRequestStore } from "@shared/stores/network-event";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 
 const columnHelper = createColumnHelper<NetworkEvent>();
 
@@ -44,7 +44,7 @@ interface InterceptedTableProps {
 }
 
 export default function InterceptedTable({ onRowSelectionChange }: InterceptedTableProps) {
-  const data = useRequestStore((s) => s.interceptedEvents);
+  const data = useNetworkEventStore((s) => s.interceptedEvents);
   const rowData = useMemo(() => Object.values(data), [data]);
 
   return (

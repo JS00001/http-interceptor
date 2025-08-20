@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { NetworkEvent } from "@shared/types";
 import HTTP_STATUS from "@shared/lib/status-codes";
 import TextAreaAutosize from "@ui/components/ui/TextAreaAutosize";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 
 interface HeadersViewProps {
   event: NetworkEvent;
@@ -10,6 +11,8 @@ interface HeadersViewProps {
 }
 
 export default function HeadersView({ event, editable = false }: HeadersViewProps) {
+  const updateRequest = useNetworkEventStore((s) => s.updateInterceptedRequest);
+
   const status = event.response?.status ?? 0;
   const statusCode = status
     ? `${status} ${HTTP_STATUS[status as keyof typeof HTTP_STATUS] ?? ""}`
@@ -54,6 +57,17 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
     return sectionList;
   }, [event, statusCode, requestHeaders, responseHeaders]);
 
+  const onHeaderValueChange = (key: string, value: string) => {
+    console.log("UPDATING HEADER", key, value);
+    updateRequest(event.requestId, {
+      ...event.request,
+      headers: {
+        ...event.request.headers,
+        [key]: value,
+      },
+    });
+  };
+
   return sections.map((section) => (
     <div key={section.id}>
       <div className="ui-table-sub-header-row flex items-center px-2 select-none">
@@ -67,7 +81,8 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
               value={entry.value}
               // Only allow editing request headers, and only if the view should be editable
               disabled={!editable || section.id !== "request-headers"}
-              className="col-span-2 text-xs text-gray-800 resize-none focus:ring-2 focus:ring-primary-200 shrink-0"
+              className="col-span-2 text-xs text-gray-800 resize-none shrink-0 wrap-anywhere"
+              onChange={(e) => onHeaderValueChange(entry.key, e.target.value)}
             />
           </div>
         ))}

@@ -10,7 +10,7 @@ export default function CheckboxCell(ctx: CellContext<NetworkEvent, unknown>) {
 
   return (
     <div className="w-full h-full flex items-center justify-center" onClick={onClick}>
-      <input type="checkbox" checked={ctx.row.getIsSelected()} />
+      <input type="checkbox" readOnly checked={ctx.row.getIsSelected()} />
     </div>
   );
 }

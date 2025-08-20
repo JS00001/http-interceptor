@@ -6,7 +6,7 @@ import TextCell from "./cells/TextCell";
 import NetworkEventTable from "./NetworkEventTable";
 
 import { NetworkEvent } from "@shared/types";
-import { useRequestStore } from "@shared/stores/network-event";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 
 const columnHelper = createColumnHelper<NetworkEvent>();
 
@@ -32,7 +32,7 @@ const columns = [
 ];
 
 export default function HistoryTable() {
-  const data = useRequestStore((s) => s.events);
+  const data = useNetworkEventStore((s) => s.events);
   const rowData = useMemo(() => Object.values(data), [data]);
 
   return <NetworkEventTable data={rowData} columns={columns} />;

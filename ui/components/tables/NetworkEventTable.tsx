@@ -5,6 +5,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { NetworkEvent } from "@shared/types";
 import EventViewer from "@ui/components/event-viewer";
 import Table, { TableProps } from "@ui/components/ui/Table";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 
 interface NetworkEventTableProps<T extends NetworkEvent> extends TableProps<T> {
   editable?: boolean;
@@ -18,8 +19,10 @@ export default function NetworkEventTable({
 }: NetworkEventTableProps<NetworkEvent>) {
   const [selectedRow, setSelectedRow] = useState<Row<NetworkEvent> | null>(null);
 
-  const selectedRowExists = data.find((row) => {
-    return row.requestId === selectedRow?.original.requestId;
+  // TODO: We dont want to hard-code interceptedEvents, could be events
+  const selectedEvent = useNetworkEventStore((s) => {
+    if (!selectedRow) return null;
+    return s.interceptedEvents[selectedRow.original.requestId];
   });
 
   /**
@@ -54,15 +57,11 @@ export default function NetworkEventTable({
         />
       </Panel>
 
-      {selectedRow && selectedRowExists && (
+      {selectedRow && selectedEvent && (
         <React.Fragment>
           <PanelResizeHandle />
           <Panel minSize={30} className="overflow-y-auto! border-l-2 border-primary-100">
-            <EventViewer
-              editable={editable}
-              event={selectedRow.original}
-              onClose={closeEventViewer}
-            />
+            <EventViewer editable={editable} event={selectedEvent} onClose={closeEventViewer} />
           </Panel>
         </React.Fragment>
       )}

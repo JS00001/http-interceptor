@@ -15,8 +15,8 @@ export type DefaultTableProps<T> = Omit<
 >;
 
 export type TableProps<T> = DefaultTableProps<T> & {
-  activeRowId?: string;
   comfortable?: boolean;
+  activeRowId?: string | null;
   onRowClick?: (row: Row<T>) => void;
   onRowSelectionChange?: (rows: Row<T>[]) => void;
 };
