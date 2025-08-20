@@ -8,6 +8,7 @@ interface DropRequestButtonProps {
   events: NetworkEvent[];
 }
 
+// TODO: Dont allow dropping when not connected to CDP, also dont allow forwarding
 export default function DropRequestButton({ events }: DropRequestButtonProps) {
   const dropType = events.length > 1 ? "All" : "Request";
 

@@ -19,6 +19,7 @@ enum Tabs {
   Response = "Response",
 }
 
+// TODO: Somewhere in here, add a button to forward the request or drop it from this pane
 export default function EventViewer({ event, onClose }: EventViewerProps) {
   const [tab, setTab] = useState(Tabs.Headers);
 
