@@ -1,17 +1,12 @@
 import { useMemo } from "react";
-import TextareaAutosize from "react-textarea-autosize";
 
 import { NetworkEvent } from "@shared/types";
 import HTTP_STATUS from "@shared/lib/status-codes";
+import TextAreaAutosize from "@ui/components/ui/TextAreaAutosize";
 
 interface HeadersViewProps {
   event: NetworkEvent;
   editable?: boolean;
-}
-
-interface Section {
-  title: string;
-  entries: { key: string; value: string }[];
 }
 
 export default function HeadersView({ event, editable = false }: HeadersViewProps) {
@@ -31,8 +26,9 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
   });
 
   const sections = useMemo(() => {
-    const sectionList: Section[] = [
+    const sectionList = [
       {
+        id: "general",
         title: "General",
         entries: [
           { key: "Request Url", value: event.request.url },
@@ -41,6 +37,7 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
         ],
       },
       {
+        id: "request-headers",
         title: "Request Headers",
         entries: requestHeaders.map(([key, value]) => ({ key, value })),
       },
@@ -48,6 +45,7 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
 
     if (responseHeaders.length > 0) {
       sectionList.push({
+        id: "response-headers",
         title: "Response Headers",
         entries: responseHeaders.map(([key, value]) => ({ key, value })),
       });
@@ -57,7 +55,7 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
   }, [event, statusCode, requestHeaders, responseHeaders]);
 
   return sections.map((section) => (
-    <div key={section.title}>
+    <div key={section.id}>
       <div className="ui-table-sub-header-row flex items-center px-2 select-none">
         <p className="text-xs text-gray-800">{section.title}</p>
       </div>
@@ -65,9 +63,10 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
         {section.entries.map((entry) => (
           <div key={entry.key} className="grid grid-cols-3">
             <p className="text-xs text-gray-800">{entry.key}</p>
-            <TextareaAutosize
+            <TextAreaAutosize
               value={entry.value}
-              disabled={!editable}
+              // Only allow editing request headers, and only if the view should be editable
+              disabled={!editable || section.id !== "request-headers"}
               className="col-span-2 text-xs text-gray-800 resize-none focus:ring-2 focus:ring-primary-200 shrink-0"
             />
           </div>

@@ -1,5 +1,5 @@
-import { getRequestParams } from "@shared/lib";
 import { NetworkEvent } from "@shared/types";
+import { getRequestParams } from "@shared/lib";
 import JsonViewer from "@ui/components/json-viewer";
 
 interface PayloadViewProps {
@@ -16,7 +16,6 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
         <p className="text-xs text-gray-800">Request Payload</p>
       </div>
       <div className="p-2">
-        {/* TODO: Make non editable */}
         <JsonViewer editable={editable} data={requestParams} />
       </div>
     </>

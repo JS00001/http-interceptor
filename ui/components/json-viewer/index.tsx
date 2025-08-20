@@ -1,17 +1,24 @@
 import { useState } from "react";
 import classNames from "classnames";
 
+import TextAreaAutosize from "@ui/components/ui/TextAreaAutosize";
+
 type JsonValue = string | number | boolean | null | Object;
 
 interface JsonViewerProps {
-  editable: boolean;
   data: JsonValue;
   path?: string;
   level?: number;
+  editable?: boolean;
 }
 
 // TODO: Separate files for sparate componetns
-export default function JsonViewer({ editable, data, path = "", level = 1 }: JsonViewerProps) {
+export default function JsonViewer({
+  data,
+  path = "",
+  level = 1,
+  editable = false,
+}: JsonViewerProps) {
   const [expanded, setExpanded] = useState(level === 1);
 
   const isArray = Array.isArray(data);
@@ -21,7 +28,7 @@ export default function JsonViewer({ editable, data, path = "", level = 1 }: Jso
   const toggleExpanded = () => setExpanded(!expanded);
 
   if (!isObject) {
-    return <Node path={nodeKey} data={data} level={level} />;
+    return <Node path={nodeKey} data={data} level={level} editable={editable} />;
   }
 
   const entries = isArray ? data.map((v, i) => [i, v]) : Object.entries(data);
@@ -80,9 +87,10 @@ interface NodeProps {
   path: string;
   data: string | number | boolean | null;
   level: number;
+  editable: boolean;
 }
 
-function Node({ path, data, level }: NodeProps) {
+function Node({ path, data, level, editable }: NodeProps) {
   const dataType = data === null ? "undefined" : typeof data;
   const value = dataType === "object" ? JSON.stringify(data) : String(data);
 
@@ -97,7 +105,7 @@ function Node({ path, data, level }: NodeProps) {
     function: "text-purple-700",
   }[dataType];
 
-  const valueClasses = classNames("truncate", textColor);
+  const valueClasses = classNames("truncate resize-none w-auto", textColor);
 
   return (
     <div
@@ -108,9 +116,14 @@ function Node({ path, data, level }: NodeProps) {
       <p className="text-gray-800 mr-2">:</p>
       {dataType === "string" && <StringQuotation />}
       {/* TODO: Make this scroll horizontal */}
-      <p className={valueClasses} title={value}>
-        {value}
-      </p>
+
+      <TextAreaAutosize
+        horizontal
+        className={valueClasses}
+        value={value}
+        disabled={!editable}
+      />
+
       {dataType === "string" && <StringQuotation />}
     </div>
   );

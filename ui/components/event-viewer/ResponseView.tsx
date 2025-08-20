@@ -43,7 +43,7 @@ export default function ResponseView({ event }: ResponseViewProps) {
         <p className="text-xs text-gray-800">Response Object</p>
       </div>
       <div className="p-2">
-        <JsonViewer editable={false} data={value} />
+        <JsonViewer data={value} />
       </div>
     </>
   );
