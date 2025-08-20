@@ -1,13 +1,15 @@
 import { useState } from "react";
 import classNames from "classnames";
-import { FastForwardIcon, GearIcon, ProhibitIcon } from "@phosphor-icons/react";
+import { GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import Button from "@ui/components/ui/Button";
 import useModalStore from "@ui/store/modal";
 import { useRequestStore } from "@shared/stores/request";
 import HistoryTable from "@ui/components/tables/HistoryTable";
+import DropRequestButton from "@ui/components/DropRequestButton";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
 import BrowserControlButton from "@ui/components/BrowserControlButton";
+import ForwardRequestButton from "@ui/components/ForwardRequestButton";
 
 enum Tab {
   Intercept = "Intercept",
@@ -76,16 +78,8 @@ export default function Intercept() {
               <ProhibitIcon size={16} /> Clear History
             </Button>
           )}
-          {tab === Tab.Intercept && requestIDs.length > 0 && (
-            <Button color="secondary" onClick={clearRequests}>
-              <ProhibitIcon size={16} /> Drop {allWord}
-            </Button>
-          )}
-          {tab === Tab.Intercept && requestIDs.length > 0 && (
-            <Button onClick={clearRequests}>
-              <FastForwardIcon size={16} /> Forward {allWord}
-            </Button>
-          )}
+          {tab === Tab.Intercept && <DropRequestButton requestIDs={requestIDs} />}
+          {tab === Tab.Intercept && <ForwardRequestButton requestIDs={requestIDs} />}
         </div>
       </div>
 
