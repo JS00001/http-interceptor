@@ -4,7 +4,7 @@ import { GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import useModalStore from "@ui/store/modal";
 import Button from "@ui/components/ui/Button";
-import { useRequestStore } from "@shared/stores/request";
+import { useRequestStore } from "@shared/stores/network-event";
 import HistoryTable from "@ui/components/tables/HistoryTable";
 import DropRequestButton from "@ui/components/DropRequestButton";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";

@@ -4,7 +4,7 @@ import { CDP, NetworkEvent, Tauri } from '@shared/types';
 import { RED, YELLOW } from '@interceptor/lib/util';
 import TabListener from '@interceptor/chrome/tab-listener';
 import SocketManager from '@interceptor/lib/socket-manager';
-import { requestStore } from '@shared/stores/request';
+import { requestStore } from '@shared/stores/network-event';
 
 class BrowserListener extends SocketManager {
   private tabs: { [key: string]: TabListener } = {};

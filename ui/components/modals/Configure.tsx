@@ -20,7 +20,7 @@ export default function ConfigureModal() {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <div className="flex items-center justify-between p-4">
-        <h2>Configure Interception Rules</h2>
+        <h2>Interception Rules</h2>
 
         <div className="self-end flex items-center gap-2">
           <Button onClick={addRule}>Add Rule</Button>

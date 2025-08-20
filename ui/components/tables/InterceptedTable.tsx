@@ -8,7 +8,7 @@ import NetworkEventTable from "./NetworkEventTable";
 import HeaderCheckboxCell from "./cells/HeaderCheckboxCell";
 
 import { NetworkEvent } from "@shared/types";
-import { useRequestStore } from "@shared/stores/request";
+import { useRequestStore } from "@shared/stores/network-event";
 
 const columnHelper = createColumnHelper<NetworkEvent>();
 
