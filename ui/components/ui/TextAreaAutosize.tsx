@@ -17,10 +17,12 @@ export default function TextAreaAutosize({
   style,
   horizontal,
   className,
+  onKeyDown,
   ...props
 }: TextAreaAutosizeProps & ReactTextAreaAutosizeProps) {
   const [width, setWidth] = useState(0);
   const spanRef = useRef<HTMLSpanElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (spanRef.current) {
@@ -31,13 +33,24 @@ export default function TextAreaAutosize({
 
   const classes = classNames("focus:ring-2 focus:ring-primary-200", className);
 
+  const keydownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    onKeyDown?.(e);
+
+    if (e.shiftKey) return;
+
+    if (e.key === "Enter" || e.key === "Escape") {
+      textAreaRef.current?.blur();
+    }
+  };
+
   if (!horizontal) {
     return (
       <ReactTextAreaAutosize
+        ref={textAreaRef}
         style={style}
         value={value}
         className={classes}
-        onChange={() => console.log("CHANGED")}
+        onKeyDown={keydownHandler}
         {...props}
       />
     );
@@ -49,10 +62,12 @@ export default function TextAreaAutosize({
         {value}
       </span>
       <ReactTextAreaAutosize
+        ref={textAreaRef}
         maxRows={1}
         value={value}
         className={classes}
         style={{ width, ...style }}
+        onKeyDown={keydownHandler}
         {...props}
       />
     </div>
