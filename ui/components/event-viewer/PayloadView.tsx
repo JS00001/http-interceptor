@@ -15,7 +15,7 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
       <div className="ui-table-header-row flex items-center px-2">
         <p className="text-xs text-gray-800">Request Payload</p>
       </div>
-      <div className="p-2">
+      <div className="p-2 overflow-x-auto">
         <JsonViewer editable={editable} data={requestParams} />
       </div>
     </>

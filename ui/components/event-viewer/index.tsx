@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
 import classNames from "classnames";
+import { useMemo, useState } from "react";
 import { XIcon } from "@phosphor-icons/react";
 
 import HeadersView from "./HeadersView";
@@ -24,7 +24,7 @@ enum Tabs {
 export default function EventViewer({ event, editable = false, onClose }: EventViewerProps) {
   const [tab, setTab] = useState(Tabs.Headers);
 
-  const closeIconClasses = classNames(
+  const actionIconClasses = classNames(
     "p-1 rounded-full",
     "hover:bg-primary-100 active:bg-primary-200"
   );
@@ -48,7 +48,7 @@ export default function EventViewer({ event, editable = false, onClose }: EventV
   return (
     <>
       <div className="ui-table-header-row flex items-center px-2 gap-2">
-        <button className={closeIconClasses} onClick={onClose}>
+        <button className={actionIconClasses} title="Close Panel" onClick={onClose}>
           <XIcon size={12} className="text-gray-800" />
         </button>
 

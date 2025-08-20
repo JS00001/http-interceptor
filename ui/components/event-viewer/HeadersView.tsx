@@ -58,7 +58,6 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
   }, [event, statusCode, requestHeaders, responseHeaders]);
 
   const onHeaderValueChange = (key: string, value: string) => {
-    console.log("UPDATING HEADER", key, value);
     updateRequest(event.requestId, {
       ...event.request,
       headers: {

@@ -1,6 +1,6 @@
 import Protocol from 'devtools-protocol';
 
-import { CDP } from '@shared/types';
+import { CDP, NetworkEvent } from '@shared/types';
 import { GREEN } from '@shared/lib';
 import { requestStore } from '@shared/stores/network-event';
 import SocketManager from '@interceptor/lib/socket-manager';
@@ -19,8 +19,15 @@ export default class TabListener extends SocketManager {
     this.connect();
   }
 
-  public async forwardRequest(requestId: string) {
-    await this.send('Fetch.continueRequest', { requestId });
+  public async forwardRequest(event: NetworkEvent) {
+    const headers = Object.entries(event.request.headers).map(([name, value]) => {
+      return { name, value };
+    });
+
+    await this.send('Fetch.continueRequest', {
+      headers,
+      requestId: event.requestId,
+    });
   }
 
   public async dropRequest(requestId: string) {
@@ -91,6 +98,6 @@ export default class TabListener extends SocketManager {
       return;
     }
 
-    this.forwardRequest(params.requestId);
+    await this.send('Fetch.continueRequest', { requestId: params.requestId });
   }
 }

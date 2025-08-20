@@ -65,7 +65,7 @@ class BrowserListener extends SocketManager {
     for (const event of events) {
       const tab = this.findTab(event.tabId);
       if (tab) {
-        tab.forwardRequest(event.requestId);
+        tab.forwardRequest(event);
         requestStore.getState().forwardRequest(event.requestId);
       }
     }

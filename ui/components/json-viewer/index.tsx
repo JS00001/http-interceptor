@@ -10,6 +10,7 @@ interface JsonViewerProps {
   path?: string;
   level?: number;
   editable?: boolean;
+  onChange?: (path: string, value: string | number | boolean) => void;
 }
 
 // TODO: Separate files for sparate componetns
@@ -18,6 +19,7 @@ export default function JsonViewer({
   path = "",
   level = 1,
   editable = false,
+  onChange,
 }: JsonViewerProps) {
   const [expanded, setExpanded] = useState(level === 1);
 
@@ -28,7 +30,9 @@ export default function JsonViewer({
   const toggleExpanded = () => setExpanded(!expanded);
 
   if (!isObject) {
-    return <Node path={nodeKey} data={data} level={level} editable={editable} />;
+    return (
+      <Node path={nodeKey} data={data} level={level} editable={editable} onChange={onChange} />
+    );
   }
 
   const entries = isArray ? data.map((v, i) => [i, v]) : Object.entries(data);
@@ -88,9 +92,10 @@ interface NodeProps {
   data: string | number | boolean | null;
   level: number;
   editable: boolean;
+  onChange?: (path: string, value: string | number | boolean) => void;
 }
 
-function Node({ path, data, level, editable }: NodeProps) {
+function Node({ path, data, level, editable, onChange }: NodeProps) {
   const dataType = data === null ? "undefined" : typeof data;
   const value = dataType === "object" ? JSON.stringify(data) : String(data);
 
@@ -115,15 +120,13 @@ function Node({ path, data, level, editable }: NodeProps) {
       <p className="text-fuchsia-800">{path}</p>
       <p className="text-gray-800 mr-2">:</p>
       {dataType === "string" && <StringQuotation />}
-      {/* TODO: Make this scroll horizontal */}
-
       <TextAreaAutosize
         horizontal
         className={valueClasses}
         value={value}
         disabled={!editable}
+        onChange={(e) => onChange?.(path, e.target.value)}
       />
-
       {dataType === "string" && <StringQuotation />}
     </div>
   );

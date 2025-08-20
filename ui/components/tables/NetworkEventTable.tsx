@@ -19,10 +19,15 @@ export default function NetworkEventTable({
 }: NetworkEventTableProps<NetworkEvent>) {
   const [selectedRow, setSelectedRow] = useState<Row<NetworkEvent> | null>(null);
 
-  // TODO: We dont want to hard-code interceptedEvents, could be events
+  // Get the specific selected event from the store. Prioritize the intercepted event so that
+  // we update views that we can modify
   const selectedEvent = useNetworkEventStore((s) => {
     if (!selectedRow) return null;
-    return s.interceptedEvents[selectedRow.original.requestId];
+
+    return (
+      s.interceptedEvents[selectedRow.original.requestId] ??
+      s.events[selectedRow.original.requestId]
+    );
   });
 
   /**
