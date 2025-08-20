@@ -7,12 +7,16 @@ import SocketManager from '@interceptor/lib/socket-manager';
 import { requestStore } from '@shared/stores/network-event';
 
 class BrowserListener extends SocketManager {
-  private tabs: { [key: string]: TabListener } = {};
+  private tabs: Record<string, TabListener> = {};
 
   constructor() {
     super(null);
   }
 
+  /**
+   * Close the connection to the browsers websocket, as well as killing all of the
+   * tab's WS listeners
+   */
   public async close() {
     super.close();
     Object.values(this.tabs).forEach((tab) => tab.close());
@@ -39,7 +43,11 @@ class BrowserListener extends SocketManager {
     console.log(`${RED} Failed to connect to browser after 10 attempts`);
   }
 
-  public async dropEvents(events: NetworkEvent[]) {
+  /**
+   * Drop all of the selected events that have been intercepted. Finds their tabs
+   * connection, and allows them to drop the request
+   */
+  public dropEvents(events: NetworkEvent[]) {
     for (const event of events) {
       const tab = this.findTab(event.tabId);
       if (tab) {
@@ -49,6 +57,10 @@ class BrowserListener extends SocketManager {
     }
   }
 
+  /**
+   * Forward and complete held requests that have been intercepted. Finds their tabs
+   * connection, and allows them to forward the request
+   */
   public forwardEvents(events: NetworkEvent[]) {
     for (const event of events) {
       const tab = this.findTab(event.tabId);
@@ -63,11 +75,15 @@ class BrowserListener extends SocketManager {
    * Enable discovering new tabs whenever we connect to the
    * chrome socket for the first time
    */
-  async onConnect() {
+  protected async onConnect() {
     await this.send('Target.setDiscoverTargets', { discover: true });
   }
 
-  async onEvent({ method, params }: CDP.Response) {
+  /**
+   * Listen for specific websocket events. When tabs are created or updated, update the tab connection. When
+   * tabs are closed, delete their connection
+   */
+  protected async onEvent({ method, params }: CDP.Response) {
     if (method == 'Target.targetCreated') {
       const tab = params.targetInfo;
       if (tab.type === 'page' && !this.findTab(tab.targetId)) {
@@ -92,7 +108,8 @@ class BrowserListener extends SocketManager {
   }
 
   /**
-   * Check whether a tab already is being tracked
+   * Get a specific tab by its ID to access its
+   * connection
    */
   private findTab(id: string) {
     return this.tabs[id];
@@ -113,6 +130,10 @@ class BrowserListener extends SocketManager {
     }, 500);
   }
 
+  /**
+   * Close the connection to a specific tab and remove it
+   * from tracked tabs
+   */
   private closeTab(targetId: string) {
     const tab = this.findTab(targetId);
 

@@ -19,15 +19,15 @@ export default class TabListener extends SocketManager {
     this.connect();
   }
 
-  public forwardRequest(requestId: string) {
-    this.send('Fetch.continueRequest', { requestId });
+  public async forwardRequest(requestId: string) {
+    await this.send('Fetch.continueRequest', { requestId });
   }
 
-  public dropRequest(requestId: string) {
-    this.send('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
+  public async dropRequest(requestId: string) {
+    await this.send('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
   }
 
-  async onConnect() {
+  protected async onConnect() {
     console.log(`${GREEN} Connected to tab: ${this.url}`);
 
     await this.send('Network.enable');
@@ -37,7 +37,7 @@ export default class TabListener extends SocketManager {
     });
   }
 
-  async onEvent({ method, params }: CDP.Response) {
+  protected async onEvent({ method, params }: CDP.Response) {
     if (method == 'Fetch.requestPaused') {
       await this.onRequestPaused(params);
       return;
@@ -91,6 +91,6 @@ export default class TabListener extends SocketManager {
       return;
     }
 
-    await this.send('Fetch.continueRequest', { requestId: params.requestId });
+    this.forwardRequest(params.requestId);
   }
 }
