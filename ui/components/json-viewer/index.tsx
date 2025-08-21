@@ -58,6 +58,7 @@ export default function JsonViewer({
               data={value}
               path={`${path}.${key}`}
               level={level + 1}
+              onChange={onChange}
             />
           </div>
         ))}
@@ -120,13 +121,17 @@ function Node({ path, data, level, editable, onChange }: NodeProps) {
       <p className="text-fuchsia-800">{path}</p>
       <p className="text-gray-800 mr-2">:</p>
       {dataType === "string" && <StringQuotation />}
+
       <TextAreaAutosize
         horizontal
-        className={valueClasses}
         value={value}
+        className={valueClasses}
         disabled={!editable}
-        onChange={(e) => onChange?.(path, e.target.value)}
+        onChange={(e) => {
+          onChange?.(path, e.target.value);
+        }}
       />
+
       {dataType === "string" && <StringQuotation />}
     </div>
   );

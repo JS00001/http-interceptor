@@ -1,6 +1,7 @@
-# HTTP Interceptor
+# ⚡ HTTP Interceptor
 
-A modern HTTP traffic interceptor and modifier.
+A modern HTTP traffic interceptor and modifier. Tired of using BurpSuite's outdated UI to modify requests? Me too! This project implements a UI that matches
+the experience of Chrome's DevTools, so you can feel right at home!
 
 ### View all traffic going in and out of your browser
 

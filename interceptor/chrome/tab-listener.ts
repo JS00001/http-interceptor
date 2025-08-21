@@ -69,13 +69,17 @@ export default class TabListener extends SocketManager {
 
     const urlString = params.request.url;
     const methodString = params.request.method;
-    const paramNames = Object.keys(requestParams);
     const requestParamsString = JSON.stringify(requestParams);
     const enabledRules = rules.filter((rule) => rule.enabled && rule.value);
 
+    const paramNames = [
+      ...Object.keys(requestParams.queryParams),
+      ...Object.keys(requestParams.postData),
+    ];
+
     let shouldIntercept = enabledRules.length > 0;
 
-    for (const rule of rules) {
+    for (const rule of enabledRules) {
       const { field, operator: type, value } = rule;
 
       if (field == 'method') {

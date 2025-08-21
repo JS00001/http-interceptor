@@ -10,18 +10,21 @@ export const YELLOW = '🟡';
  * into a combined object
  */
 export const getRequestParams = (request: Protocol.Network.Request) => {
-  const reqParams = {};
+  const reqParams = {
+    queryParams: {},
+    postData: {},
+  };
 
   // Get URL params and store them
   const parsedUrl = new URL(request.url);
   const queryParams = new URLSearchParams(parsedUrl.search);
+  reqParams.queryParams = Object.fromEntries(queryParams.entries());
 
-  Object.assign(reqParams, Object.fromEntries(queryParams.entries()));
-
+  // Get the post data and store it
   if (request.hasPostData && request.postData) {
     const data = parseJSON(request.postData);
     if (!data) return reqParams;
-    Object.assign(reqParams, data);
+    reqParams.postData = data;
   }
 
   return reqParams;
