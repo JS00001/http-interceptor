@@ -6,10 +6,10 @@ import HeadersView from "./HeadersView";
 import PayloadView from "./PayloadView";
 import ResponseView from "./ResponseView";
 
-import { NetworkEvent } from "@shared/types";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 
 interface EventViewerProps {
-  event: NetworkEvent;
+  requestId: string;
   editable?: boolean;
   onClose: () => void;
 }
@@ -21,13 +21,16 @@ enum Tabs {
 }
 
 // TODO: Somewhere in here, add a button to forward the request or drop it from this pane
-export default function EventViewer({ event, editable = false, onClose }: EventViewerProps) {
+export default function EventViewer({
+  requestId,
+  editable = false,
+  onClose,
+}: EventViewerProps) {
   const [tab, setTab] = useState(Tabs.Headers);
 
-  const actionIconClasses = classNames(
-    "p-1 rounded-full",
-    "hover:bg-primary-100 active:bg-primary-200"
-  );
+  const event = useNetworkEventStore((s) => {
+    return s.interceptedEvents[requestId] ?? s.events[requestId];
+  });
 
   const tabList = useMemo(() => {
     const tabs = [Tabs.Headers, Tabs.Payload];
@@ -38,6 +41,11 @@ export default function EventViewer({ event, editable = false, onClose }: EventV
 
     return tabs;
   }, [event.response]);
+
+  const actionIconClasses = classNames(
+    "p-1 rounded-full",
+    "hover:bg-primary-100 active:bg-primary-200"
+  );
 
   const CurrentView = {
     [Tabs.Headers]: <HeadersView event={event} editable={editable} />,

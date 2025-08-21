@@ -2,7 +2,7 @@ import ReactTextAreaAutosize, {
   TextareaAutosizeProps as ReactTextAreaAutosizeProps,
 } from "react-textarea-autosize";
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 interface TextAreaAutosizeProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   horizontal?: boolean;
@@ -24,10 +24,9 @@ export default function TextAreaAutosize({
   const spanRef = useRef<HTMLSpanElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (spanRef.current) {
-      const newWidth = spanRef.current.offsetWidth;
-      setWidth(newWidth);
+      setWidth(spanRef.current.offsetWidth);
     }
   }, [value]);
 

@@ -115,7 +115,7 @@ export default function ConfigurationTable() {
 
   return (
     <div className="overflow-y-auto!">
-      <Table comfortable columns={columns} data={data} />
+      <Table comfortable columns={columns} data={data} getRowId={(row) => row.id} />
     </div>
   );
 }

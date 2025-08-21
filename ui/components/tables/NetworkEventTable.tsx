@@ -19,15 +19,10 @@ export default function NetworkEventTable({
 }: NetworkEventTableProps<NetworkEvent>) {
   const [selectedRow, setSelectedRow] = useState<Row<NetworkEvent> | null>(null);
 
-  // Get the specific selected event from the store. Prioritize the intercepted event so that
-  // we update views that we can modify
-  const selectedEvent = useNetworkEventStore((s) => {
-    if (!selectedRow) return null;
-
-    return (
-      s.interceptedEvents[selectedRow.original.requestId] ??
-      s.events[selectedRow.original.requestId]
-    );
+  const selectedRequestId = selectedRow?.original.requestId;
+  const requestIdExists = useNetworkEventStore((s) => {
+    if (!selectedRequestId) return false;
+    return !!s.interceptedEvents[selectedRequestId] || !!s.events[selectedRequestId];
   });
 
   /**
@@ -57,16 +52,21 @@ export default function NetworkEventTable({
           data={data}
           columns={columns}
           activeRowId={selectedRow?.id}
+          getRowId={(row) => row.requestId}
           onRowClick={onRowSelectionChange}
           {...props}
         />
       </Panel>
 
-      {selectedRow && selectedEvent && (
+      {selectedRow && selectedRequestId && requestIdExists && (
         <React.Fragment>
           <PanelResizeHandle />
           <Panel minSize={30} className="overflow-y-auto! border-l-2 border-primary-100">
-            <EventViewer editable={editable} event={selectedEvent} onClose={closeEventViewer} />
+            <EventViewer
+              editable={editable}
+              requestId={selectedRequestId}
+              onClose={closeEventViewer}
+            />
           </Panel>
         </React.Fragment>
       )}

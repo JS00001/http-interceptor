@@ -81,7 +81,7 @@ function TableHeaderCell<T>({ header }: { header: Header<T, unknown> }) {
 
 interface TableRowProps<T> {
   row: Row<T>;
-  activeRowId?: string;
+  activeRowId?: string | null;
   onRowClick: (row: Row<T>) => void;
 }
 
