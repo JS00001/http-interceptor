@@ -44,7 +44,6 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
 
   const onChange = (path: string, value: string | number | boolean) => {
     const request = event.request;
-
     const isPostData = lodash.has(requestParams.postData, path);
 
     if (isPostData) {
@@ -52,17 +51,6 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
       updateInterceptedRequest(event.requestId, {
         ...request,
         postData: JSON.stringify(requestParams.postData),
-      });
-      return;
-    }
-
-    const isQueryParam = lodash.has(requestParams.queryParams, path);
-
-    if (isQueryParam) {
-      lodash.set(requestParams.queryParams, path, value);
-      updateInterceptedRequest(event.requestId, {
-        ...request,
-        url: `${request.url}?${new URLSearchParams(requestParams.queryParams)}`,
       });
       return;
     }
@@ -78,12 +66,4 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
       </div>
     </div>
   ));
-}
-
-function pathExistsInObject(path: string, obj: any): boolean {
-  return path.split(".").every((key) => {
-    if (obj == null) return false;
-    obj = obj[key];
-    return true;
-  });
 }

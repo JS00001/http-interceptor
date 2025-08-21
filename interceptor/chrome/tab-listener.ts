@@ -27,6 +27,7 @@ export default class TabListener extends SocketManager {
     await this.send('Fetch.continueRequest', {
       headers,
       requestId: event.requestId,
+      postData: btoa(event.request.postData ?? ''),
     });
   }
 
