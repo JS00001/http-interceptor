@@ -14,7 +14,7 @@ interface PayloadViewProps {
 
 export default function PayloadView({ event, editable = false }: PayloadViewProps) {
   const requestParams = getRequestParams(event.request);
-  const updateInterceptedRequest = useNetworkEventStore((s) => s.updateInterceptedRequest);
+  const updateInterceptedRequest = useNetworkEventStore((s) => s.updateRequest);
 
   const hasPostData = Object.entries(requestParams.postData).length > 0;
   const hasQueryParams = Object.entries(requestParams.queryParams).length > 0;

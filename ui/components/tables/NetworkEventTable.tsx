@@ -5,7 +5,6 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { NetworkEvent } from "@shared/types";
 import EventViewer from "@ui/components/event-viewer";
 import Table, { TableProps } from "@ui/components/ui/Table";
-import { useNetworkEventStore } from "@shared/stores/network-event";
 
 interface NetworkEventTableProps<T extends NetworkEvent> extends TableProps<T> {
   editable?: boolean;
@@ -20,10 +19,7 @@ function NetworkEventTable({
   const [selectedRow, setSelectedRow] = useState<Row<NetworkEvent> | null>(null);
 
   const selectedRequestId = selectedRow?.original.requestId;
-  const requestIdExists = useNetworkEventStore((s) => {
-    if (!selectedRequestId) return false;
-    return !!s.interceptedEvents[selectedRequestId] || !!s.events[selectedRequestId];
-  });
+  const requestIdExists = data.find((e) => e.requestId === selectedRequestId);
 
   /**
    * When clicking a row, show information about the request and response

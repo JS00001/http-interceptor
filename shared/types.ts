@@ -7,8 +7,12 @@ export type DataType = string | number | boolean | null | undefined;
  * it exists
  */
 export interface NetworkEvent {
+  /** The ID of the tab that the request was made from */
   tabId: string;
+  /** The request ID (or network ID) */
   requestId: string;
+  /** The ID used to drop/forward the request */
+  fetchId?: string;
   type?: Protocol.Network.ResourceType;
   request: Protocol.Network.Request;
   response?: Protocol.Network.Response;
@@ -80,5 +84,6 @@ export namespace CDP {
     'Fetch.requestPaused': Protocol.Fetch.RequestPausedEvent;
     'Network.responseReceived': Protocol.Network.ResponseReceivedEvent;
     'Network.requestWillBeSent': Protocol.Network.RequestWillBeSentEvent;
+    'Network.loadingFailed': Protocol.Network.LoadingFailedEvent;
   };
 }

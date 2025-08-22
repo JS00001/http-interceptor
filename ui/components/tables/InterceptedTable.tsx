@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useDebounce } from "use-debounce";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -44,8 +45,14 @@ interface InterceptedTableProps {
 }
 
 export default function InterceptedTable({ onRowSelectionChange }: InterceptedTableProps) {
-  const events = useNetworkEventStore((s) => s.interceptedEvents);
-  const [data] = useDebounce(Object.values(events), 50);
+  const events = useNetworkEventStore((s) => s.events);
+  const interceptedEvents = useNetworkEventStore((s) => s.interceptedEvents);
+
+  const rows = useMemo(() => {
+    return interceptedEvents.map((id) => events[id]);
+  }, [interceptedEvents, events]);
+
+  const [data] = useDebounce(rows, 50);
 
   return (
     <NetworkEventTable

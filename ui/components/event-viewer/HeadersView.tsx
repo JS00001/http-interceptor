@@ -13,7 +13,7 @@ interface HeadersViewProps {
 }
 
 export default function HeadersView({ event, editable = false }: HeadersViewProps) {
-  const updateRequest = useNetworkEventStore((s) => s.updateInterceptedRequest);
+  const updateRequest = useNetworkEventStore((s) => s.updateRequest);
 
   const status = event.response?.status ?? 0;
   const statusCode = status

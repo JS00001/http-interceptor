@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { GREEN, RED, YELLOW } from '@shared/lib';
+import { RED, YELLOW } from '@shared/lib';
 import { CDP, NetworkEvent, Tauri } from '@shared/types';
 import TabListener from '@interceptor/chrome/tab-listener';
 import SocketManager from '@interceptor/lib/socket-manager';
@@ -51,7 +51,7 @@ class BrowserListener extends SocketManager {
     for (const event of events) {
       const tab = this.findTab(event.tabId);
       if (tab) {
-        tab.dropRequest(event.requestId);
+        tab.dropRequest(event);
         requestStore.getState().dropRequest(event.requestId);
       }
     }

@@ -6,8 +6,8 @@ import { NetworkEvent } from '@shared/types';
 
 interface INetworkEventState {
   eventKeys: string[];
+  interceptedEvents: string[]; // Array of requestIds
   events: { [requestId: string]: NetworkEvent };
-  interceptedEvents: { [requestId: string]: NetworkEvent };
 }
 
 interface INetworkEventStore extends INetworkEventState {
@@ -27,23 +27,19 @@ interface INetworkEventStore extends INetworkEventState {
   ) => void;
 
   // Intercepted Network Events that are waiting on action
-  addInterceptedRequest: (
-    requestId: string,
-    tabId: string,
-    request: Protocol.Network.Request
-  ) => void;
-  updateInterceptedRequest: (requestId: string, request: Protocol.Network.Request) => void;
   dropRequest: (requestId: string) => void;
   forwardRequest: (requestId: string) => void;
+  addInterceptedRequest: (requestId: string, fetchId?: string) => void;
+  updateRequest: (requestId: string, request: Protocol.Network.Request) => void;
 }
 
-const EVENT_LIMIT = 500;
+const EVENT_LIMIT = 1500;
 
 export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   const initialState = {
-    eventKeys: [],
     events: {},
-    interceptedEvents: {},
+    eventKeys: [],
+    interceptedEvents: [],
   };
 
   /**
@@ -93,14 +89,12 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
    * When a request matches an interception pattern, store it to be
    * modified, and then dropped or forwarded
    */
-  const addInterceptedRequest = (
-    requestId: string,
-    tabId: string,
-    request: Protocol.Network.Request
-  ) => {
+  const addInterceptedRequest = (requestId: string, fetchId?: string) => {
     set((state) =>
       produce(state, (draft) => {
-        draft.interceptedEvents[requestId] = { request, tabId, requestId };
+        if (!draft.events[requestId]) return;
+        draft.interceptedEvents.push(requestId);
+        if (fetchId) draft.events[requestId].fetchId = fetchId;
       })
     );
   };
@@ -109,10 +103,11 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
    * Update an intercepted request to have different
    * data
    */
-  const updateInterceptedRequest = (requestId: string, request: Protocol.Network.Request) => {
+  const updateRequest = (requestId: string, request: Protocol.Network.Request) => {
     set((state) =>
       produce(state, (draft) => {
-        draft.interceptedEvents[requestId].request = request;
+        if (!draft.events[requestId]) return;
+        draft.events[requestId].request = request;
       })
     );
   };
@@ -122,11 +117,10 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
    * dropped it, it is no longer held
    */
   const dropRequest = (requestId: string) => {
-    set((state) =>
-      produce(state, (draft) => {
-        delete draft.interceptedEvents[requestId];
-      })
-    );
+    set((state) => ({
+      ...state,
+      interceptedEvents: state.interceptedEvents.filter((id) => id !== requestId),
+    }));
   };
 
   /**
@@ -134,11 +128,10 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
    * forwarded it, it is no longer held
    */
   const forwardRequest = (requestId: string) => {
-    set((state) =>
-      produce(state, (draft) => {
-        delete draft.interceptedEvents[requestId];
-      })
-    );
+    set((state) => ({
+      ...state,
+      interceptedEvents: state.interceptedEvents.filter((id) => id !== requestId),
+    }));
   };
 
   /**
@@ -150,11 +143,11 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
 
   return {
     ...initialState,
+    clear,
     addRequest,
     addResponse,
+    updateRequest,
     addInterceptedRequest,
-    updateInterceptedRequest,
-    clear,
     dropRequest,
     forwardRequest,
   };

@@ -25,10 +25,7 @@ export default function EventViewer({
   onClose,
 }: EventViewerProps) {
   const [tab, setTab] = useState(Tabs.Headers);
-
-  const event = useNetworkEventStore((s) => {
-    return s.interceptedEvents[requestId] ?? s.events[requestId];
-  });
+  const event = useNetworkEventStore((s) => s.events[requestId]);
 
   const CurrentView = {
     [Tabs.Headers]: <HeadersView event={event} editable={editable} />,

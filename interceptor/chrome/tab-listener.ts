@@ -20,19 +20,26 @@ export default class TabListener extends SocketManager {
   }
 
   public async forwardRequest(event: NetworkEvent) {
+    if (!event.fetchId) return;
+
     const headers = Object.entries(event.request.headers).map(([name, value]) => {
       return { name, value };
     });
 
     await this.send('Fetch.continueRequest', {
       headers,
-      requestId: event.requestId,
+      requestId: event.fetchId,
       postData: btoa(event.request.postData ?? ''),
     });
   }
 
-  public async dropRequest(requestId: string) {
-    await this.send('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
+  public async dropRequest(event: NetworkEvent) {
+    if (!event.fetchId) return;
+
+    await this.send('Fetch.failRequest', {
+      requestId: event.fetchId,
+      errorReason: 'BlockedByClient',
+    });
   }
 
   public async close() {
@@ -67,9 +74,24 @@ export default class TabListener extends SocketManager {
       requestStore.getState().addResponse(params.requestId, params.response, params.type);
       return;
     }
+
+    // TODO
+    if (method == 'Network.loadingFailed') {
+      return;
+    }
   }
 
   private async onRequestPaused(params: Protocol.Fetch.RequestPausedEvent) {
+    // When tracing CDP requests, we need to standardize on using the networkId as the request ID. Fetch events have a custom 'requestId', so we
+    // will use this as the fetchId
+    const requestId = params.networkId;
+    const fetchId = params.requestId;
+
+    if (!requestId) {
+      await this.send('Fetch.continueRequest', { requestId: fetchId });
+      return;
+    }
+
     const rules = rulesStore.getState().rules;
     const requestParams = getRequestParams(params.request);
 
@@ -102,12 +124,13 @@ export default class TabListener extends SocketManager {
         shouldIntercept &&= matches;
       }
     }
+    requestStore.getState().updateRequest(requestId, params.request);
 
     if (shouldIntercept) {
-      requestStore.getState().addInterceptedRequest(params.requestId, this.id, params.request);
+      requestStore.getState().addInterceptedRequest(requestId, fetchId);
       return;
     }
 
-    await this.send('Fetch.continueRequest', { requestId: params.requestId });
+    await this.send('Fetch.continueRequest', { requestId: fetchId });
   }
 }
