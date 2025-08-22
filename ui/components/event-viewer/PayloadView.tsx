@@ -23,29 +23,32 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
 
   const sections = useMemo(() => {
     if (showOnlyPostData) {
-      return [{ title: "Request Payload", data: requestParams.postData }];
+      return [{ title: "Request Payload", data: requestParams.postData, editable }];
     }
 
     if (showOnlyQueryParams) {
-      return [{ title: "Query Params", data: requestParams.queryParams }];
+      return [{ title: "Query Params", data: requestParams.queryParams, editable: false }];
     }
 
     return [
       {
+        editable: false,
         title: "Query Params",
         data: requestParams.queryParams,
       },
       {
+        editable,
         title: "Request Payload",
         data: requestParams.postData,
       },
     ];
-  }, [requestParams, showOnlyPostData, showOnlyQueryParams]);
+  }, [requestParams, showOnlyPostData, showOnlyQueryParams, editable]);
 
   const onChange = (path: string, value: string | number | boolean) => {
     const request = event.request;
     const isPostData = lodash.has(requestParams.postData, path);
 
+    // TODO: This doesnt work in arrays
     if (isPostData) {
       lodash.set(requestParams.postData, path, value);
       updateInterceptedRequest(event.requestId, {
@@ -56,7 +59,7 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
     }
   };
 
-  return sections.map(({ title, data }) => (
+  return sections.map(({ title, data, editable }) => (
     <div key={title}>
       <div className="ui-table-header-row flex items-center px-2">
         <p className="text-xs text-gray-800">{title}</p>

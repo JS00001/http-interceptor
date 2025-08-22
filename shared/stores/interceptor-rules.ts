@@ -6,12 +6,14 @@ import { InterceptorRule } from '@shared/types';
 
 export interface InterceptorRulesState {
   rules: InterceptorRule[];
+  hasHydrated: boolean;
 }
 
 export interface InterceptorRulesStore extends InterceptorRulesState {
   addRule: () => void;
   removeRule: (id: string) => void;
   updateRule: (rule: InterceptorRule) => void;
+  hydrate: () => void;
 }
 
 const useRulesStore = create<InterceptorRulesStore>()(
@@ -19,6 +21,7 @@ const useRulesStore = create<InterceptorRulesStore>()(
     (set) => {
       const initialState: InterceptorRulesState = {
         rules: [],
+        hasHydrated: false,
       };
 
       /**
@@ -57,14 +60,33 @@ const useRulesStore = create<InterceptorRulesStore>()(
         set((state) => ({ rules: state.rules.filter((r) => r.id !== id) }));
       };
 
+      /**
+       * Mark the store as hydrated from persisted data
+       */
+      const hydrate = () => {
+        set((state) => ({ ...state, hasHydrated: true }));
+      };
+
       return {
         ...initialState,
         addRule,
         updateRule,
         removeRule,
+        hydrate,
       };
     },
-    { name: 'rules-store' }
+    {
+      name: 'rules-store',
+      onRehydrateStorage: () => {
+        return (state, error) => {
+          if (error || !state) {
+            return state;
+          }
+
+          return state.hydrate();
+        };
+      },
+    }
   )
 );
 

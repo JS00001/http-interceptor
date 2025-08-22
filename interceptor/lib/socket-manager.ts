@@ -49,6 +49,8 @@ abstract class SocketManager {
     }
 
     this.ws.addListener((event) => {
+      console.log(event);
+
       if (typeof event.data !== 'string') return;
       const message = parseJSON(event.data) as CDP.Response | null;
 

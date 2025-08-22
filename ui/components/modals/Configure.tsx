@@ -1,4 +1,4 @@
-import { XIcon } from "@phosphor-icons/react";
+import { CircleNotchIcon, XIcon } from "@phosphor-icons/react";
 
 import useModalStore from "@ui/store/modal";
 import Modal from "@ui/components/ui/Modal";
@@ -9,6 +9,7 @@ import ConfigurationTable from "@ui/components/tables/ConfigurationTable";
 export default function ConfigureModal() {
   const close = useModalStore((s) => s.close);
   const addRule = useRulesStore((s) => s.addRule);
+  const hasHydrated = useRulesStore((s) => s.hasHydrated);
   const isOpen = useModalStore((s) => s.modals.configure);
 
   const onClose = () => {
@@ -30,7 +31,13 @@ export default function ConfigureModal() {
         </div>
       </div>
 
-      <ConfigurationTable />
+      {!hasHydrated && (
+        <div className="w-full h-full flex items-center justify-center">
+          <CircleNotchIcon className="animate-spin text-primary-600" size={32} />
+        </div>
+      )}
+
+      {hasHydrated && <ConfigurationTable />}
     </Modal>
   );
 }

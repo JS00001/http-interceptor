@@ -96,6 +96,8 @@ interface NodeProps {
   onChange?: (path: string, value: string | number | boolean) => void;
 }
 
+// TODO: Individual state here that only emits onChange onBlur of the view
+// TODO: Make this support all types being changed to only other types
 function Node({ path, data, level, editable, onChange }: NodeProps) {
   const dataType = data === null ? "undefined" : typeof data;
   const value = dataType === "object" ? JSON.stringify(data) : String(data);
