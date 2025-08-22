@@ -98,11 +98,9 @@ interface HeaderEntryProps {
 function HeaderEntry({ entry, editable, onChange }: HeaderEntryProps) {
   const [value, setValue] = useState(entry.value);
 
-  const classes = classNames(
-    "col-span-2 text-xs text-gray-800",
-    "resize-none shrink-0 wrap-anywhere"
-  );
+  const classes = classNames("text-xs text-gray-800 col-span-2", "resize-none wrap-anywhere");
 
+  // TODO: This shows a scrollbar when it renders for the first time
   return (
     <div key={entry.key} className="grid grid-cols-3">
       <p className="text-xs text-gray-800">{entry.key}</p>

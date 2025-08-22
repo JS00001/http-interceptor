@@ -62,6 +62,10 @@
   .selected {
     background-color: var(--color-primary-200);
   }
+
+  .active {
+    background-color: var(--color-gray-200);
+  }
 }
 
 .ui-table-cell {

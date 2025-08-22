@@ -89,8 +89,11 @@ function TableRow<T>({ row, activeRowId, onRowClick }: TableRowProps<T>) {
   return (
     <tr key={row.id} className="ui-table-row" onClick={() => onRowClick(row)}>
       {row.getVisibleCells().map((cell) => {
-        const isSelected = cell.row.getIsSelected() || cell.row.id === activeRowId;
-        const rowClasses = classNames("ui-table-cell", isSelected && "selected");
+        const rowClasses = classNames(
+          "ui-table-cell",
+          cell.row.getIsSelected() && "selected",
+          cell.row.id === activeRowId && "active"
+        );
 
         return (
           <td

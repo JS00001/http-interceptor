@@ -2,7 +2,7 @@ import ReactTextAreaAutosize, {
   TextareaAutosizeProps as ReactTextAreaAutosizeProps,
 } from "react-textarea-autosize";
 import classNames from "classnames";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface TextAreaAutosizeProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   error?: boolean;
@@ -22,9 +22,17 @@ export default function TextAreaAutosize({
   onKeyDown,
   ...props
 }: TextAreaAutosizeProps & ReactTextAreaAutosizeProps) {
+  const [key, setKey] = useState(0);
   const [width, setWidth] = useState(0);
   const spanRef = useRef<HTMLSpanElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  // For some reason, react-textarea-autosize doesn't render the correct
+  // height until the first render cycle is done. So we need to force a re-calc of the height
+  // by changing its key once
+  useEffect(() => {
+    setKey((key) => key + 1);
+  }, []);
 
   useLayoutEffect(() => {
     if (spanRef.current) {
@@ -54,6 +62,7 @@ export default function TextAreaAutosize({
   if (!horizontal) {
     return (
       <ReactTextAreaAutosize
+        key={key}
         ref={textAreaRef}
         title={title}
         style={style}
@@ -73,6 +82,7 @@ export default function TextAreaAutosize({
         {value}
       </span>
       <ReactTextAreaAutosize
+        key={key}
         ref={textAreaRef}
         title={title}
         maxRows={1}
