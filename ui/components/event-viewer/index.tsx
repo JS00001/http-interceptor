@@ -1,10 +1,9 @@
+import { useState } from "react";
 import classNames from "classnames";
-import { useMemo, useState } from "react";
 import { FastForwardIcon, ProhibitIcon, XIcon } from "@phosphor-icons/react";
 
 import HeadersView from "./HeadersView";
 import PayloadView from "./PayloadView";
-import ResponseView from "./ResponseView";
 
 import browserListener from "@interceptor/index";
 import { useNetworkEventStore } from "@shared/stores/network-event";
@@ -18,7 +17,6 @@ interface EventViewerProps {
 enum Tabs {
   Headers = "Headers",
   Payload = "Payload",
-  Response = "Response",
 }
 
 export default function EventViewer({
@@ -32,16 +30,9 @@ export default function EventViewer({
     return s.interceptedEvents[requestId] ?? s.events[requestId];
   });
 
-  const tabList = useMemo(() => {
-    const tabs = [Tabs.Headers, Tabs.Payload];
-    if (event.response) tabs.push(Tabs.Response);
-    return tabs;
-  }, [event.response]);
-
   const CurrentView = {
     [Tabs.Headers]: <HeadersView event={event} editable={editable} />,
     [Tabs.Payload]: <PayloadView event={event} editable={editable} />,
-    [Tabs.Response]: <ResponseView event={event} />,
   }[tab];
 
   const actionIconClasses = classNames(
@@ -65,7 +56,7 @@ export default function EventViewer({
         </button>
 
         <div className="flex items-center h-full">
-          {tabList.map((label) => {
+          {Object.values(Tabs).map((label) => {
             const isActive = tab === label;
 
             const tabClasses = classNames(
