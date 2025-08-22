@@ -1,11 +1,12 @@
 import classNames from "classnames";
 import { useMemo, useState } from "react";
-import { XIcon } from "@phosphor-icons/react";
+import { FastForwardIcon, ProhibitIcon, XIcon } from "@phosphor-icons/react";
 
 import HeadersView from "./HeadersView";
 import PayloadView from "./PayloadView";
 import ResponseView from "./ResponseView";
 
+import browserListener from "@interceptor/index";
 import { useNetworkEventStore } from "@shared/stores/network-event";
 
 interface EventViewerProps {
@@ -20,7 +21,6 @@ enum Tabs {
   Response = "Response",
 }
 
-// TODO: Somewhere in here, add a button to forward the request or drop it from this pane
 export default function EventViewer({
   requestId,
   editable = false,
@@ -34,18 +34,9 @@ export default function EventViewer({
 
   const tabList = useMemo(() => {
     const tabs = [Tabs.Headers, Tabs.Payload];
-
-    if (event.response) {
-      tabs.push(Tabs.Response);
-    }
-
+    if (event.response) tabs.push(Tabs.Response);
     return tabs;
   }, [event.response]);
-
-  const actionIconClasses = classNames(
-    "p-1 rounded-full",
-    "hover:bg-primary-100 active:bg-primary-200"
-  );
 
   const CurrentView = {
     [Tabs.Headers]: <HeadersView event={event} editable={editable} />,
@@ -53,11 +44,24 @@ export default function EventViewer({
     [Tabs.Response]: <ResponseView event={event} />,
   }[tab];
 
+  const actionIconClasses = classNames(
+    "p-1 rounded-full",
+    "hover:bg-primary-100 active:bg-primary-200"
+  );
+
+  const onDropRequest = () => {
+    browserListener.dropEvents([event]);
+  };
+
+  const onForwardRequest = () => {
+    browserListener.forwardEvents([event]);
+  };
+
   return (
     <>
       <div className="ui-table-header-row flex items-center px-2 gap-2">
         <button className={actionIconClasses} title="Close Panel" onClick={onClose}>
-          <XIcon size={12} className="text-gray-800" />
+          <XIcon size={14} className="text-gray-800" />
         </button>
 
         <div className="flex items-center h-full">
@@ -83,6 +87,21 @@ export default function EventViewer({
             );
           })}
         </div>
+
+        {editable && (
+          <div className="flex flex-grow items-center justify-end gap-2">
+            <button className={actionIconClasses} title="Drop request" onClick={onDropRequest}>
+              <ProhibitIcon size={14} className="text-gray-800" />
+            </button>
+            <button
+              className={actionIconClasses}
+              title="Forward request"
+              onClick={onForwardRequest}
+            >
+              <FastForwardIcon size={14} className="text-gray-800" />
+            </button>
+          </div>
+        )}
       </div>
 
       {CurrentView}

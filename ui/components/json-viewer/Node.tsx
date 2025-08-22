@@ -14,7 +14,6 @@ interface NodeProps {
   onChange?: (path: string, value: DataType) => void;
 }
 
-// TODO: Make this support all types being changed to only other types
 export default function Node({ nodeKey, path, data, level, editable, onChange }: NodeProps) {
   const [error, setError] = useState(false);
   const [value, setValue] = useState(String(data));
@@ -94,15 +93,14 @@ export default function Node({ nodeKey, path, data, level, editable, onChange }:
     function: "text-purple-700",
   }[dataType];
 
+  const containerClasses = classNames("w-full flex items-center hover:bg-primary-50");
   const valueClasses = classNames("truncate resize-none w-auto", textColor);
 
   return (
-    <div
-      style={{ paddingLeft: level * 16 }}
-      className="w-full flex items-center hover:bg-primary-50"
-    >
+    <div style={{ paddingLeft: level * 16 }} className={containerClasses}>
       <p className="text-fuchsia-800">{nodeKey}</p>
       <p className="text-gray-800 mr-2">:</p>
+
       {dataType === "string" && <StringQuotation />}
 
       <TextAreaAutosize
