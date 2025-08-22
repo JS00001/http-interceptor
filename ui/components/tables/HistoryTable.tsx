@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useDebounce } from "use-debounce";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import UrlCell from "./cells/UrlCell";
@@ -32,8 +32,8 @@ const columns = [
 ];
 
 export default function HistoryTable() {
-  const data = useNetworkEventStore((s) => s.events);
-  const rowData = useMemo(() => Object.values(data), [data]);
+  const events = useNetworkEventStore((s) => s.events);
+  const [data] = useDebounce(Object.values(events), 50);
 
-  return <NetworkEventTable data={rowData} columns={columns} />;
+  return <NetworkEventTable data={data} columns={columns} />;
 }

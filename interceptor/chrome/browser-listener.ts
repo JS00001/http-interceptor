@@ -18,7 +18,7 @@ class BrowserListener extends SocketManager {
    * tab's WS listeners
    */
   public async close() {
-    super.close();
+    await super.close();
     Object.values(this.tabs).forEach((tab) => tab.close());
     this.tabs = {};
   }

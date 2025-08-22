@@ -5,6 +5,7 @@ import Protocol from 'devtools-protocol';
 import { NetworkEvent } from '@shared/types';
 
 interface INetworkEventState {
+  eventKeys: string[];
   events: { [requestId: string]: NetworkEvent };
   interceptedEvents: { [requestId: string]: NetworkEvent };
 }
@@ -40,6 +41,7 @@ const EVENT_LIMIT = 500;
 
 export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   const initialState = {
+    eventKeys: [],
     events: {},
     interceptedEvents: {},
   };
@@ -56,14 +58,15 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   ) => {
     set((state) =>
       produce(state, (draft) => {
-        if (Object.keys(draft.events).length < EVENT_LIMIT) {
-          draft.events[requestId] = { request, type, tabId, requestId };
-          return;
+        if (draft.events[requestId]) return;
+
+        if (draft.eventKeys.length >= EVENT_LIMIT) {
+          const oldest = draft.eventKeys.shift() as string;
+          delete draft.events[oldest];
         }
 
-        const keys = Object.keys(draft.events);
-        delete draft.events[keys[0]];
         draft.events[requestId] = { request, type, tabId, requestId };
+        draft.eventKeys.push(requestId);
       })
     );
   };

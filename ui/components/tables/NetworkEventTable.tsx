@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Row } from "@tanstack/react-table";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
@@ -11,7 +11,7 @@ interface NetworkEventTableProps<T extends NetworkEvent> extends TableProps<T> {
   editable?: boolean;
 }
 
-export default function NetworkEventTable({
+function NetworkEventTable({
   data,
   columns,
   editable,
@@ -73,3 +73,5 @@ export default function NetworkEventTable({
     </PanelGroup>
   );
 }
+
+export default memo(NetworkEventTable);

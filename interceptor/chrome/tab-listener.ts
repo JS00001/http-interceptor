@@ -1,7 +1,7 @@
 import Protocol from 'devtools-protocol';
 
-import { CDP, NetworkEvent } from '@shared/types';
 import { GREEN } from '@shared/lib';
+import { CDP, NetworkEvent } from '@shared/types';
 import { requestStore } from '@shared/stores/network-event';
 import SocketManager from '@interceptor/lib/socket-manager';
 import { rulesStore } from '@shared/stores/interceptor-rules';
@@ -33,6 +33,11 @@ export default class TabListener extends SocketManager {
 
   public async dropRequest(requestId: string) {
     await this.send('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
+  }
+
+  public async close() {
+    await this.send('Fetch.disable');
+    await super.close();
   }
 
   protected async onConnect() {
