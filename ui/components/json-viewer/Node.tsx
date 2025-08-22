@@ -2,9 +2,8 @@ import { z } from "zod";
 import classNames from "classnames";
 import { useMemo, useState } from "react";
 
+import type { DataType } from "@shared/types";
 import TextAreaAutosize from "@ui/components/ui/TextAreaAutosize";
-
-type DataType = string | number | boolean | null | undefined;
 
 interface NodeProps {
   path: string;

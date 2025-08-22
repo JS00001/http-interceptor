@@ -2,6 +2,7 @@ import lodash from "lodash";
 import { useMemo } from "react";
 
 import { NetworkEvent } from "@shared/types";
+import type { DataType } from "@shared/types";
 import { getRequestParams } from "@shared/lib";
 import JsonViewer from "@ui/components/json-viewer";
 import { useNetworkEventStore } from "@shared/stores/network-event";
@@ -44,7 +45,7 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
     ];
   }, [requestParams, showOnlyPostData, showOnlyQueryParams, editable]);
 
-  const onChange = (path: string, value: string | number | boolean | null | undefined) => {
+  const onChange = (path: string, value: DataType) => {
     const request = event.request;
     const isPostData = lodash.has(requestParams.postData, path);
 

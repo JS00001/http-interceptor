@@ -1,5 +1,7 @@
 import type { Protocol } from 'devtools-protocol';
 
+export type DataType = string | number | boolean | null | undefined;
+
 /**
  * Most common type. A network event is a request, and its response, if
  * it exists

@@ -3,12 +3,14 @@ import { useState } from "react";
 import Node from "./Node";
 import Group from "./Group";
 
+import type { DataType } from "@shared/types";
+
 interface JsonViewerProps {
-  data: string | number | boolean | null | Object;
+  data: DataType | object;
   path?: string;
   level?: number;
   editable?: boolean;
-  onChange?: (path: string, value: string | number | boolean | null | undefined) => void;
+  onChange?: (path: string, value: DataType) => void;
 }
 
 export default function JsonViewer({

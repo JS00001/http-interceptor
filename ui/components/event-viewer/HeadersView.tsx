@@ -1,4 +1,6 @@
-import { useMemo } from "react";
+import { produce } from "immer";
+import classNames from "classnames";
+import { useMemo, useState } from "react";
 
 import { NetworkEvent } from "@shared/types";
 import HTTP_STATUS from "@shared/lib/status-codes";
@@ -33,6 +35,7 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
       {
         id: "general",
         title: "General",
+        editable: false,
         entries: [
           { key: "Request Url", value: event.request.url },
           { key: "Request Method", value: event.request.method },
@@ -42,6 +45,7 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
       {
         id: "request-headers",
         title: "Request Headers",
+        editable: editable,
         entries: requestHeaders.map(([key, value]) => ({ key, value })),
       },
     ];
@@ -50,6 +54,7 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
       sectionList.push({
         id: "response-headers",
         title: "Response Headers",
+        editable: false,
         entries: responseHeaders.map(([key, value]) => ({ key, value })),
       });
     }
@@ -58,13 +63,11 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
   }, [event, statusCode, requestHeaders, responseHeaders]);
 
   const onHeaderValueChange = (key: string, value: string) => {
-    updateRequest(event.requestId, {
-      ...event.request,
-      headers: {
-        ...event.request.headers,
-        [key]: value,
-      },
+    const updatedEvent = produce(event, (draft) => {
+      draft.request.headers[key] = value;
     });
+
+    updateRequest(event.requestId, updatedEvent.request);
   };
 
   return sections.map((section) => (
@@ -74,18 +77,43 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
       </div>
       <div className="p-2 flex flex-col gap-1.5">
         {section.entries.map((entry) => (
-          <div key={entry.key} className="grid grid-cols-3">
-            <p className="text-xs text-gray-800">{entry.key}</p>
-            <TextAreaAutosize
-              value={entry.value}
-              // Only allow editing request headers, and only if the view should be editable
-              disabled={!editable || section.id !== "request-headers"}
-              className="col-span-2 text-xs text-gray-800 resize-none shrink-0 wrap-anywhere"
-              onChange={(e) => onHeaderValueChange(entry.key, e.target.value)}
-            />
-          </div>
+          <HeaderEntry
+            key={entry.key}
+            entry={entry}
+            editable={section.editable}
+            onChange={onHeaderValueChange}
+          />
         ))}
       </div>
     </div>
   ));
+}
+
+interface HeaderEntryProps {
+  editable?: boolean;
+  entry: { key: string; value: string };
+  onChange?: (key: string, value: string) => void;
+}
+
+function HeaderEntry({ entry, editable, onChange }: HeaderEntryProps) {
+  const [value, setValue] = useState(entry.value);
+
+  const classes = classNames(
+    "col-span-2 text-xs text-gray-800",
+    "resize-none shrink-0 wrap-anywhere"
+  );
+
+  return (
+    <div key={entry.key} className="grid grid-cols-3">
+      <p className="text-xs text-gray-800">{entry.key}</p>
+      <TextAreaAutosize
+        value={value}
+        disabled={!editable}
+        className={classes}
+        onChange={(e) => setValue(e.target.value)}
+        // To limit re-renders, only emit the changes to the parent on blur
+        onBlur={() => onChange?.(entry.key, value)}
+      />
+    </div>
+  );
 }
