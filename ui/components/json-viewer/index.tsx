@@ -1,19 +1,16 @@
 import { useState } from "react";
-import classNames from "classnames";
 
-import TextAreaAutosize from "@ui/components/ui/TextAreaAutosize";
-
-type JsonValue = string | number | boolean | null | Object;
+import Node from "./Node";
+import Group from "./Group";
 
 interface JsonViewerProps {
-  data: JsonValue;
+  data: string | number | boolean | null | Object;
   path?: string;
   level?: number;
   editable?: boolean;
-  onChange?: (path: string, value: string | number | boolean) => void;
+  onChange?: (path: string, value: string | number | boolean | null | undefined) => void;
 }
 
-// TODO: Separate files for sparate componetns
 export default function JsonViewer({
   data,
   path = "",
@@ -64,81 +61,4 @@ export default function JsonViewer({
         ))}
     </div>
   );
-}
-
-interface GroupProps {
-  path: string;
-  level: number;
-  value: string;
-  expanded: boolean;
-}
-
-function Group({ path, expanded, level, value }: GroupProps) {
-  const arrow = expanded ? "▼" : "▶";
-
-  return (
-    <div style={{ paddingLeft: level * 16 }} className="w-full hover:bg-primary-50 -ml-4">
-      <p className="truncate text-gray-800 w-full">
-        <span className="mr-2 text-[12px]">{arrow}</span>
-        <span className="text-fuchsia-800">{path}</span>
-        {path && <span className="mr-2">:</span>}
-        {value}
-      </p>
-    </div>
-  );
-}
-
-interface NodeProps {
-  path: string;
-  data: string | number | boolean | null;
-  level: number;
-  editable: boolean;
-  onChange?: (path: string, value: string | number | boolean) => void;
-}
-
-// TODO: Individual state here that only emits onChange onBlur of the view
-// TODO: Make this support all types being changed to only other types
-function Node({ path, data, level, editable, onChange }: NodeProps) {
-  const dataType = data === null ? "undefined" : typeof data;
-  const value = dataType === "object" ? JSON.stringify(data) : String(data);
-
-  const textColor = {
-    undefined: "text-gray-400",
-    string: "text-green-600",
-    number: "text-blue-700",
-    bigint: "text-blue-700",
-    boolean: "text-orange-600",
-    symbol: "text-gray-400",
-    object: "text-gray-800",
-    function: "text-purple-700",
-  }[dataType];
-
-  const valueClasses = classNames("truncate resize-none w-auto", textColor);
-
-  return (
-    <div
-      style={{ paddingLeft: level * 16 }}
-      className="w-full flex items-center hover:bg-primary-50"
-    >
-      <p className="text-fuchsia-800">{path}</p>
-      <p className="text-gray-800 mr-2">:</p>
-      {dataType === "string" && <StringQuotation />}
-
-      <TextAreaAutosize
-        horizontal
-        value={value}
-        className={valueClasses}
-        disabled={!editable}
-        onChange={(e) => {
-          onChange?.(path, e.target.value);
-        }}
-      />
-
-      {dataType === "string" && <StringQuotation />}
-    </div>
-  );
-}
-
-function StringQuotation() {
-  return <span className="text-green-600">"</span>;
 }

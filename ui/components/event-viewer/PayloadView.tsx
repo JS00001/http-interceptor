@@ -44,7 +44,7 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
     ];
   }, [requestParams, showOnlyPostData, showOnlyQueryParams, editable]);
 
-  const onChange = (path: string, value: string | number | boolean) => {
+  const onChange = (path: string, value: string | number | boolean | null | undefined) => {
     const request = event.request;
     const isPostData = lodash.has(requestParams.postData, path);
 

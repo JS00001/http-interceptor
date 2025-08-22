@@ -84,7 +84,6 @@ class BrowserListener extends SocketManager {
    * tabs are closed, delete their connection
    */
   async onEvent({ method, params }: CDP.Response) {
-    console.log(method);
     if (method == 'Target.targetCreated') {
       const tab = params.targetInfo;
       if (tab.type === 'page' && !this.findTab(tab.targetId)) {

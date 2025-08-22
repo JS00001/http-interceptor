@@ -29,7 +29,7 @@
     "tailwindcss": "^4.1.11",
     "tauri-plugin-clipboard-api": "^2.1.11",
     "ws": "^8.18.3",
-    "zod": "^4.0.14",
+    "zod": "^4.0.17",
     "zustand": "^5.0.6"
   },
   "devDependencies": {

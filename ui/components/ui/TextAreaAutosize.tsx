@@ -5,6 +5,7 @@ import classNames from "classnames";
 import { useLayoutEffect, useRef, useState } from "react";
 
 interface TextAreaAutosizeProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  error?: boolean;
   horizontal?: boolean;
 }
 
@@ -13,6 +14,7 @@ interface TextAreaAutosizeProps extends React.TextareaHTMLAttributes<HTMLTextAre
  * uses a hack to calculate the width via a span, and adapts the text area to that width
  */
 export default function TextAreaAutosize({
+  error,
   value,
   style,
   horizontal,
@@ -30,7 +32,14 @@ export default function TextAreaAutosize({
     }
   }, [value]);
 
-  const classes = classNames("focus:ring-2 focus:ring-primary-200", className);
+  const classes = classNames(
+    "outline-none rounded-xs",
+    "focus:ring-2 focus:ring-primary-300",
+    error && "underline decoration-wavy decoration-4 decoration-red-500",
+    className
+  );
+
+  const title = error ? "Invalid value" : undefined;
 
   const keydownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     onKeyDown?.(e);
@@ -46,8 +55,11 @@ export default function TextAreaAutosize({
     return (
       <ReactTextAreaAutosize
         ref={textAreaRef}
+        title={title}
         style={style}
         value={value}
+        autoComplete="off"
+        autoCorrect="off"
         className={classes}
         onKeyDown={keydownHandler}
         {...props}
@@ -62,8 +74,11 @@ export default function TextAreaAutosize({
       </span>
       <ReactTextAreaAutosize
         ref={textAreaRef}
+        title={title}
         maxRows={1}
         value={value}
+        autoComplete="off"
+        autoCorrect="off"
         className={classes}
         style={{ width, ...style }}
         onKeyDown={keydownHandler}
