@@ -6,6 +6,7 @@ import type { DataType } from "@shared/types";
 import TextAreaAutosize from "@ui/components/ui/TextAreaAutosize";
 
 interface NodeProps {
+  nodeKey: string;
   path: string;
   level: number;
   editable: boolean;
@@ -14,7 +15,7 @@ interface NodeProps {
 }
 
 // TODO: Make this support all types being changed to only other types
-export default function Node({ path, data, level, editable, onChange }: NodeProps) {
+export default function Node({ nodeKey, path, data, level, editable, onChange }: NodeProps) {
   const [error, setError] = useState(false);
   const [value, setValue] = useState(String(data));
 
@@ -100,7 +101,7 @@ export default function Node({ path, data, level, editable, onChange }: NodeProp
       style={{ paddingLeft: level * 16 }}
       className="w-full flex items-center hover:bg-primary-50"
     >
-      <p className="text-fuchsia-800">{path}</p>
+      <p className="text-fuchsia-800">{nodeKey}</p>
       <p className="text-gray-800 mr-2">:</p>
       {dataType === "string" && <StringQuotation />}
 

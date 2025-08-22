@@ -49,14 +49,13 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
     const request = event.request;
     const isPostData = lodash.has(requestParams.postData, path);
 
-    // TODO: This doesnt work in arrays
     if (isPostData) {
       lodash.set(requestParams.postData, path, value);
+
       updateInterceptedRequest(event.requestId, {
         ...request,
         postData: JSON.stringify(requestParams.postData),
       });
-      return;
     }
   };
 

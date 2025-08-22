@@ -30,7 +30,14 @@ export default function JsonViewer({
 
   if (!isObject) {
     return (
-      <Node path={nodeKey} data={data} level={level} editable={editable} onChange={onChange} />
+      <Node
+        nodeKey={nodeKey}
+        path={path}
+        data={data}
+        level={level}
+        editable={editable}
+        onChange={onChange}
+      />
     );
   }
 
@@ -42,7 +49,7 @@ export default function JsonViewer({
     <div className="text-[11px] font-mono cursor-default">
       <div onClick={toggleExpanded}>
         <Group
-          path={nodeKey}
+          nodeKey={nodeKey}
           level={level}
           expanded={expanded}
           value={isArray ? arrayDisplayString : objectDisplayString}
@@ -53,10 +60,10 @@ export default function JsonViewer({
         entries.map(([key, value]) => (
           <div key={key}>
             <JsonViewer
-              editable={editable}
               data={value}
-              path={`${path}.${key}`}
               level={level + 1}
+              editable={editable}
+              path={path.length > 0 ? `${path}.${key}` : `${key}`}
               onChange={onChange}
             />
           </div>
