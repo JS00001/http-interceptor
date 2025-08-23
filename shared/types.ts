@@ -96,5 +96,6 @@ export namespace CDP {
     'Network.responseReceived': Protocol.Network.ResponseReceivedEvent;
     'Network.requestWillBeSent': Protocol.Network.RequestWillBeSentEvent;
     'Network.loadingFailed': Protocol.Network.LoadingFailedEvent;
+    'Network.loadingFinished': Protocol.Network.LoadingFinishedEvent;
   };
 }

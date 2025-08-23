@@ -97,6 +97,11 @@ export default class TabListener extends SocketManager {
       requestStore.getState().setError(params.requestId, params.errorText);
       return;
     }
+
+    // TODO: When loading is finished, that means that the req was sucessful, so for certain types like
+    // blob:, we can mark it as (finished)
+    if (method == 'Network.loadingFinished') {
+    }
   }
 
   private async onRequestPaused(params: Protocol.Fetch.RequestPausedEvent) {

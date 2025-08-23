@@ -2,6 +2,7 @@ import { produce } from "immer";
 import classNames from "classnames";
 import { useMemo, useState } from "react";
 
+import { formatError } from "@shared/lib";
 import { NetworkEvent } from "@shared/types";
 import HTTP_STATUS from "@shared/lib/status-codes";
 import TextAreaAutosize from "@ui/components/ui/TextAreaAutosize";
@@ -15,10 +16,19 @@ interface HeadersViewProps {
 export default function HeadersView({ event, editable = false }: HeadersViewProps) {
   const updateRequest = useNetworkEventStore((s) => s.updateRequest);
 
-  const status = event.response?.status ?? 0;
-  const statusCode = status
-    ? `${status} ${HTTP_STATUS[status as keyof typeof HTTP_STATUS] ?? ""}`
-    : "(pending)";
+  // TODO: Make this logic a function so that we can reuse it across
+  // MethodCell, StatusCell, UrlCell, HeadersView, and more
+  const statusCode = useMemo(() => {
+    const errorText = formatError(event.errorText);
+    const status = event.response?.status ?? 0;
+    const statusText = HTTP_STATUS[status as keyof typeof HTTP_STATUS] ?? "";
+
+    if (status) {
+      return `${status} ${statusText}`;
+    }
+
+    return errorText ?? "(pending)";
+  }, [event.errorText, event.response?.status]);
 
   // Sort request headers by header name
   const requestHeaders = Object.entries(event.request.headers).sort((a, b) => {

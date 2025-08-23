@@ -3,7 +3,6 @@ import { Row } from "@tanstack/react-table";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import { NetworkEvent } from "@shared/types";
-import Autoscroll from "@ui/components/ui/Autoscroll";
 import EventViewer from "@ui/components/event-viewer";
 import Table, { TableProps } from "@ui/components/ui/Table";
 
@@ -58,7 +57,10 @@ function NetworkEventTable({
 
       {selectedRow && selectedRequestId && requestIdExists && (
         <React.Fragment>
-          <PanelResizeHandle />
+          <PanelResizeHandle
+            hitAreaMargins={{ fine: 2, coarse: 2 }}
+            style={{ marginLeft: 2 }}
+          />
           <Panel minSize={30} className="overflow-y-auto! border-l-2 border-primary-100">
             <EventViewer
               editable={editable}
