@@ -81,6 +81,7 @@ export default class TabListener extends SocketManager {
       return;
     }
 
+    // TODO: This isnt adding things for /conversation on chatgpt.com
     if (method == 'Network.requestWillBeSent') {
       requestStore
         .getState()
@@ -115,6 +116,10 @@ export default class TabListener extends SocketManager {
       return;
     }
 
+    // Default requests from Network.requestWillBeSent don't intercept the body/post data, so we need
+    // to add that data manually, since Fetch.requestPaused does contain it
+    requestStore.getState().updateRequest(requestId, params.request);
+
     const rules = rulesStore.getState().rules;
     const requestParams = getRequestParams(params.request);
 
@@ -147,10 +152,6 @@ export default class TabListener extends SocketManager {
         shouldIntercept &&= matches;
       }
     }
-
-    // Default requests from Network.requestWillBeSent don't intercept the body/post data, so we need
-    // to add that data manually, since Fetch.requestPaused does contain it
-    requestStore.getState().updateRequest(requestId, params.request);
 
     if (shouldIntercept) {
       requestStore.getState().addInterceptedRequest(requestId, fetchId);

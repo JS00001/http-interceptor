@@ -103,6 +103,7 @@ export default function Node({ nodeKey, path, data, level, editable, onChange }:
 
       {dataType === "string" && <StringQuotation />}
 
+      {/* TODO: Make this auto select all when tabbing between inputs */}
       <TextAreaAutosize
         horizontal
         error={error}
