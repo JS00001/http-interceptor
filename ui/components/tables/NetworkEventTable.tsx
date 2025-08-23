@@ -45,16 +45,14 @@ function NetworkEventTable({
   return (
     <PanelGroup direction="horizontal" autoSaveId="network-event-table">
       <Panel minSize={30}>
-        <Autoscroll className="h-full">
-          <Table
-            data={data}
-            columns={columns}
-            activeRowId={selectedRow?.id}
-            getRowId={(row) => row.requestId}
-            onRowClick={onRowSelectionChange}
-            {...props}
-          />
-        </Autoscroll>
+        <Table
+          data={data}
+          columns={columns}
+          activeRowId={selectedRow?.id}
+          getRowId={(row) => row.requestId}
+          onRowClick={onRowSelectionChange}
+          {...props}
+        />
       </Panel>
 
       {selectedRow && selectedRequestId && requestIdExists && (

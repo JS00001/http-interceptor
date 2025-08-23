@@ -6,8 +6,8 @@ import {
   TableOptions,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect } from "react";
 import classNames from "classnames";
+import { useEffect, useRef, useState } from "react";
 
 export type DefaultTableProps<T> = Omit<
   TableOptions<T>,
@@ -15,6 +15,7 @@ export type DefaultTableProps<T> = Omit<
 >;
 
 export type TableProps<T> = DefaultTableProps<T> & {
+  autoscroll?: boolean;
   comfortable?: boolean;
   activeRowId?: string | null;
   onRowClick?: (row: Row<T>) => void;
@@ -22,15 +23,61 @@ export type TableProps<T> = DefaultTableProps<T> & {
 };
 
 export default function Table<T>({
+  autoscroll,
   comfortable,
   activeRowId,
   onRowClick,
   onRowSelectionChange,
   ...props
 }: TableProps<T>) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const table = useReactTable({ ...props, getCoreRowModel: getCoreRowModel() });
   const tableClasses = classNames("ui-table", comfortable && "comfortable");
   const selectedRowData = table.getSelectedRowModel().flatRows;
+
+  // Virtualization
+  const [scrollTop, setScrollTop] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  const overscan = 5;
+  const itemCount = table.getRowCount();
+  const itemHeight = comfortable ? 36 : 24;
+
+  const visibleRowCount = Math.ceil(containerHeight / itemHeight);
+  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
+  const endIndex = Math.min(itemCount, startIndex + visibleRowCount + overscan * 2);
+
+  const offsetY = startIndex * itemHeight;
+  const totalHeight = itemHeight * itemCount;
+  const visibleRows = table.getRowModel().rows.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (container) {
+      setContainerHeight(container.offsetHeight);
+    }
+
+    const handleScroll = () => {
+      if (container) {
+        setScrollTop(container.scrollTop);
+      }
+    };
+
+    const handleResize = () => {
+      if (container) {
+        setContainerHeight(container.offsetHeight);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    container?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      container?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   /**
    * We need to listen for changes to selected rows and emit the changes when
@@ -49,25 +96,29 @@ export default function Table<T>({
   };
 
   return (
-    <table className={tableClasses}>
-      <thead>
-        <tr className="ui-table-header-row">
-          {table.getFlatHeaders().map((header) => (
-            <TableHeaderCell key={header.id} header={header} />
+    <div ref={containerRef} className="relative overflow-y-auto h-full">
+      <table className={tableClasses} style={{ height: totalHeight }}>
+        <thead>
+          <tr className="ui-table-header-row">
+            {table.getFlatHeaders().map((header) => (
+              <TableHeaderCell key={header.id} header={header} />
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr style={{ height: offsetY }} />
+          {visibleRows.map((row) => (
+            <TableRow
+              key={row.id}
+              row={row}
+              activeRowId={activeRowId}
+              onRowClick={onRowClickHandler}
+            />
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <TableRow
-            key={row.id}
-            row={row}
-            activeRowId={activeRowId}
-            onRowClick={onRowClickHandler}
-          />
-        ))}
-      </tbody>
-    </table>
+          <tr style={{ height: totalHeight - endIndex * itemHeight }} />
+        </tbody>
+      </table>
+    </div>
   );
 }
 

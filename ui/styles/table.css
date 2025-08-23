@@ -51,7 +51,7 @@
 .ui-table-row {
   height: var(--row-height);
 
-  &:nth-child(even) {
+  &:nth-child(odd) {
     background-color: var(--color-primary-50);
   }
 

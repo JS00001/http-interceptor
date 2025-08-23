@@ -10,7 +10,7 @@ export default function StatusCell(ctx: CellContext<NetworkEvent, unknown>) {
   const status = ctx.row.original.response?.status ?? 0;
   const errorText = formatError(ctx.row.original.errorText);
 
-  const statusText = errorText || status.toString() || "(pending)";
+  const statusText = (errorText || status || "(pending)").toString();
 
   const textClasses = classNames("truncate", errored ? "text-red-600" : "text-gray-800");
 
