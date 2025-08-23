@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { motion } from "motion/react";
 import { PropsWithChildren } from "react";
 
 import useKeyListener from "@ui/hooks/useKeyListener";
@@ -19,8 +20,18 @@ export default function Modal({
     if (open) onClose();
   });
 
+  const backdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
+
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 10 },
+    visible: { opacity: 1, scale: 1, y: 0 },
+  };
+
   const backdropStyles = classNames(
-    "bg-black/30 backdrop-blur-xs w-full h-full absolute z-40",
+    "bg-black/30 backdrop-blur-sm w-full h-full absolute z-40",
     "flex items-center justify-center px-12"
   );
 
@@ -32,10 +43,24 @@ export default function Modal({
   if (!open) return null;
 
   return (
-    <div className={backdropStyles} onClick={onClose}>
-      <div className={modalStyles} onClick={(e) => e.stopPropagation()}>
+    <motion.div
+      className={backdropStyles}
+      initial="hidden"
+      animate="visible"
+      variants={backdropVariants}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={modalVariants}
+        transition={{ duration: 0.2 }}
+        className={modalStyles}
+        onClick={(e) => e.stopPropagation()}
+      >
         {children}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

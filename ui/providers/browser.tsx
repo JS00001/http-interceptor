@@ -45,6 +45,8 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
    * it to listen for events
    */
   const launchBrowser = async () => {
+    if (isConnected) return;
+
     try {
       await invoke("launch_browser");
       await browserListener.start();
@@ -61,6 +63,8 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
    * Start the WS Connection to the browser CDP
    */
   const listenToBrowserEvents = async () => {
+    if (isConnected) return;
+
     try {
       await browserListener.start();
       setCanConnect(true);
@@ -77,6 +81,8 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
    * browser itself
    */
   const disconnectFromBrowser = async () => {
+    if (!isConnected) return;
+
     try {
       await browserListener.close();
       setIsConnected(false);

@@ -101,7 +101,7 @@ const columns = [
   }),
   columnHelper.accessor("id", {
     id: "delete",
-    header: "Delete",
+    header: "",
     meta: { width: 54 },
     cell: (ctx) => {
       const removeRule = useRulesStore((s) => s.removeRule);

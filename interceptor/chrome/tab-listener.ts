@@ -19,6 +19,10 @@ export default class TabListener extends SocketManager {
     this.connect();
   }
 
+  /**
+   * Take a paused network event, and forward it to completion. This also forwards
+   * the updated headers and body
+   */
   public async forwardRequest(event: NetworkEvent) {
     if (!event.fetchId) return;
 
@@ -33,6 +37,9 @@ export default class TabListener extends SocketManager {
     });
   }
 
+  /**
+   * Kill an intercepted network event from completing
+   */
   public async dropRequest(event: NetworkEvent) {
     if (!event.fetchId) return;
 
@@ -42,14 +49,21 @@ export default class TabListener extends SocketManager {
     });
   }
 
+  /**
+   * Close the CDP WS connection. Starts by disabling request interception
+   * first, so that we don't prevent all future requests
+   */
   public async close() {
     await this.send('Fetch.disable');
     await super.close();
   }
 
+  /**
+   * Runs when we connect to the CDP websocket for the first
+   * time
+   */
   protected async onConnect() {
     console.log(`${GREEN} Connected to tab: ${this.url}`);
-
     await this.send('Network.enable');
     await this.send('Page.enable');
     await this.send('Fetch.enable', {
@@ -57,6 +71,10 @@ export default class TabListener extends SocketManager {
     });
   }
 
+  /**
+   * Main event handler for the socket. Handles all incoming messages
+   * from CDP
+   */
   protected async onEvent({ method, params }: CDP.Response) {
     if (method == 'Fetch.requestPaused') {
       await this.onRequestPaused(params);
@@ -77,6 +95,7 @@ export default class TabListener extends SocketManager {
 
     // TODO
     if (method == 'Network.loadingFailed') {
+      console.log(params);
       return;
     }
   }
@@ -124,6 +143,9 @@ export default class TabListener extends SocketManager {
         shouldIntercept &&= matches;
       }
     }
+
+    // Default requests from Network.requestWillBeSent don't intercept the body/post data, so we need
+    // to add that data manually, since Fetch.requestPaused does contain it
     requestStore.getState().updateRequest(requestId, params.request);
 
     if (shouldIntercept) {
