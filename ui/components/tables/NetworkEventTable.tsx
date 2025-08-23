@@ -5,6 +5,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { NetworkEvent } from "@shared/types";
 import EventViewer from "@ui/components/event-viewer";
 import Table, { TableProps } from "@ui/components/ui/Table";
+import Autoscroll from "../ui/Autoscroll";
 
 interface NetworkEventTableProps<T extends NetworkEvent> extends TableProps<T> {
   editable?: boolean;
@@ -43,15 +44,17 @@ function NetworkEventTable({
 
   return (
     <PanelGroup direction="horizontal" autoSaveId="network-event-table">
-      <Panel minSize={30} className="overflow-y-auto!">
-        <Table
-          data={data}
-          columns={columns}
-          activeRowId={selectedRow?.id}
-          getRowId={(row) => row.requestId}
-          onRowClick={onRowSelectionChange}
-          {...props}
-        />
+      <Panel minSize={30}>
+        <Autoscroll className="h-full">
+          <Table
+            data={data}
+            columns={columns}
+            activeRowId={selectedRow?.id}
+            getRowId={(row) => row.requestId}
+            onRowClick={onRowSelectionChange}
+            {...props}
+          />
+        </Autoscroll>
       </Panel>
 
       {selectedRow && selectedRequestId && requestIdExists && (
