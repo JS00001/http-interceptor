@@ -93,9 +93,9 @@ export default class TabListener extends SocketManager {
       return;
     }
 
-    // TODO
     if (method == 'Network.loadingFailed') {
-      console.log(params);
+      console.log(params.errorText);
+      requestStore.getState().setError(params.requestId, params.errorText);
       return;
     }
   }

@@ -13,20 +13,22 @@ import { useMemo } from "react";
 import classNames from "classnames";
 import { CellContext } from "@tanstack/react-table";
 
+import { hasError } from "@shared/lib";
 import { NetworkEvent } from "@shared/types";
 
 export default function UrlCell(ctx: CellContext<NetworkEvent, unknown>) {
+  const errored = hasError(ctx.row.original);
+
   // Get the URL to display (Either the domain name, or the last segment of the path)
   const url = new URL(ctx.row.original.request.url);
   const stringifiedUrl = url.toString();
   const pathname = url.pathname.split("/").pop() || url.hostname;
 
   const type = ctx.row.original.type;
-  const status = ctx.row.original.response?.status ?? 0;
 
   const Icon = useMemo(() => {
-    if (status >= 400) {
-      return <XCircleIcon size={14} className="shrink-0 text-red-500" weight="fill" />;
+    if (errored) {
+      return <XCircleIcon size={14} className="shrink-0 text-red-600" weight="fill" />;
     }
 
     if (type === "XHR" || type === "Fetch") {
@@ -58,9 +60,9 @@ export default function UrlCell(ctx: CellContext<NetworkEvent, unknown>) {
     }
 
     return <FileIcon size={14} className="shrink-0 text-gray-500" />;
-  }, [type, status]);
+  }, [type, errored]);
 
-  const textClasses = classNames("truncate", status >= 400 ? "text-red-500" : "text-gray-800");
+  const textClasses = classNames("truncate", errored ? "text-red-600" : "text-gray-800");
 
   return (
     <div className="flex items-center gap-2 truncate" title={stringifiedUrl}>

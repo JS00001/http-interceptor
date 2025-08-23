@@ -2,7 +2,8 @@ import { useDebounce } from "use-debounce";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import UrlCell from "./cells/UrlCell";
-import TextCell from "./cells/TextCell";
+import StatusCell from "./cells/StatusCell";
+import MethodCell from "./cells/MethodCell";
 import NetworkEventTable from "./NetworkEventTable";
 
 import { NetworkEvent } from "@shared/types";
@@ -19,13 +20,13 @@ const columns = [
   }),
   columnHelper.accessor("response.status", {
     id: "status",
-    cell: TextCell,
+    cell: StatusCell,
     header: "Status",
-    meta: { width: 140, fallbackValue: "(pending)" },
+    meta: { width: 140 },
   }),
   columnHelper.accessor("request.method", {
     id: "method",
-    cell: TextCell,
+    cell: MethodCell,
     header: "Method",
     meta: { width: 140 },
   }),

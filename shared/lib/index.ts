@@ -1,5 +1,5 @@
 import Protocol from 'devtools-protocol';
-import { InterceptorRuleOperator } from '../types';
+import { InterceptorRuleOperator, NetworkEvent } from '../types';
 
 export const RED = '🔴';
 export const GREEN = '🟢';
@@ -68,4 +68,43 @@ export const parseJSON = (str: string) => {
   } catch {
     return null;
   }
+};
+
+/**
+ * Check if a network event errored or not
+ */
+export const hasError = (event: NetworkEvent) => {
+  const status = event.response?.status ?? 0;
+  return status >= 400 || event.errorText;
+};
+
+/**
+ * Format a network error
+ */
+export const formatError = (errorText?: string) => {
+  if (!errorText) return null;
+
+  const error = errorText.split('::')[1];
+
+  if (!error) {
+    return `(failed) ${errorText}`;
+  }
+
+  if (error === 'ERR_ABORTED') {
+    return '(cancelled)';
+  }
+
+  if (error === 'ERR_BLOCKED_BY_CLIENT.Inspector') {
+    return '(blocked:devtools)';
+  }
+
+  if (error === 'ERR_BLOCKED_BY_CLIENT') {
+    return '(blocked:other)';
+  }
+
+  if (error == 'TIMEOUT') {
+    return '(timeout)';
+  }
+
+  return `(failed) ${errorText}`;
 };

@@ -3,18 +3,29 @@ import type { Protocol } from 'devtools-protocol';
 export type DataType = string | number | boolean | null | undefined;
 
 /**
- * Most common type. A network event is a request, and its response, if
- * it exists
+ * Most common type. A network event is a request, its response (if successful), and
+ * all other relevant metadata about the requests life cycle
  */
 export interface NetworkEvent {
   /** The ID of the tab that the request was made from */
   tabId: string;
+
   /** The request ID (or network ID) */
   requestId: string;
+
   /** The ID used to drop/forward the request */
   fetchId?: string;
+
+  /** The error message, if the network request failed */
+  errorText?: string;
+
+  /** The type of the request */
   type?: Protocol.Network.ResourceType;
+
+  /** The full request object */
   request: Protocol.Network.Request;
+
+  /** The full response object */
   response?: Protocol.Network.Response;
 }
 

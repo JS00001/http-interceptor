@@ -13,7 +13,7 @@ interface INetworkEventState {
 interface INetworkEventStore extends INetworkEventState {
   clear: () => void;
 
-  // History of all network events for the session, limited to EVENT_LIMIT
+  // Normal request/response actions
   addRequest: (
     requestId: string,
     tabId: string,
@@ -25,12 +25,13 @@ interface INetworkEventStore extends INetworkEventState {
     response: Protocol.Network.Response,
     type?: Protocol.Network.ResourceType
   ) => void;
+  setError: (requestId: string, errorText: string) => void;
+  updateRequest: (requestId: string, request: Protocol.Network.Request) => void;
 
-  // Intercepted Network Events that are waiting on action
+  // Intercepted network events actions
   dropRequest: (requestId: string) => void;
   forwardRequest: (requestId: string) => void;
   addInterceptedRequest: (requestId: string, fetchId?: string) => void;
-  updateRequest: (requestId: string, request: Protocol.Network.Request) => void;
 }
 
 const EVENT_LIMIT = 1500;
@@ -100,6 +101,18 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   };
 
   /**
+   * Set the error text if an intercepted request fails
+   */
+  const setError = (requestId: string, errorText: string) => {
+    set((state) =>
+      produce(state, (draft) => {
+        if (!draft.events[requestId]) return;
+        draft.events[requestId].errorText = errorText;
+      })
+    );
+  };
+
+  /**
    * Update an intercepted request to have different
    * data
    */
@@ -146,6 +159,7 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
     clear,
     addRequest,
     addResponse,
+    setError,
     updateRequest,
     addInterceptedRequest,
     dropRequest,

@@ -3,9 +3,9 @@ import { Row } from "@tanstack/react-table";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import { NetworkEvent } from "@shared/types";
+import Autoscroll from "@ui/components/ui/Autoscroll";
 import EventViewer from "@ui/components/event-viewer";
 import Table, { TableProps } from "@ui/components/ui/Table";
-import Autoscroll from "../ui/Autoscroll";
 
 interface NetworkEventTableProps<T extends NetworkEvent> extends TableProps<T> {
   editable?: boolean;
