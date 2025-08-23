@@ -46,6 +46,7 @@ function NetworkEventTable({
     <PanelGroup direction="horizontal" autoSaveId="network-event-table">
       <Panel minSize={30}>
         <Table
+          autoscroll
           data={data}
           columns={columns}
           activeRowId={selectedRow?.id}

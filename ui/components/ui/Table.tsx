@@ -15,10 +15,22 @@ export type DefaultTableProps<T> = Omit<
 >;
 
 export type TableProps<T> = DefaultTableProps<T> & {
+  /** How many rows to overscan when virtualizing */
+  overscan?: number;
+
+  /** Whether to autoscroll the table to the bottom as rows are added or not */
   autoscroll?: boolean;
+
+  /** Increases the padding of each row, making it have more whitespace */
   comfortable?: boolean;
+
+  /** The id of the currently active row, will be highlighted */
   activeRowId?: string | null;
+
+  /** When a row is clicked, take an action */
   onRowClick?: (row: Row<T>) => void;
+
+  /** When the rows currently selected are changed */
   onRowSelectionChange?: (rows: Row<T>[]) => void;
 };
 
@@ -26,31 +38,38 @@ export default function Table<T>({
   autoscroll,
   comfortable,
   activeRowId,
+  overscan = 10,
   onRowClick,
   onRowSelectionChange,
   ...props
 }: TableProps<T>) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const table = useReactTable({ ...props, getCoreRowModel: getCoreRowModel() });
   const tableClasses = classNames("ui-table", comfortable && "comfortable");
   const selectedRowData = table.getSelectedRowModel().flatRows;
 
+  // Manage autoscrolling
+  const [shouldScrollBottom, setShouldScrollBottom] = useState(autoscroll);
+
   // Virtualization
+  const containerRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const overscan = 5;
-  const itemCount = table.getRowCount();
-  const itemHeight = comfortable ? 36 : 24;
+  const rowCount = table.getRowCount();
+  const rowHeight = comfortable ? 36 : 24;
 
-  const visibleRowCount = Math.ceil(containerHeight / itemHeight);
-  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
-  const endIndex = Math.min(itemCount, startIndex + visibleRowCount + overscan * 2);
+  const visibleRowCount = Math.ceil(containerHeight / rowHeight);
+  const startIndex = Math.max(0, Math.floor(scrollTop / rowHeight) - overscan);
+  const endIndex = Math.min(rowCount, startIndex + visibleRowCount + overscan * 2);
 
-  const offsetY = startIndex * itemHeight;
-  const totalHeight = itemHeight * itemCount;
+  const offsetY = startIndex * rowHeight;
+  const totalHeight = rowHeight * rowCount;
   const visibleRows = table.getRowModel().rows.slice(startIndex, endIndex);
 
+  /**
+   * Listen for scroll events and resizing of the parent div, so that we
+   * can properly virtualize the table and autoscroll if needed
+   */
   useEffect(() => {
     const container = containerRef.current;
 
@@ -60,14 +79,15 @@ export default function Table<T>({
 
     const handleScroll = () => {
       if (container) {
-        setScrollTop(container.scrollTop);
+        const { scrollHeight, scrollTop, clientHeight } = container;
+        const isAtBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 1;
+        setScrollTop(scrollTop);
+        setShouldScrollBottom(isAtBottom);
       }
     };
 
     const handleResize = () => {
-      if (container) {
-        setContainerHeight(container.offsetHeight);
-      }
+      if (container) setContainerHeight(container.offsetHeight);
     };
 
     window.addEventListener("resize", handleResize);
@@ -80,8 +100,18 @@ export default function Table<T>({
   }, []);
 
   /**
+   * If we are at the bottom of the table, and new data gets added, we
+   * should autoscroll to the bottom of the table
+   */
+  useEffect(() => {
+    if (shouldScrollBottom && containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [shouldScrollBottom, rowCount]);
+
+  /**
    * We need to listen for changes to selected rows and emit the changes when
-   * they happen
+   * they happen, since tanstack table doesnt provide onSelect callbacks
    */
   useEffect(() => {
     onRowSelectionChange?.(selectedRowData);
@@ -115,7 +145,7 @@ export default function Table<T>({
               onRowClick={onRowClickHandler}
             />
           ))}
-          <tr style={{ height: totalHeight - endIndex * itemHeight }} />
+          <tr style={{ height: totalHeight - endIndex * rowHeight }} />
         </tbody>
       </table>
     </div>
