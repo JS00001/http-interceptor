@@ -27,6 +27,8 @@ export default function EventViewer({
   const [tab, setTab] = useState(Tabs.Headers);
   const event = useNetworkEventStore((s) => s.events[requestId]);
 
+  if (!event) return null;
+
   const CurrentView = {
     [Tabs.Headers]: <HeadersView event={event} editable={editable} />,
     [Tabs.Payload]: <PayloadView event={event} editable={editable} />,

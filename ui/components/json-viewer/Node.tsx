@@ -98,7 +98,7 @@ export default function Node({ nodeKey, path, data, level, editable, onChange }:
 
   return (
     <div style={{ paddingLeft: level * 16 }} className={containerClasses}>
-      <p className="text-fuchsia-800">{nodeKey}</p>
+      <p className="text-fuchsia-800 shrink-0">{nodeKey}</p>
       <p className="text-gray-800 mr-2">:</p>
 
       {dataType === "string" && <StringQuotation />}

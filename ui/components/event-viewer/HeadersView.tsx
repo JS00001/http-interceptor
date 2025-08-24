@@ -109,6 +109,7 @@ interface HeaderEntryProps {
 
 function HeaderEntry({ entry, editable, onChange }: HeaderEntryProps) {
   const [value, setValue] = useState(entry.value);
+  const textValue = editable ? value : entry.value;
 
   const classes = classNames("text-xs text-gray-800 col-span-2", "resize-none wrap-anywhere");
 
@@ -117,7 +118,7 @@ function HeaderEntry({ entry, editable, onChange }: HeaderEntryProps) {
     <div key={entry.key} className="grid grid-cols-3">
       <p className="text-xs text-gray-800">{entry.key}</p>
       <TextAreaAutosize
-        value={value}
+        value={textValue}
         disabled={!editable}
         className={classes}
         onChange={(e) => setValue(e.target.value)}

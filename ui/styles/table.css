@@ -25,6 +25,7 @@
   top: 0;
   width: 100%;
   z-index: 20;
+  cursor: default;
   background-color: var(--color-primary-50);
   border-bottom: 1px solid var(--row-border-color);
   height: calc(var(--row-height) + 4px);
@@ -34,6 +35,7 @@
   position: sticky;
   width: 100%;
   z-index: 10;
+  cursor: default;
   background-color: var(--color-primary-50);
   border-bottom: 1px solid var(--row-border-color);
   top: calc(var(--row-height) + 4px);

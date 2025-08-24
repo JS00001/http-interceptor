@@ -121,12 +121,6 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set) => {
         if (!draft.events[requestId]) return;
         draft.events[requestId].type = type;
         draft.events[requestId].response = response;
-
-        // Calculate how many bytes it costs to store the request and response
-        const request = draft.events[requestId].request;
-        const requestSize = JSON.stringify(request).length;
-        const responseSize = JSON.stringify(response).length;
-        console.log(`Request size: ${requestSize} bytes, Response size: ${responseSize} bytes`);
       })
     );
   };
