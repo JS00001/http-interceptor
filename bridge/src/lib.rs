@@ -1,4 +1,4 @@
-mod chrome_api;
+mod chrome;
 
 use std::process::{Command, Stdio};
 
@@ -25,11 +25,13 @@ pub fn run() {
  */
 #[tauri::command]
 async fn launch_browser() -> Result<(), String> {
-    Command::new("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+    let profile_dir = chrome::get_chrome_profile_path();
+    let chrome_path = chrome::get_chrome_path().ok_or("Chrome not found")?;
+
+    Command::new(chrome_path)
         .args(&[
             "--remote-debugging-port=9222",
-            // TODO: Make this not a tmp profile
-            "--user-data-dir=/tmp/chrome-tauri-profile",
+            &format!("--user-data-dir={}", profile_dir.display()),
             "--no-first-run",
             "--no-default-browser-check",
             "--new-window",
@@ -50,7 +52,7 @@ async fn launch_browser() -> Result<(), String> {
  */
 #[tauri::command]
 fn fetch_chrome_version() -> Result<serde_json::Value, String> {
-    chrome_api::get_chrome_version().map_err(|e| e.to_string())
+    chrome::get_chrome_version().map_err(|e| e.to_string())
 }
 
 /**
@@ -59,5 +61,5 @@ fn fetch_chrome_version() -> Result<serde_json::Value, String> {
  */
 #[tauri::command]
 fn fetch_chrome_tabs() -> Result<serde_json::Value, String> {
-    chrome_api::get_chrome_tabs().map_err(|e| e.to_string())
+    chrome::get_chrome_tabs().map_err(|e| e.to_string())
 }
