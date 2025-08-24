@@ -14,7 +14,7 @@ interface PayloadViewProps {
 
 export default function PayloadView({ event, editable = false }: PayloadViewProps) {
   const requestParams = getRequestParams(event.request);
-  const updateInterceptedRequest = useNetworkEventStore((s) => s.updateRequest);
+  const updateRequest = useNetworkEventStore((s) => s.addOrUpdateRequest);
 
   const hasPostData = Object.entries(requestParams.postData).length > 0;
   const hasQueryParams = Object.entries(requestParams.queryParams).length > 0;
@@ -52,9 +52,13 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
     if (isPostData) {
       lodash.set(requestParams.postData, path, value);
 
-      updateInterceptedRequest(event.requestId, {
-        ...request,
-        postData: JSON.stringify(requestParams.postData),
+      updateRequest({
+        tabId: event.tabId,
+        requestId: event.requestId,
+        request: {
+          ...request,
+          postData: JSON.stringify(requestParams.postData),
+        },
       });
     }
   };

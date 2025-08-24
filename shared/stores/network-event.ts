@@ -5,32 +5,63 @@ import Protocol from 'devtools-protocol';
 import { NetworkEvent } from '@shared/types';
 
 interface INetworkEventState {
-  eventKeys: string[];
-  interceptedEvents: string[]; // Array of requestIds
+  /** List of request IDs for quickly checking if a request exists */
+  requestIds: string[];
+
+  /** Array of requestIDs that have been intercepted */
+  interceptedEvents: string[];
+
+  /** Map of network events by their requestID */
   events: { [requestId: string]: NetworkEvent };
 }
 
 interface INetworkEventStore extends INetworkEventState {
+  /** Clear all history and intercepted events in the store */
   clear: () => void;
 
-  // Normal request/response actions
-  addRequest: (
-    requestId: string,
-    tabId: string,
-    request: Protocol.Network.Request,
-    type?: Protocol.Network.ResourceType
-  ) => void;
-  addResponse: (
-    requestId: string,
-    response: Protocol.Network.Response,
-    type?: Protocol.Network.ResourceType
-  ) => void;
-  setError: (requestId: string, errorText: string) => void;
-  updateRequest: (requestId: string, request: Protocol.Network.Request) => void;
+  /** Add a request to the history, or update it if it already exists */
+  addOrUpdateRequest: (props: {
+    /** The ID of the request. This is the network ID, not the fetch ID */
+    requestId: string;
 
-  // Intercepted network events actions
+    /** The ID of the tab that this request was made from */
+    tabId: string;
+
+    /** The request data object */
+    request: Protocol.Network.Request;
+
+    /** The resource type of the request */
+    type?: Protocol.Network.ResourceType;
+
+    /**
+     * Used to prevent race conditions. Only use this param if you want to update all fields EXCEPT the request.
+     * This is important when the current request object contains MORE information than the new request would
+     */
+    blockRequestChanges?: boolean;
+  }) => void;
+
+  /** Add a correlated response to a request */
+  addResponse: (
+    /** The ID of the request. This is the network ID, not the fetch ID */
+    requestId: string,
+
+    /** The response data object */
+    response: Protocol.Network.Response,
+
+    /** The resource type of the request */
+    type?: Protocol.Network.ResourceType
+  ) => void;
+
+  /** Add an error from a failed request to the history */
+  setError: (requestId: string, errorText: string) => void;
+
+  /** Remove a request from the intercepted events list */
   dropRequest: (requestId: string) => void;
+
+  /** Remove a request from the intercepted events list */
   forwardRequest: (requestId: string) => void;
+
+  /** Add a request to the intercepted events list */
   addInterceptedRequest: (requestId: string, fetchId?: string) => void;
 }
 
@@ -39,7 +70,7 @@ const EVENT_LIMIT = 1500;
 export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   const initialState = {
     events: {},
-    eventKeys: [],
+    requestIds: [],
     interceptedEvents: [],
   };
 
@@ -47,23 +78,31 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
    * Track a network request from the history. Uses a FIFO queue to limit
    * the number of requests stored in memory. Most people wont use history very often
    */
-  const addRequest = (
-    requestId: string,
-    tabId: string,
-    request: Protocol.Network.Request,
-    type?: Protocol.Network.ResourceType
-  ) => {
+  const addOrUpdateRequest = (props: {
+    requestId: string;
+    tabId: string;
+    request: Protocol.Network.Request;
+    type?: Protocol.Network.ResourceType;
+    blockRequestChanges?: boolean;
+  }) => {
+    const { requestId, tabId, request, type, blockRequestChanges } = props;
+
     set((state) =>
       produce(state, (draft) => {
-        if (draft.events[requestId]) return;
+        if (draft.events[requestId]) {
+          draft.events[requestId].tabId = tabId;
+          if (type) draft.events[requestId].type = type;
+          if (!blockRequestChanges) draft.events[requestId].request = request;
+          return;
+        }
 
-        if (draft.eventKeys.length >= EVENT_LIMIT) {
-          const oldest = draft.eventKeys.shift() as string;
+        if (draft.requestIds.length >= EVENT_LIMIT) {
+          const oldest = draft.requestIds.shift() as string;
           delete draft.events[oldest];
         }
 
         draft.events[requestId] = { request, type, tabId, requestId };
-        draft.eventKeys.push(requestId);
+        draft.requestIds.push(requestId);
       })
     );
   };
@@ -113,19 +152,6 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   };
 
   /**
-   * Update an intercepted request to have different
-   * data
-   */
-  const updateRequest = (requestId: string, request: Protocol.Network.Request) => {
-    set((state) =>
-      produce(state, (draft) => {
-        if (!draft.events[requestId]) return;
-        draft.events[requestId].request = request;
-      })
-    );
-  };
-
-  /**
    * Clear a request from the intercepted store, since we
    * dropped it, it is no longer held
    */
@@ -157,10 +183,9 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   return {
     ...initialState,
     clear,
-    addRequest,
     addResponse,
+    addOrUpdateRequest,
     setError,
-    updateRequest,
     addInterceptedRequest,
     dropRequest,
     forwardRequest,

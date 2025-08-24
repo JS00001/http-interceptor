@@ -14,7 +14,7 @@ interface HeadersViewProps {
 }
 
 export default function HeadersView({ event, editable = false }: HeadersViewProps) {
-  const updateRequest = useNetworkEventStore((s) => s.updateRequest);
+  const updateRequest = useNetworkEventStore((s) => s.addOrUpdateRequest);
 
   const statusCode = useMemo(() => {
     const errorText = formatError(event.errorText);
@@ -75,7 +75,11 @@ export default function HeadersView({ event, editable = false }: HeadersViewProp
       draft.request.headers[key] = value;
     });
 
-    updateRequest(event.requestId, updatedEvent.request);
+    updateRequest({
+      tabId: event.tabId,
+      requestId: event.requestId,
+      request: updatedEvent.request,
+    });
   };
 
   return sections.map((section) => (
