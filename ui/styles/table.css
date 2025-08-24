@@ -3,7 +3,11 @@
 .theme-red,
 .theme-blue,
 .theme-emerald,
-.theme-fuchsia {
+.theme-fuchsia,
+.theme-orange,
+.theme-green,
+.theme-purple,
+.theme-teal {
   --row-height: 24px;
   --row-border-color: var(--color-primary-100);
 }

@@ -3,7 +3,16 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface IPreferencesState {
-  theme: 'red' | 'blue' | 'indigo' | 'emerald' | 'fuchsia';
+  theme:
+    | 'red'
+    | 'blue'
+    | 'indigo'
+    | 'emerald'
+    | 'fuchsia'
+    | 'orange'
+    | 'green'
+    | 'purple'
+    | 'teal';
 }
 
 interface IPreferencesStore extends IPreferencesState {

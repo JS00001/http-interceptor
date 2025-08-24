@@ -22,6 +22,7 @@
     "@tauri-apps/plugin-websocket": "^2.4.0",
     "classnames": "^2.5.1",
     "immer": "^10.1.1",
+    "js-base64": "^3.7.8",
     "lodash": "^4.17.21",
     "motion": "^12.23.12",
     "react": "^18.3.1",
