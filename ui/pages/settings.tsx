@@ -18,7 +18,6 @@ export default function Settings() {
       selected: theme === "orange",
       onClick: () => setPreference("theme", "orange"),
     },
-
     {
       color: colors.green[400],
       selected: theme === "green",
