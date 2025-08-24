@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build:ui": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "update-version": "tsx scripts/update-version.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

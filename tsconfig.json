@@ -27,6 +27,6 @@
       "@interceptor/*": ["interceptor/*"]
     }
   },
-  "include": ["ui", "shared", "interceptor"],
+  "include": ["ui", "shared", "interceptor", "scripts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
