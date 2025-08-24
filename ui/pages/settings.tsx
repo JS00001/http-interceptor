@@ -9,14 +9,25 @@ export default function Settings() {
 
   const themes = [
     {
-      color: colors.indigo[400],
-      selected: theme === "indigo",
-      onClick: () => setPreference("theme", "indigo"),
-    },
-    {
       color: colors.red[400],
       selected: theme === "red",
       onClick: () => setPreference("theme", "red"),
+    },
+    {
+      color: colors.orange[400],
+      selected: theme === "orange",
+      onClick: () => setPreference("theme", "orange"),
+    },
+
+    {
+      color: colors.green[400],
+      selected: theme === "green",
+      onClick: () => setPreference("theme", "green"),
+    },
+    {
+      color: colors.emerald[400],
+      selected: theme === "emerald",
+      onClick: () => setPreference("theme", "emerald"),
     },
     {
       color: colors.blue[400],
@@ -24,9 +35,14 @@ export default function Settings() {
       onClick: () => setPreference("theme", "blue"),
     },
     {
-      color: colors.emerald[400],
-      selected: theme === "emerald",
-      onClick: () => setPreference("theme", "emerald"),
+      color: colors.indigo[400],
+      selected: theme === "indigo",
+      onClick: () => setPreference("theme", "indigo"),
+    },
+    {
+      color: colors.purple[400],
+      selected: theme === "purple",
+      onClick: () => setPreference("theme", "purple"),
     },
     {
       color: colors.fuchsia[400],
@@ -55,18 +71,16 @@ interface ThemeSelectorProps {
 }
 
 function ThemeSelector({ selected, color, onClick }: ThemeSelectorProps) {
-  const classes = classNames("rounded-full cursor-pointer", !selected ? "size-8" : "size-6");
+  const classes = classNames("rounded-full cursor-pointer size-6");
+  const borderColor = selected ? color : "transparent";
 
-  if (selected) {
-    return (
-      <div
-        style={{ borderColor: color }}
-        className="flex items-center justify-center border-2 size-8 rounded-full"
-      >
-        <div className={classes} style={{ backgroundColor: color }} />
-      </div>
-    );
-  }
-
-  return <button className={classes} style={{ backgroundColor: color }} onClick={onClick} />;
+  return (
+    <div
+      style={{ borderColor }}
+      className="flex items-center justify-center border-2 size-8 rounded-full"
+      onClick={onClick}
+    >
+      <div className={classes} style={{ backgroundColor: color }} />
+    </div>
+  );
 }
