@@ -1,3 +1,4 @@
+import { Base64 } from 'js-base64';
 import Protocol from 'devtools-protocol';
 
 import { GREEN } from '@shared/lib';
@@ -33,7 +34,7 @@ export default class TabListener extends SocketManager {
     await this.send('Fetch.continueRequest', {
       headers,
       requestId: event.fetchId,
-      postData: btoa(event.request.postData ?? ''),
+      postData: Base64.encode(event.request.postData ?? ''),
     });
   }
 

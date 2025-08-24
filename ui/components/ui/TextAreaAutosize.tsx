@@ -19,6 +19,7 @@ export default function TextAreaAutosize({
   style,
   horizontal,
   className,
+  onChange,
   onKeyDown,
   ...props
 }: TextAreaAutosizeProps & ReactTextAreaAutosizeProps) {
@@ -59,6 +60,19 @@ export default function TextAreaAutosize({
     }
   };
 
+  const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // We are using text areas for inputting JSON, so we dont ever want ugly italisized quotes
+    const event = {
+      ...e,
+      target: {
+        ...e.target,
+        value: e.target.value.replace(/[“”]/g, '"'),
+      },
+    };
+
+    onChange?.(event);
+  };
+
   if (!horizontal) {
     return (
       <ReactTextAreaAutosize
@@ -70,6 +84,7 @@ export default function TextAreaAutosize({
         autoComplete="off"
         autoCorrect="off"
         className={classes}
+        onChange={changeHandler}
         onKeyDown={keydownHandler}
         {...props}
       />
@@ -91,6 +106,7 @@ export default function TextAreaAutosize({
         autoCorrect="off"
         className={classes}
         style={{ width, ...style }}
+        onChange={changeHandler}
         onKeyDown={keydownHandler}
         {...props}
       />
