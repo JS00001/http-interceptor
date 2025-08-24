@@ -94,7 +94,7 @@ export default function Node({ nodeKey, path, data, level, editable, onChange }:
   }[dataType];
 
   const containerClasses = classNames("w-full flex items-center hover:bg-primary-50");
-  const valueClasses = classNames("truncate resize-none w-auto caret-blue-500", textColor);
+  const valueClasses = classNames("truncate resize-none w-auto caret-black", textColor);
 
   return (
     <div style={{ paddingLeft: level * 16 }} className={containerClasses}>
