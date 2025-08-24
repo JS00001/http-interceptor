@@ -1,4 +1,9 @@
-:root {
+/* Make sure the primary color adapts when the theme changes */
+:root,
+.theme-red,
+.theme-blue,
+.theme-emerald,
+.theme-fuchsia {
   --row-height: 24px;
   --row-border-color: var(--color-primary-100);
 }

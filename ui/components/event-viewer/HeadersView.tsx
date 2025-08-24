@@ -16,8 +16,6 @@ interface HeadersViewProps {
 export default function HeadersView({ event, editable = false }: HeadersViewProps) {
   const updateRequest = useNetworkEventStore((s) => s.updateRequest);
 
-  // TODO: Make this logic a function so that we can reuse it across
-  // MethodCell, StatusCell, UrlCell, HeadersView, and more
   const statusCode = useMemo(() => {
     const errorText = formatError(event.errorText);
     const status = event.response?.status ?? 0;

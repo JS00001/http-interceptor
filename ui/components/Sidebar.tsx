@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import classNames from "classnames";
-import { CellTowerIcon, CommandIcon } from "@phosphor-icons/react";
+import { CellTowerIcon, CommandIcon, GearIcon } from "@phosphor-icons/react";
 
 import useRouter from "@ui/store/router";
 
@@ -20,6 +20,12 @@ export default function Sidebar() {
         label: "Shortcuts",
         route: "/shortcuts" as const,
         isActive: router.pathname.startsWith("/shortcuts"),
+      },
+      {
+        icon: GearIcon,
+        label: "Settings",
+        route: "/settings" as const,
+        isActive: router.pathname.startsWith("/settings"),
       },
     ];
   }, [router.pathname]);
