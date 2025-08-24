@@ -6,6 +6,7 @@ version = 4
 name = "HTTPInterceptor"
 version = "0.1.0"
 dependencies = [
+ "dirs",
  "reqwest",
  "serde",
  "serde_json",
