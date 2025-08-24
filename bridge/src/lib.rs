@@ -31,6 +31,7 @@ async fn launch_browser() -> Result<(), String> {
     Command::new(chrome_path)
         .args(&[
             "--remote-debugging-port=9222",
+            "--remote-debugging-address=127.0.0.1",
             &format!("--user-data-dir={}", profile_dir.display()),
             "--no-first-run",
             "--no-default-browser-check",
