@@ -25,6 +25,7 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
 
     return () => {
       if (interval.current) clearInterval(interval.current);
+      browserListener.close();
     };
   }, []);
 
