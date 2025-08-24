@@ -1,13 +1,9 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  Header,
-  Row,
-  TableOptions,
-  useReactTable,
-} from "@tanstack/react-table";
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
+import { getCoreRowModel, Row, TableOptions, useReactTable } from "@tanstack/react-table";
+
+import TableRow from "./TableRow";
+import HeaderCell from "./HeaderCell";
 
 export type DefaultTableProps<T> = Omit<
   TableOptions<T>,
@@ -131,7 +127,7 @@ export default function Table<T>({
         <thead>
           <tr className="ui-table-header-row">
             {table.getFlatHeaders().map((header) => (
-              <TableHeaderCell key={header.id} header={header} />
+              <HeaderCell key={header.id} header={header} />
             ))}
           </tr>
         </thead>
@@ -149,43 +145,5 @@ export default function Table<T>({
         </tbody>
       </table>
     </div>
-  );
-}
-
-function TableHeaderCell<T>({ header }: { header: Header<T, unknown> }) {
-  return (
-    <th className="ui-table-header-cell" style={{ width: header.column.columnDef.meta?.width }}>
-      {flexRender(header.column.columnDef.header, header.getContext())}
-    </th>
-  );
-}
-
-interface TableRowProps<T> {
-  row: Row<T>;
-  activeRowId?: string | null;
-  onRowClick: (row: Row<T>) => void;
-}
-
-function TableRow<T>({ row, activeRowId, onRowClick }: TableRowProps<T>) {
-  return (
-    <tr key={row.id} className="ui-table-row" onClick={() => onRowClick(row)}>
-      {row.getVisibleCells().map((cell) => {
-        const rowClasses = classNames(
-          "ui-table-cell",
-          cell.row.getIsSelected() && "selected",
-          cell.row.id === activeRowId && "active"
-        );
-
-        return (
-          <td
-            key={cell.id}
-            className={rowClasses}
-            style={{ width: cell.column.columnDef.meta?.width }}
-          >
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </td>
-        );
-      })}
-    </tr>
   );
 }
