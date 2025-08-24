@@ -56,10 +56,10 @@ interface INetworkEventStore extends INetworkEventState {
   setError: (requestId: string, errorText: string) => void;
 
   /** Remove a request from the intercepted events list */
-  dropRequest: (requestId: string) => void;
+  removeInterceptedRequest: (requestId: string) => void;
 
-  /** Remove a request from the intercepted events list */
-  forwardRequest: (requestId: string) => void;
+  /** Remove all requests from the intercepted events list */
+  clearInterceptedEvents: () => void;
 
   /** Add a request to the intercepted events list */
   addInterceptedRequest: (requestId: string, fetchId?: string) => void;
@@ -67,7 +67,7 @@ interface INetworkEventStore extends INetworkEventState {
 
 const EVENT_LIMIT = 1500;
 
-export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
+export const useNetworkEventStore = create<INetworkEventStore>()((set) => {
   const initialState = {
     events: {},
     requestIds: [],
@@ -121,6 +121,12 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
         if (!draft.events[requestId]) return;
         draft.events[requestId].type = type;
         draft.events[requestId].response = response;
+
+        // Calculate how many bytes it costs to store the request and response
+        const request = draft.events[requestId].request;
+        const requestSize = JSON.stringify(request).length;
+        const responseSize = JSON.stringify(response).length;
+        console.log(`Request size: ${requestSize} bytes, Response size: ${responseSize} bytes`);
       })
     );
   };
@@ -153,9 +159,9 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
 
   /**
    * Clear a request from the intercepted store, since we
-   * dropped it, it is no longer held
+   * dropped it or forwarded it, it is no longer held
    */
-  const dropRequest = (requestId: string) => {
+  const removeInterceptedRequest = (requestId: string) => {
     set((state) => ({
       ...state,
       interceptedEvents: state.interceptedEvents.filter((id) => id !== requestId),
@@ -163,14 +169,10 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
   };
 
   /**
-   * Clear a request from the intercepted store, since we
-   * forwarded it, it is no longer held
+   * Clear the list of intercepted requests
    */
-  const forwardRequest = (requestId: string) => {
-    set((state) => ({
-      ...state,
-      interceptedEvents: state.interceptedEvents.filter((id) => id !== requestId),
-    }));
+  const clearInterceptedEvents = () => {
+    set((state) => ({ ...state, interceptedEvents: [] }));
   };
 
   /**
@@ -187,8 +189,8 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set, get) => {
     addOrUpdateRequest,
     setError,
     addInterceptedRequest,
-    dropRequest,
-    forwardRequest,
+    removeInterceptedRequest,
+    clearInterceptedEvents,
   };
 });
 

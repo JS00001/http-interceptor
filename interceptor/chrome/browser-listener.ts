@@ -52,7 +52,7 @@ class BrowserListener extends SocketManager {
       const tab = this.findTab(event.tabId);
       if (tab) {
         tab.dropRequest(event);
-        requestStore.getState().dropRequest(event.requestId);
+        requestStore.getState().removeInterceptedRequest(event.requestId);
       }
     }
   }
@@ -66,7 +66,7 @@ class BrowserListener extends SocketManager {
       const tab = this.findTab(event.tabId);
       if (tab) {
         tab.forwardRequest(event);
-        requestStore.getState().forwardRequest(event.requestId);
+        requestStore.getState().removeInterceptedRequest(event.requestId);
       }
     }
   }

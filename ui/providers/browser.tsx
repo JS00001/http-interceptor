@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useRef, useState, ReactNode } fro
 
 import { Tauri } from "@shared/types";
 import browserListener from "@interceptor/index";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 
 interface BrowserContextValue {
   canConnect: boolean;
@@ -18,6 +19,7 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
   const interval = useRef<NodeJS.Timeout>();
   const [canConnect, setCanConnect] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const clearInterceptedEvents = useNetworkEventStore((s) => s.clearInterceptedEvents);
 
   useEffect(() => {
     updateConnectionStatus();
@@ -36,9 +38,15 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
   const updateConnectionStatus = async () => {
     await invoke<Tauri.GetChromeVersion>("fetch_chrome_version")
       .then(() => setCanConnect(true))
-      .catch(() => setCanConnect(false));
+      .catch(() => {
+        clearInterceptedEvents();
+        setCanConnect(false);
+      });
 
-    await browserListener.ping().then((connected) => setIsConnected(connected));
+    await browserListener.ping().then((connected) => {
+      if (!connected) clearInterceptedEvents();
+      setIsConnected(connected);
+    });
   };
 
   /**
@@ -86,6 +94,7 @@ export function BrowserProvider({ children }: { children: ReactNode }) {
 
     try {
       await browserListener.close();
+      clearInterceptedEvents();
       setIsConnected(false);
     } catch (err) {
       console.log(err);
