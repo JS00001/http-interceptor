@@ -8,8 +8,11 @@ interface INetworkEventState {
   /** List of request IDs for quickly checking if a request exists */
   requestIds: string[];
 
-  /** Array of requestIDs that have been intercepted */
+  /** Array of requestIDs that are currently intercepted, pending action */
   interceptedEvents: string[];
+
+  /** Array of all requestIDs that have been intercepted */
+  allInterceptedEvents: string[];
 
   /** Map of network events by their requestID */
   events: { [requestId: string]: NetworkEvent };
@@ -72,6 +75,7 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set) => {
     events: {},
     requestIds: [],
     interceptedEvents: [],
+    allInterceptedEvents: [],
   };
 
   /**
@@ -134,6 +138,7 @@ export const useNetworkEventStore = create<INetworkEventStore>()((set) => {
       produce(state, (draft) => {
         if (!draft.events[requestId]) return;
         draft.interceptedEvents.push(requestId);
+        draft.allInterceptedEvents.push(requestId);
         if (fetchId) draft.events[requestId].fetchId = fetchId;
       })
     );

@@ -6,25 +6,35 @@ import useModalStore from "@ui/store/modal";
 import { NetworkEvent } from "@shared/types";
 import Button from "@ui/components/ui/Button";
 import HistoryTable from "@ui/components/tables/HistoryTable";
-import { useNetworkEventStore } from "@shared/stores/network-event";
 import DropRequestButton from "@ui/components/DropRequestButton";
+import { useNetworkEventStore } from "@shared/stores/network-event";
 import InterceptedTable from "@ui/components/tables/InterceptedTable";
 import BrowserControlButton from "@ui/components/BrowserControlButton";
 import ForwardRequestButton from "@ui/components/ForwardRequestButton";
+import InterceptionHistoryTable from "@ui/components/tables/InterceptionHistoryTable";
 
 enum Tab {
   Intercept = "Intercept",
-  History = "History",
+  History = "Network History",
+  InterceptionHistory = "Interception History",
 }
 
 const Tabs = [
   {
     label: "Intercepted",
     tab: Tab.Intercept,
+    description: "Intercepted requests, pending action",
+  },
+
+  {
+    label: "Network History",
+    tab: Tab.History,
+    description: "All network requests",
   },
   {
-    label: "History",
-    tab: Tab.History,
+    label: "Interception History",
+    tab: Tab.InterceptionHistory,
+    description: "All previous & current intercepted requests",
   },
 ];
 
@@ -52,28 +62,12 @@ export default function Intercept() {
         </div>
       </div>
 
-      {/* Tab Layer */}
+      {/* Tab Bar and Quick Actions */}
       <div className="pb-1 flex items-center text-sm gap-1">
-        {Tabs.map((item) => {
-          const isActive = item.tab === tab;
-          const onClick = () => setTab(item.tab);
-
-          const classes = classNames(
-            "px-2 rounded-md py-1 cursor-pointer",
-            "hover:bg-primary-50 hover:text-primary-500",
-            "active:bg-primary-100 active:text-primary-600",
-            isActive ? "bg-primary-50 text-primary-500" : "text-gray-500"
-          );
-
-          return (
-            <button key={item.tab} className={classes} onClick={onClick}>
-              <p>{item.label}</p>
-            </button>
-          );
-        })}
+        <TabBar value={tab} onChange={setTab} />
 
         <div className="flex flex-grow items-center justify-end gap-1">
-          {tab === Tab.History && (
+          {[Tab.History, Tab.InterceptionHistory].includes(tab) && (
             <Button color="secondary" onClick={clearRequests}>
               <ProhibitIcon size={16} /> Clear History
             </Button>
@@ -86,6 +80,32 @@ export default function Intercept() {
       {/* Main View */}
       {tab === Tab.History && <HistoryTable />}
       {tab === Tab.Intercept && <InterceptedTable onRowSelectionChange={setSelectedEvents} />}
+      {tab === Tab.InterceptionHistory && <InterceptionHistoryTable />}
     </div>
   );
+}
+
+interface TabBarProps {
+  value: Tab;
+  onChange: (value: Tab) => void;
+}
+
+function TabBar({ value, onChange }: TabBarProps) {
+  return Tabs.map((item) => {
+    const isActive = item.tab === value;
+    const onClick = () => onChange(item.tab);
+
+    const tabClasses = classNames(
+      "px-2 rounded-md py-1 cursor-pointer",
+      "hover:bg-primary-50 hover:text-primary-500",
+      "active:bg-primary-100 active:text-primary-600",
+      isActive ? "bg-primary-50 text-primary-500" : "text-gray-500"
+    );
+
+    return (
+      <button key={item.tab} title={item.description} className={tabClasses} onClick={onClick}>
+        <p>{item.label}</p>
+      </button>
+    );
+  });
 }
