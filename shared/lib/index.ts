@@ -5,14 +5,21 @@ export const RED = '🔴';
 export const GREEN = '🟢';
 export const YELLOW = '🟡';
 
+type ParsedRequestParams = {
+  queryParams: Record<string, any>;
+  postData: Record<string, any>;
+  postDataType: 'json' | 'form-data' | null;
+};
+
 /**
  * Take a CDP request, and convert both its query params and post data
  * into a combined object
  */
 export const getRequestParams = (request: Protocol.Network.Request) => {
-  const reqParams = {
+  const reqParams: ParsedRequestParams = {
     queryParams: {},
     postData: {},
+    postDataType: null,
   };
 
   // Get URL params and store them
@@ -25,6 +32,7 @@ export const getRequestParams = (request: Protocol.Network.Request) => {
     const jsonPayload = parseJSON(request.postData);
 
     if (jsonPayload) {
+      reqParams.postDataType = 'json';
       reqParams.postData = jsonPayload;
       return reqParams;
     }
@@ -34,6 +42,7 @@ export const getRequestParams = (request: Protocol.Network.Request) => {
 
     if (boundary) {
       const formData = parseFormData(request.postData, boundary);
+      reqParams.postDataType = 'form-data';
       reqParams.postData = formData;
     }
   }

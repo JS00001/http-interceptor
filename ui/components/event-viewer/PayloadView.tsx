@@ -23,8 +23,11 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
   const showOnlyQueryParams = !hasPostData && hasQueryParams;
 
   const sections = useMemo(() => {
+    const requestPayloadTitle =
+      requestParams.postDataType === "json" ? "Request Payload" : "Form Data";
+
     if (showOnlyPostData) {
-      return [{ title: "Request Payload", data: requestParams.postData, editable }];
+      return [{ title: requestPayloadTitle, data: requestParams.postData, editable }];
     }
 
     if (showOnlyQueryParams) {
@@ -39,7 +42,7 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
       },
       {
         editable,
-        title: "Request Payload",
+        title: requestPayloadTitle,
         data: requestParams.postData,
       },
     ];
