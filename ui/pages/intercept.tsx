@@ -1,9 +1,9 @@
 import { useState } from "react";
-import classNames from "classnames";
 import { GearIcon, ProhibitIcon } from "@phosphor-icons/react";
 
 import useModalStore from "@ui/store/modal";
 import { NetworkEvent } from "@shared/types";
+import TabBar from "@ui/components/ui/TabBar";
 import Button from "@ui/components/ui/Button";
 import HistoryTable from "@ui/components/tables/HistoryTable";
 import DropRequestButton from "@ui/components/DropRequestButton";
@@ -64,7 +64,7 @@ export default function Intercept() {
 
       {/* Tab Bar and Quick Actions */}
       <div className="pb-1 flex items-center text-sm gap-1">
-        <TabBar value={tab} onChange={setTab} />
+        <TabBar tabs={Tabs} value={tab} onChange={setTab} />
 
         <div className="flex flex-grow items-center justify-end gap-1">
           {[Tab.History, Tab.InterceptionHistory].includes(tab) && (
@@ -83,29 +83,4 @@ export default function Intercept() {
       {tab === Tab.InterceptionHistory && <InterceptionHistoryTable />}
     </div>
   );
-}
-
-interface TabBarProps {
-  value: Tab;
-  onChange: (value: Tab) => void;
-}
-
-function TabBar({ value, onChange }: TabBarProps) {
-  return Tabs.map((item) => {
-    const isActive = item.tab === value;
-    const onClick = () => onChange(item.tab);
-
-    const tabClasses = classNames(
-      "px-2 rounded-md py-1 cursor-pointer",
-      "hover:bg-primary-50 hover:text-primary-500",
-      "active:bg-primary-100 active:text-primary-600",
-      isActive ? "bg-primary-50 text-primary-500" : "text-gray-500"
-    );
-
-    return (
-      <button key={item.tab} title={item.description} className={tabClasses} onClick={onClick}>
-        <p>{item.label}</p>
-      </button>
-    );
-  });
 }

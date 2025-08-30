@@ -1,15 +1,38 @@
-import { CircleNotchIcon, XIcon } from "@phosphor-icons/react";
+import { useState } from "react";
+import { XIcon } from "@phosphor-icons/react";
+
+import Rules from "./Rules";
+import CustomHeaders from "./CustomHeaders";
 
 import useModalStore from "@ui/store/modal";
 import Modal from "@ui/components/ui/Modal";
 import Button from "@ui/components/ui/Button";
+import TabBar from "@ui/components/ui/TabBar";
 import useRulesStore from "@shared/stores/interceptor-rules";
-import ConfigurationTable from "@ui/components/tables/ConfigurationTable";
+
+enum Tab {
+  Rules = "Rules",
+  CustomHeaders = "Custom Headers",
+}
+
+const Tabs = [
+  {
+    label: "Rules",
+    tab: Tab.Rules,
+    description: "Define which requests to intercept",
+  },
+
+  {
+    label: "Custom Headers",
+    tab: Tab.CustomHeaders,
+    description: "Add custom headers to every request",
+  },
+];
 
 export default function ConfigureModal() {
+  const [tab, setTab] = useState(Tab.Rules);
   const close = useModalStore((s) => s.close);
   const addRule = useRulesStore((s) => s.addRule);
-  const hasHydrated = useRulesStore((s) => s.hasHydrated);
   const isOpen = useModalStore((s) => s.modals.configure);
 
   const onClose = () => {
@@ -21,7 +44,7 @@ export default function ConfigureModal() {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <div className="flex items-center justify-between p-4">
-        <h2>Interception Rules</h2>
+        <h2>Configure Interceptor</h2>
 
         <div className="self-end flex items-center gap-2">
           <Button onClick={addRule}>Add Rule</Button>
@@ -31,13 +54,10 @@ export default function ConfigureModal() {
         </div>
       </div>
 
-      {!hasHydrated && (
-        <div className="w-full h-full flex items-center justify-center">
-          <CircleNotchIcon className="animate-spin text-primary-600" size={32} />
-        </div>
-      )}
+      <TabBar tabs={Tabs} value={tab} onChange={setTab} className="px-4 pb-2" />
 
-      {hasHydrated && <ConfigurationTable />}
+      {tab === Tab.Rules && <Rules />}
+      {tab === Tab.CustomHeaders && <CustomHeaders />}
     </Modal>
   );
 }
