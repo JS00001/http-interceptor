@@ -5,7 +5,6 @@ import { GREEN } from '@shared/lib';
 import { CDP, NetworkEvent } from '@shared/types';
 import { requestStore } from '@shared/stores/network-event';
 import SocketManager from '@interceptor/lib/socket-manager';
-import { rulesStore } from '@shared/stores/interceptor-rules';
 import { preferencesStore } from '@shared/stores/preferences';
 import { getRequestParams, matchesInterceptorField } from '@shared/lib';
 
@@ -150,7 +149,7 @@ export default class TabListener extends SocketManager {
     });
 
     // Handle whether we intercept the request or not based on rules
-    const rules = rulesStore.getState().rules;
+    const rules = preferencesStore.getState().rules;
     const requestParams = getRequestParams(params.request);
 
     const urlString = params.request.url;

@@ -7,7 +7,7 @@ import TextInputCell from "./cells/TextInputCell";
 
 import Table from "@ui/components/ui/Table";
 import { InterceptorRule } from "@shared/types";
-import useRulesStore from "@shared/stores/interceptor-rules";
+import usePreferencesStore from "@shared/stores/preferences";
 
 const columnHelper = createColumnHelper<InterceptorRule>();
 
@@ -31,7 +31,7 @@ const columns = [
     header: "Enabled",
     meta: { width: 64 },
     cell: (ctx) => {
-      const setRule = useRulesStore((s) => s.updateRule);
+      const setRule = usePreferencesStore((s) => s.updateRule);
 
       return (
         <ToggleCell
@@ -46,7 +46,7 @@ const columns = [
     header: "Field",
     meta: { width: 128 },
     cell: (ctx) => {
-      const updateRule = useRulesStore((s) => s.updateRule);
+      const updateRule = usePreferencesStore((s) => s.updateRule);
 
       return (
         <SelectCell
@@ -67,7 +67,7 @@ const columns = [
     header: "Operator",
     meta: { width: 152 },
     cell: (ctx) => {
-      const updateRule = useRulesStore((s) => s.updateRule);
+      const updateRule = usePreferencesStore((s) => s.updateRule);
 
       return (
         <SelectCell
@@ -88,7 +88,7 @@ const columns = [
     header: "Value",
     meta: { width: "auto" },
     cell: (ctx) => {
-      const updateRule = useRulesStore((s) => s.updateRule);
+      const updateRule = usePreferencesStore((s) => s.updateRule);
 
       return (
         <TextInputCell
@@ -104,14 +104,14 @@ const columns = [
     header: "",
     meta: { width: 54 },
     cell: (ctx) => {
-      const removeRule = useRulesStore((s) => s.removeRule);
+      const removeRule = usePreferencesStore((s) => s.removeRule);
       return <DeleteCell onClick={() => removeRule(ctx.cell.getValue())} />;
     },
   }),
 ];
 
 export default function ConfigurationTable() {
-  const data = useRulesStore((s) => s.rules ?? []);
+  const data = usePreferencesStore((s) => s.rules ?? []);
 
   return (
     <div className="overflow-y-auto!">

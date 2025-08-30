@@ -1,9 +1,9 @@
 import { CircleNotchIcon } from "@phosphor-icons/react";
-import useRulesStore from "@shared/stores/interceptor-rules";
+import usePreferencesStore from "@shared/stores/preferences";
 import ConfigurationTable from "@ui/components/tables/ConfigurationTable";
 
 export default function Rules() {
-  const hasHydrated = useRulesStore((s) => s.hasHydrated);
+  const hasHydrated = usePreferencesStore((s) => s.hasHydrated);
 
   if (!hasHydrated) {
     return (

@@ -5,7 +5,8 @@ import DeleteCell from "./cells/DeleteCell";
 import TextInputCell from "./cells/TextInputCell";
 
 import Table from "@ui/components/ui/Table";
-import usePreferencesStore, { CustomHeader } from "@shared/stores/preferences";
+import { CustomHeader } from "@shared/types";
+import usePreferencesStore from "@shared/stores/preferences";
 
 const columnHelper = createColumnHelper<CustomHeader>();
 

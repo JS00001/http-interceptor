@@ -2,32 +2,27 @@ import { produce } from 'immer';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export interface CustomHeader {
-  id: string;
-  key: string;
-  value: string;
-  enabled: boolean;
-}
+import { CustomHeader, InterceptorRule, ThemeColor } from '@shared/types';
 
 interface IPreferencesState {
   hasHydrated: boolean;
+  theme: ThemeColor;
+  rules: InterceptorRule[];
   customHeaders: CustomHeader[];
-  theme:
-    | 'red'
-    | 'blue'
-    | 'indigo'
-    | 'emerald'
-    | 'fuchsia'
-    | 'orange'
-    | 'green'
-    | 'purple'
-    | 'teal';
 }
 
 interface IPreferencesStore extends IPreferencesState {
+  // Custom header methods
   addHeader: () => void;
   removeHeader: (id: string) => void;
   updateHeader: (header: CustomHeader) => void;
+
+  // Rule methods
+  addRule: () => void;
+  removeRule: (id: string) => void;
+  updateRule: (rule: InterceptorRule) => void;
+
+  // Other preferences/methods
   setTheme: (theme: IPreferencesState['theme']) => void;
   hydrate: () => void;
 }
@@ -36,9 +31,10 @@ const usePreferencesStore = create<IPreferencesStore>()(
   persist(
     (set) => {
       const initialState: IPreferencesState = {
-        hasHydrated: false,
-        theme: 'indigo',
+        rules: [],
         customHeaders: [],
+        theme: 'indigo',
+        hasHydrated: false,
       };
 
       const setTheme = (theme: IPreferencesState['theme']) => {
@@ -87,6 +83,42 @@ const usePreferencesStore = create<IPreferencesStore>()(
       };
 
       /**
+       * Add a new interceptor rule. This adds a new row to the table and wont actually
+       * intercept anything until the value is not empty
+       */
+      const addRule = () => {
+        set((state) =>
+          produce(state, (draft) => {
+            draft.rules.push({
+              id: crypto.randomUUID(),
+              field: 'url',
+              operator: 'equals',
+              value: '',
+              enabled: true,
+            });
+          })
+        );
+      };
+
+      /**
+       * Update an existing interceptor rule to new values. Matches based
+       * on ID
+       */
+      const updateRule = (rule: InterceptorRule) => {
+        set((state) => ({
+          rules: state.rules.map((r) => (r.id === rule.id ? rule : r)),
+        }));
+      };
+
+      /**
+       * Remove a rule based on its ID. Requests will no longer be
+       * intercepted for this rule
+       */
+      const removeRule = (id: string) => {
+        set((state) => ({ rules: state.rules.filter((r) => r.id !== id) }));
+      };
+
+      /**
        * Mark the store as hydrated from persisted data
        */
       const hydrate = () => {
@@ -99,6 +131,9 @@ const usePreferencesStore = create<IPreferencesStore>()(
         addHeader,
         removeHeader,
         updateHeader,
+        addRule,
+        removeRule,
+        updateRule,
         hydrate,
       };
     },
