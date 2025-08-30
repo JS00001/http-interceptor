@@ -124,5 +124,5 @@ export default function Node({ nodeKey, path, data, level, editable, onChange }:
 }
 
 function StringQuotation() {
-  return <span className="text-green-600">"</span>;
+  return <span className="text-green-600 text-[11px]">"</span>;
 }
