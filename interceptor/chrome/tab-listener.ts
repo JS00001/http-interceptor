@@ -5,7 +5,7 @@ import { GREEN } from '@shared/lib';
 import { CDP, NetworkEvent } from '@shared/types';
 import { requestStore } from '@shared/stores/network-event';
 import SocketManager from '@interceptor/lib/socket-manager';
-import { rulesStore } from '@shared/stores/interceptor-rules';
+import { preferencesStore } from '@shared/stores/preferences';
 import { getRequestParams, matchesInterceptorField } from '@shared/lib';
 
 export default class TabListener extends SocketManager {
@@ -121,15 +121,35 @@ export default class TabListener extends SocketManager {
       return;
     }
 
+    // Calculate the custom headers that we want to add to the request
+    const customHeaders = preferencesStore.getState().customHeaders;
+    const enabledHeaders = customHeaders.filter((header) => {
+      return header.enabled && header.key && header.value;
+    });
+
+    const transformedHeaders = Object.fromEntries(
+      enabledHeaders.map((header) => {
+        return [header.key, header.value];
+      })
+    );
+
     // Default requests from Network.requestWillBeSent don't intercept the body/post data, so we need
-    // to add that data manually, since Fetch.requestPaused does contain it
+    // to add that data manually, since Fetch.requestPaused does contain it. We also add our custom headers to every request here, as soon
+    // as we pause it
     requestStore.getState().addOrUpdateRequest({
       requestId,
       tabId: this.id,
-      request: params.request,
+      request: {
+        ...params.request,
+        headers: {
+          ...params.request.headers,
+          ...transformedHeaders,
+        },
+      },
     });
 
-    const rules = rulesStore.getState().rules;
+    // Handle whether we intercept the request or not based on rules
+    const rules = preferencesStore.getState().rules;
     const requestParams = getRequestParams(params.request);
 
     const urlString = params.request.url;

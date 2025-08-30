@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 
-import usePreferencesStore from "@ui/store/preferences";
+import usePreferencesStore from "@shared/stores/preferences";
 
 export default function ThemeProvider({ children }: PropsWithChildren) {
   const theme = usePreferencesStore((s) => s.theme);

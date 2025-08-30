@@ -1,57 +1,57 @@
 import classNames from "classnames";
 import colors from "tailwindcss/colors";
 
-import usePreferencesStore from "@ui/store/preferences";
+import usePreferencesStore from "@shared/stores/preferences";
 
 export default function Settings() {
   const theme = usePreferencesStore((s) => s.theme);
-  const setPreference = usePreferencesStore((s) => s.setPreference);
+  const setTheme = usePreferencesStore((s) => s.setTheme);
 
   const themes = [
     {
       color: colors.red[400],
       selected: theme === "red",
-      onClick: () => setPreference("theme", "red"),
+      onClick: () => setTheme("red"),
     },
     {
       color: colors.orange[400],
       selected: theme === "orange",
-      onClick: () => setPreference("theme", "orange"),
+      onClick: () => setTheme("orange"),
     },
     {
       color: colors.green[400],
       selected: theme === "green",
-      onClick: () => setPreference("theme", "green"),
+      onClick: () => setTheme("green"),
     },
     {
       color: colors.emerald[400],
       selected: theme === "emerald",
-      onClick: () => setPreference("theme", "emerald"),
+      onClick: () => setTheme("emerald"),
     },
     {
       color: colors.teal[400],
       selected: theme === "teal",
-      onClick: () => setPreference("theme", "teal"),
+      onClick: () => setTheme("teal"),
     },
     {
       color: colors.blue[400],
       selected: theme === "blue",
-      onClick: () => setPreference("theme", "blue"),
+      onClick: () => setTheme("blue"),
     },
     {
       color: colors.indigo[400],
       selected: theme === "indigo",
-      onClick: () => setPreference("theme", "indigo"),
+      onClick: () => setTheme("indigo"),
     },
     {
       color: colors.purple[400],
       selected: theme === "purple",
-      onClick: () => setPreference("theme", "purple"),
+      onClick: () => setTheme("purple"),
     },
     {
       color: colors.fuchsia[400],
       selected: theme === "fuchsia",
-      onClick: () => setPreference("theme", "fuchsia"),
+      onClick: () => setTheme("fuchsia"),
     },
   ];
 
