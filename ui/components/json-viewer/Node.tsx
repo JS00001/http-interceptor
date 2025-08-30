@@ -94,12 +94,15 @@ export default function Node({ nodeKey, path, data, level, editable, onChange }:
   }[dataType];
 
   const containerClasses = classNames("w-full flex items-center hover:bg-primary-50");
-  const valueClasses = classNames("truncate resize-none w-auto caret-black", textColor);
+  const valueClasses = classNames(
+    "truncate resize-none w-auto caret-black text-[11px]",
+    textColor
+  );
 
   return (
     <div style={{ paddingLeft: level * 16 }} className={containerClasses}>
-      <p className="text-fuchsia-800 shrink-0">{nodeKey}</p>
-      <p className="text-gray-800 mr-2">:</p>
+      <p className="text-fuchsia-800 shrink-0 text-[11px]">{nodeKey}</p>
+      <p className="text-gray-800 mr-2 text-[11px]">:</p>
 
       {dataType === "string" && <StringQuotation />}
 
