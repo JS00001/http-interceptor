@@ -42,7 +42,7 @@ export const getRequestParams = (request: Protocol.Network.Request) => {
 
     if (boundary) {
       const formData = parseFormData(request.postData, boundary);
-      reqParams.postDataType = 'form-data';
+      reqParams.postDataType = Object.keys(formData).length > 0 ? 'form-data' : null;
       reqParams.postData = formData;
     }
   }
