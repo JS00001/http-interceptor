@@ -22,9 +22,20 @@ export const getRequestParams = (request: Protocol.Network.Request) => {
 
   // Get the post data and store it
   if (request.hasPostData && request.postData) {
-    const data = parseJSON(request.postData);
-    if (!data) return reqParams;
-    reqParams.postData = data;
+    const jsonPayload = parseJSON(request.postData);
+
+    if (jsonPayload) {
+      reqParams.postData = jsonPayload;
+      return reqParams;
+    }
+
+    // We need to handle multipart form data if the body is not already a JSON payload
+    const boundary = getBoundary(request);
+
+    if (boundary) {
+      const formData = parseFormData(request.postData, boundary);
+      reqParams.postData = formData;
+    }
   }
 
   return reqParams;
@@ -107,4 +118,51 @@ export const formatError = (errorText?: string) => {
   }
 
   return `(failed) ${errorText}`;
+};
+
+/**
+ * Parse multipart-form data
+ */
+export const parseFormData = (data: string, boundary: string) => {
+  const fields: Record<string, string> = {};
+  const parts = data.split(`--${boundary}`).filter((p) => p.trim() && p.trim() !== '--');
+
+  for (const part of parts) {
+    const [rawHeaders, ...rest] = part.split('\r\n\r\n');
+    if (!rawHeaders || !rest.length) continue;
+
+    const nameMatch = rawHeaders.match(/name="([^"]+)"/);
+    if (!nameMatch) continue;
+
+    const name = nameMatch[1];
+    const value = rest.join('\r\n\r\n').replace(/\r\n$/, ''); // remove trailing newline
+    fields[name] = value;
+  }
+
+  return fields;
+};
+
+/**
+ * Turn an object back into form-data
+ */
+export const assembleFormData = (fields: Record<string, string>, boundary: string) => {
+  let body = '';
+
+  for (const [name, value] of Object.entries(fields)) {
+    body += `--${boundary}\r\n`;
+    body += `Content-Disposition: form-data; name="${name}"\r\n\r\n`;
+    body += `${value}\r\n`;
+  }
+  body += `--${boundary}--\r\n`;
+  return body;
+};
+
+/**
+ * Check if a request is a multipart form data request, if so, return the
+ * boundary
+ */
+export const getBoundary = (request: Protocol.Network.Request) => {
+  const contentType = request.headers['Content-Type'] ?? request.headers['content-type'] ?? '';
+  const boundary = contentType.split('boundary=')[1];
+  return boundary;
 };
