@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { NetworkEvent } from "@shared/types";
 import type { DataType } from "@shared/types";
-import { getRequestParams } from "@shared/lib";
+import { assembleFormData, getBoundary, getRequestParams } from "@shared/lib";
 import JsonViewer from "@ui/components/json-viewer";
 import { useNetworkEventStore } from "@shared/stores/network-event";
 
@@ -52,13 +52,18 @@ export default function PayloadView({ event, editable = false }: PayloadViewProp
     if (isPostData) {
       lodash.set(requestParams.postData, path, value);
 
+      const boundary = getBoundary(event.request);
+
+      // If this request is a multipart form data request, we need to reassemble the form data, otherwise
+      // just use the stringified JSON
+      const postData = boundary
+        ? assembleFormData(requestParams.postData, boundary)
+        : JSON.stringify(requestParams.postData);
+
       updateRequest({
         tabId: event.tabId,
         requestId: event.requestId,
-        request: {
-          ...request,
-          postData: JSON.stringify(requestParams.postData),
-        },
+        request: { ...request, postData },
       });
     }
   };
