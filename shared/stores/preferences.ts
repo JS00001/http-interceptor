@@ -6,6 +6,7 @@ import { CustomHeader, InterceptorRule, ThemeColor } from '@shared/types';
 
 interface IPreferencesState {
   hasHydrated: boolean;
+  note: string;
   theme: ThemeColor;
   rules: InterceptorRule[];
   customHeaders: CustomHeader[];
@@ -23,6 +24,7 @@ interface IPreferencesStore extends IPreferencesState {
   updateRule: (rule: InterceptorRule) => void;
 
   // Other preferences/methods
+  setNote: (note: string) => void;
   setTheme: (theme: IPreferencesState['theme']) => void;
   hydrate: () => void;
 }
@@ -32,6 +34,7 @@ const usePreferencesStore = create<IPreferencesStore>()(
     (set) => {
       const initialState: IPreferencesState = {
         rules: [],
+        note: '',
         customHeaders: [],
         theme: 'indigo',
         hasHydrated: false,
@@ -119,6 +122,13 @@ const usePreferencesStore = create<IPreferencesStore>()(
       };
 
       /**
+       * Set the value of the notes field
+       */
+      const setNote = (note: IPreferencesState['note']) => {
+        set((state) => ({ ...state, note }));
+      };
+
+      /**
        * Mark the store as hydrated from persisted data
        */
       const hydrate = () => {
@@ -127,6 +137,7 @@ const usePreferencesStore = create<IPreferencesStore>()(
 
       return {
         ...initialState,
+        setNote,
         setTheme,
         addHeader,
         removeHeader,

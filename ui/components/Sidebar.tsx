@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import classNames from "classnames";
-import { CellTowerIcon, GearIcon } from "@phosphor-icons/react";
+import { CellTowerIcon, GearIcon, NoteIcon } from "@phosphor-icons/react";
 
 import useRouter from "@ui/store/router";
 
@@ -15,7 +15,12 @@ export default function Sidebar() {
         route: "/intercept" as const,
         isActive: router.pathname.startsWith("/intercept"),
       },
-
+      {
+        icon: NoteIcon,
+        label: "Notes",
+        route: "/notes" as const,
+        isActive: router.pathname.startsWith("/notes"),
+      },
       {
         icon: GearIcon,
         label: "Settings",
